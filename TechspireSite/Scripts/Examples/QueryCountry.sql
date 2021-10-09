@@ -1,1 +1,0 @@
-SELECT * FROM techspire_country;
