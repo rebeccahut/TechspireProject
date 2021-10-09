@@ -144,3 +144,19 @@ class EmployeeJob(models.Model):
         verbose_name_plural = "Employee Job"
 
 
+class AssocEmployeeLabel(LabelCode):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "AssocEmployeeLabel"
+        verbose_name_plural = "Employee Label"
+
+
+class AssocCustomerLabel(LabelCode):
+    customer = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    customer_label = models.ForeignKey(CustomerLabel, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "AssocCustomerLabel"
+        verbose_name_plural = "Customer Label"
