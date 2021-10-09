@@ -13,6 +13,7 @@ class StatusCode(models.Model):
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200)
     is_active = models.BooleanField()
+    status_assigned = models.DateField()
 
     class Meta:
         abstract = True
@@ -232,14 +233,12 @@ class OrderLine(models.Model):
         verbose_name_plural = "Order Line"
 
 
-
-
-
 class Reward(models.Model):
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.CASCADE)
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
+    date_added = models.DateField()
 
     class Meta:
         db_table = "Reward"
@@ -269,6 +268,7 @@ class StoreSocialMedia(models.Model):
     social_media_code = models.CharField(max_length=60)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+    date_added = models.DateField()
 
     class Meta:
         db_table = "StoreSocialMedia"
@@ -279,6 +279,7 @@ class EmployeeSocialMedia(models.Model):
     social_media_code = models.CharField(max_length=60)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+    date_added = models.DateField()
 
     class Meta:
         db_table = "EmployeeSocialMedia"
@@ -286,13 +287,31 @@ class EmployeeSocialMedia(models.Model):
 
 
 class CustomerSocialMedia(models.Model):
-    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
     social_media_code = models.CharField(max_length=60)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    date_added = models.DateField()
 
     class Meta:
         db_table = "CustomerSocialMedia"
         verbose_name_plural = "Customer Social Media"
 
 
+class StoreProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    product_assigned = models.DateField()
 
+    class Meta:
+        db_table = "StoreProduct"
+        verbose_name_plural = "Store Product"
+
+
+class StoreReward(models.Model):
+    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    reward_assigned = models.DateField()
+
+    class Meta:
+        db_table = "Store Reward"
+        verbose_name_plural = "Store Reward"
