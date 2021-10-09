@@ -8,11 +8,20 @@
 from django.db import models
 
 
+class DescriptiveModel(models.Model):
+    description = "Blank Description"
+    pk_desc = "Standard Auto-Increment PK"
+
+    class Meta:
+        abstract = True
+
+
 #Used as an abstract parent for status codes
-class StatusCode(models.Model):
+class StatusCode(DescriptiveModel):
+    description = "Used to soft delete rows with a reason name and desc"
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
     status_assigned = models.DateField()
 
     class Meta:
@@ -20,7 +29,8 @@ class StatusCode(models.Model):
 
 
 #Used as an abstract parent for labels
-class LabelCode(models.Model):
+class LabelCode(DescriptiveModel):
+    description = "Allows for multiple named labels"
     label_name = models.CharField(max_length=40)
     label_desc = models.CharField(max_length=200)
 
@@ -70,7 +80,7 @@ class RewardStatus(StatusCode):
         verbose_name_plural = "Reward Status"
 
 
-class Country(models.Model):
+class Country(DescriptiveModel):
     country_name = models.CharField(max_length=60)
 
     class Meta:
@@ -78,20 +88,21 @@ class Country(models.Model):
         verbose_name_plural = "Country"
 
 
-class State(models.Model):
+class State(DescriptiveModel):
     state_name = models.CharField(max_length=60)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "State"
         verbose_name_plural = "State/Province"
 
 
-class Location(models.Model):
+class Location(DescriptiveModel):
+    description = "Represents a complete address for a location"
     zip_code = models.CharField(max_length=5)
     city = models.CharField(max_length=35)
     address = models.CharField(max_length=100)
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Location"
@@ -106,7 +117,7 @@ class Tier(LabelCode):
 
 
 #Used as an abstract parent for people
-class Person(models.Model):
+class Person(DescriptiveModel):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
@@ -114,7 +125,7 @@ class Person(models.Model):
     comments = models.TextField(blank=True, null=True)
     birthdate = models.DateField()
     created_date = models.DateField()
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.RESTRICT)
 
     class Meta:
         abstract = True
@@ -122,7 +133,7 @@ class Person(models.Model):
 
 class Employee(Person):
     end_date = models.DateField(blank=True, null=True)
-    employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.CASCADE)
+    employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Employee"
@@ -130,16 +141,16 @@ class Employee(Person):
 
 
 class Customer(Person):
-    create_employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    customer_status = models.ForeignKey(CustomerStatus, on_delete=models.CASCADE)
-    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
+    create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
+    tier = models.ForeignKey(Tier, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Customer"
         verbose_name_plural = "Loyalty Customer"
 
 
-class Job(models.Model):
+class Job(DescriptiveModel):
     job_name = models.CharField(max_length=40)
     job_desc = models.CharField(max_length=200, blank=True, null=True)
 
@@ -148,10 +159,10 @@ class Job(models.Model):
         verbose_name_plural = "Job"
 
 
-class EmployeeJob(models.Model):
+class EmployeeJob(DescriptiveModel):
     assign_date = models.DateField()
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    job = models.ForeignKey(Job, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "EmployeeJob"
@@ -159,8 +170,8 @@ class EmployeeJob(models.Model):
 
 
 class AssocEmployeeLabel(LabelCode):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "AssocEmployeeLabel"
@@ -168,8 +179,8 @@ class AssocEmployeeLabel(LabelCode):
 
 
 class AssocCustomerLabel(LabelCode):
-    customer = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    customer_label = models.ForeignKey(CustomerLabel, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "AssocCustomerLabel"
@@ -183,27 +194,27 @@ class PaymentType(LabelCode):
         verbose_name_plural = "Payment Type"
 
 
-class Store(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    store_status = models.ForeignKey(StoreStatus, on_delete=models.CASCADE)
+class Store(DescriptiveModel):
+    location = models.ForeignKey(Location, on_delete=models.RESTRICT)
+    store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Store"
         verbose_name_plural = "Store"
 
 
-class Order(models.Model):
+class Order(DescriptiveModel):
     order_date = models.DateField()
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
+    payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Order"
         verbose_name_plural = "Order/Transaction"
 
 
-class ProductType(models.Model):
+class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
 
@@ -212,32 +223,32 @@ class ProductType(models.Model):
         verbose_name_plural = "Product Type"
 
 
-class Product(models.Model):
+class Product(DescriptiveModel):
     product_name = models.CharField(max_length=40)
     product_desc = models.CharField(max_length=200)
-    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    product_status = models.ForeignKey(ProductStatus, on_delete=models.CASCADE)
+    product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
+    product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Product"
         verbose_name_plural = "Product"
 
 
-class OrderLine(models.Model):
+class OrderLine(DescriptiveModel):
     quantity = models.IntegerField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.RESTRICT)
+    order = models.ForeignKey(Order, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "OrderLine"
         verbose_name_plural = "Order Line"
 
 
-class Reward(models.Model):
+class Reward(DescriptiveModel):
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
-    reward_status = models.ForeignKey(RewardStatus, on_delete=models.CASCADE)
-    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
+    reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
+    tier = models.ForeignKey(Tier, on_delete=models.RESTRICT)
     date_added = models.DateField()
 
     class Meta:
@@ -245,17 +256,17 @@ class Reward(models.Model):
         verbose_name_plural = "Reward"
 
 
-class EmployeeStore(models.Model):
+class EmployeeStore(DescriptiveModel):
     begin_date = models.DateField()
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "EmployeeStore"
         verbose_name_plural = "Employee Store"
 
 
-class SocialMediaType(models.Model):
+class SocialMediaType(DescriptiveModel):
     social_media_name = models.CharField(max_length=40)
     social_media_desc = models.CharField(max_length=200)
 
@@ -264,10 +275,10 @@ class SocialMediaType(models.Model):
         verbose_name_plural = "Social Media Type"
 
 
-class StoreSocialMedia(models.Model):
+class StoreSocialMedia(DescriptiveModel):
     social_media_code = models.CharField(max_length=60)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
 
     class Meta:
@@ -275,10 +286,10 @@ class StoreSocialMedia(models.Model):
         verbose_name_plural = "Store Social Media"
 
 
-class EmployeeSocialMedia(models.Model):
+class EmployeeSocialMedia(DescriptiveModel):
     social_media_code = models.CharField(max_length=60)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
 
     class Meta:
@@ -286,10 +297,10 @@ class EmployeeSocialMedia(models.Model):
         verbose_name_plural = "Employee Social Media"
 
 
-class CustomerSocialMedia(models.Model):
+class CustomerSocialMedia(DescriptiveModel):
     social_media_code = models.CharField(max_length=60)
-    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     date_added = models.DateField()
 
     class Meta:
@@ -297,9 +308,9 @@ class CustomerSocialMedia(models.Model):
         verbose_name_plural = "Customer Social Media"
 
 
-class StoreProduct(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+class StoreProduct(DescriptiveModel):
+    product = models.ForeignKey(Product, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     product_assigned = models.DateField()
 
     class Meta:
@@ -307,9 +318,9 @@ class StoreProduct(models.Model):
         verbose_name_plural = "Store Product"
 
 
-class StoreReward(models.Model):
-    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+class StoreReward(DescriptiveModel):
+    reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     reward_assigned = models.DateField()
 
     class Meta:
