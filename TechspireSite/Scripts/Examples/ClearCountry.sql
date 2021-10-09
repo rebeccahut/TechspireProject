@@ -1,0 +1,1 @@
+DELETE FROM techspire_country

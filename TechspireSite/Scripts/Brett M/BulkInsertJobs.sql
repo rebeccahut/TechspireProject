@@ -1,0 +1,9 @@
+BULK INSERT Job
+FROM "D:\Scripts\Data\JobList.csv"
+WITH
+	(
+	FIELDTERMINATOR = '~',
+	ROWTERMINATOR = '\n',
+	KEEPIDENTITY 
+	)
+GO
