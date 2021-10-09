@@ -8,6 +8,7 @@
 from django.db import models
 
 
+#Used as an abstract parent for status codes
 class StatusCode(models.Model):
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200)
@@ -17,6 +18,7 @@ class StatusCode(models.Model):
         abstract = True
 
 
+#Used as an abstract parent for labels
 class LabelCode(models.Model):
     label_name = models.CharField(max_length=40)
     label_desc = models.CharField(max_length=200)
@@ -85,16 +87,24 @@ class State(models.Model):
 
 
 class Location(models.Model):
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=5)
     city = models.CharField(max_length=35)
     address = models.CharField(max_length=100)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "Location"
         verbose_name_plural = "Location/Address"
 
 
+class Tier(LabelCode):
+
+    class Meta:
+        db_table = "Tier"
+        verbose_name_plural = "Tier"
+
+
+#Used as an abstract parent for people
 class Person(models.Model):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
@@ -121,6 +131,7 @@ class Employee(Person):
 class Customer(Person):
     create_employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.CASCADE)
+    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "Customer"
@@ -164,9 +175,27 @@ class AssocCustomerLabel(LabelCode):
         verbose_name_plural = "Associative Customer Label"
 
 
+class PaymentType(LabelCode):
+
+    class Meta:
+        db_table = "PaymentType"
+        verbose_name_plural = "Payment Type"
+
+
+class Store(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    store_status = models.ForeignKey(StoreStatus, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "Store"
+        verbose_name_plural = "Store"
+
+
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateField()
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "Order"
@@ -183,9 +212,9 @@ class ProductType(models.Model):
 
 
 class Product(models.Model):
-    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=40)
     product_desc = models.CharField(max_length=200)
+    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     product_status = models.ForeignKey(ProductStatus, on_delete=models.CASCADE)
 
     class Meta:
@@ -194,28 +223,23 @@ class Product(models.Model):
 
 
 class OrderLine(models.Model):
+    quantity = models.IntegerField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
 
     class Meta:
         db_table = "OrderLine"
         verbose_name_plural = "Order Line"
 
 
-class Store(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    store_status = models.ForeignKey(StoreStatus, on_delete=models.CASCADE)
 
-    class Meta:
-        db_table = "Store"
-        verbose_name_plural = "Store"
 
 
 class Reward(models.Model):
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.CASCADE)
+    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "Reward"
@@ -223,11 +247,52 @@ class Reward(models.Model):
 
 
 class EmployeeStore(models.Model):
+    begin_date = models.DateField()
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    begin_date = models.DateField()
 
     class Meta:
         db_table = "EmployeeStore"
         verbose_name_plural = "Employee Store"
+
+
+class SocialMediaType(models.Model):
+    social_media_name = models.CharField(max_length=40)
+    social_media_desc = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = "SocialMediaType"
+        verbose_name_plural = "Social Media Type"
+
+
+class StoreSocialMedia(models.Model):
+    social_media_code = models.CharField(max_length=60)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "StoreSocialMedia"
+        verbose_name_plural = "Store Social Media"
+
+
+class EmployeeSocialMedia(models.Model):
+    social_media_code = models.CharField(max_length=60)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "EmployeeSocialMedia"
+        verbose_name_plural = "Employee Social Media"
+
+
+class CustomerSocialMedia(models.Model):
+    social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.CASCADE)
+    social_media_code = models.CharField(max_length=60)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "CustomerSocialMedia"
+        verbose_name_plural = "Customer Social Media"
+
+
 
