@@ -6,11 +6,13 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from .Owners import Owners
 
 
 class DescriptiveModel(models.Model):
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
+    owner = Owners.TableOwner
 
     class Meta:
         abstract = True
@@ -134,6 +136,7 @@ class Person(DescriptiveModel):
 class Employee(Person):
     end_date = models.DateField(blank=True, null=True)
     employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
+    owner = Owners.BrettM
 
     class Meta:
         db_table = "Employee"
@@ -153,20 +156,14 @@ class Customer(Person):
 class Job(DescriptiveModel):
     job_name = models.CharField(max_length=40)
     job_desc = models.CharField(max_length=200, blank=True, null=True)
+    owner = Owners.BrettM
 
     class Meta:
         db_table = "Job"
         verbose_name_plural = "Job"
 
 
-class EmployeeJob(DescriptiveModel):
-    assign_date = models.DateField()
-    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    job = models.ForeignKey(Job, on_delete=models.RESTRICT)
 
-    class Meta:
-        db_table = "EmployeeJob"
-        verbose_name_plural = "Employee Job"
 
 
 class AssocEmployeeLabel(LabelCode):
@@ -201,6 +198,18 @@ class Store(DescriptiveModel):
     class Meta:
         db_table = "Store"
         verbose_name_plural = "Store"
+
+
+class EmployeeJob(DescriptiveModel):
+    assign_date = models.DateField()
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
+    job = models.ForeignKey(Job, on_delete=models.RESTRICT)
+    owner = Owners.BrettM
+
+    class Meta:
+        db_table = "EmployeeJob"
+        verbose_name_plural = "Employee Job"
 
 
 class Order(DescriptiveModel):
@@ -254,16 +263,6 @@ class Reward(DescriptiveModel):
     class Meta:
         db_table = "Reward"
         verbose_name_plural = "Reward"
-
-
-class EmployeeStore(DescriptiveModel):
-    begin_date = models.DateField()
-    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
-
-    class Meta:
-        db_table = "EmployeeStore"
-        verbose_name_plural = "Employee Store"
 
 
 class SocialMediaType(DescriptiveModel):

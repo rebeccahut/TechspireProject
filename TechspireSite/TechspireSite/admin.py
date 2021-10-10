@@ -4,6 +4,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.apps import apps
 from django.db import models
+from django.db import connection
+from django.template.response import TemplateResponse
+import glob
+import os
 
 
 class TechSpireAdminSite(admin.AdminSite):
@@ -41,13 +45,14 @@ class TechSpireAdminSite(admin.AdminSite):
                     help_text = model.pk_desc
                 else:
                     help_text = current_field.help_text
-                
+
                 c_delete = False
                 c_update = False
                 fk = False
 
                 if field_type == "ForeignKey":
                     fk = True
+                    field_name += "_id"
 
                 try:
                     field_type = field_type_dict[field_type]
@@ -72,22 +77,85 @@ class TechSpireAdminSite(admin.AdminSite):
         return render(request, 'admin/display_report.html', context)
 
     def dict2(self, request):
-        context = {"titles": ["Table Name", "Table Desc"], "tables": []}
+        context = {"titles": ["Table Name", "Table Desc", "Owner"], "tables": []}
         model_list = apps.get_app_config('Bakery').get_models()
         for model in model_list:
             model_object = model()
             model_name = model.__name__
             model_desc = model_object.description
-            context["tables"].append([model_name, model_desc])
+            context["tables"].append([model_name, model_desc, model.owner.name])
 
         return render(request, 'admin/display_report.html', context)
+
+    def get_reports(self, path):
+        return glob.glob(os.path.join(path, "Scripts/*/Report*"))
+
+    def get_report_names(self, path):
+        reports = self.get_reports(path)
+        out_names = []
+        for report in reports:
+            out_names.append(os.path.basename(report)[:-4])
+
+        return out_names
+
+    def dict3(self, request):
+
+        return render(request, 'admin/display_report.html', context)
+
+    def report(self, request, index):
+        module_dir = os.path.dirname(__file__)  # get current directory
+        reports = self.get_reports(module_dir)
+        file_path = os.path.join(module_dir, reports[index])
+        context = {"titles": [], "tables": []}
+        report_object = open(file_path, "r")
+        report_text = report_object.read()
+        first_line = report_text.split("\n")[0]
+        first_line = first_line[2:]
+        context["titles"] = first_line.split(",")
+
+
+        with connection.cursor() as cursor:
+            cursor.execute(report_text)
+            context["tables"] = cursor.fetchall()
+
+        return render(request, 'admin/display_report.html', context)
+
+
+    def index(self, request, extra_context=None):
+        """
+        Display the main admin index page, which lists all of the installed
+        apps that have been registered in this site.
+        """
+        app_list = self.get_app_list(request)
+        module_dir = os.path.dirname(__file__)  # get current directory
+        reports = self.get_report_names(module_dir)
+
+
+        context = {
+            **self.each_context(request),
+            'title': self.index_title,
+            'subtitle': None,
+            'app_list': app_list,
+            'report_list':  reports,
+            **(extra_context or {}),
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/index.html', context)
+
+
+
+
 
 
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('reports/', self.admin_view(self.reports), name="reports"),
+
+            path('report/<int:index>/', self.admin_view(self.report), name="report"),
             path('dict1/', self.admin_view(self.dict1), name="dict1"),
             path('dict2/', self.admin_view(self.dict2), name="dict2"),
+            path('report1/', self.admin_view(self.report), name="report"),
         ]
         return my_urls + urls

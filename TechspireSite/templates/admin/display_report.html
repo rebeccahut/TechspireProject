@@ -22,9 +22,9 @@
     </style>
   </head>
   <body>
-    {% if tables %}
-    <table>
 
+    <table>
+        {% if titles %}
         <tr>
             {% for column in titles %}
             <th>
@@ -32,20 +32,19 @@
             </th>
             {% endfor %}
         </tr>
+        {% endif %}
 
-
-        {% for row in tables %}
-        <tr>
-            {% for column in row %}
-            <td>
-                {{column}}
-            </td>
+        {% if tables %}
+            {% for row in tables %}
+            <tr>
+                {% for column in row %}
+                <td>
+                    {{column}}
+                </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
+        {% endif %}
     </table>
-    {% else %}
-        <p>No polls are available.</p>
-    {% endif %}
   </body>
 </html>
