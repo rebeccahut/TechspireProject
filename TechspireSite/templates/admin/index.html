@@ -1,33 +1,31 @@
 {% extends "admin/index.html" %}
 {% load i18n %}
 
-
 {% block content %}
-<div class="app-auth module">
-    <table>
-        <caption>
-            <a class="section">Database Information</a>
-        </caption>
-        <tbody>
-            <tr class="model-group">
-                <th scope="row">
-                    <a href=/admin/dict1>Row Dictionary</a>
-                </th>
-                <th>
-                    <a href="/admin/auth/group/" class="changelink" style="display:none;">Change</a>
-                </th>
-            </tr>
-            <tr class="model-group">
-                <th scope="row">
-                    <a href=/admin/dict2>Table Dictionary</a>
-                </th>
-                <th>
-                    <a href="/admin/auth/group/" class="changelink" style="display:none;">Change</a>
-                </th>
-            </tr>
-        </tbody>
-    </table>
-</div>
+{% if database_list %}
+    <div class="app-auth module">
+        <table>
+            <caption>
+                <a class="section">Database Information</a>
+            </caption>
+            <tbody>
+            {% for row in database_list %}
+
+                <tr class="model-group">
+                    <th scope="row">
+                        <a href=/admin/{{ row.path }}>{{row.name}}</a>
+                    </th>
+                    <th>
+                        <a href="/admin/auth/group/" class="changelink" style="display:none;"></a>
+                    </th>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
 
 
 {% if report_list %}
@@ -55,8 +53,8 @@
 {% endif %}
 
 
-
 {{ block.super }}
+
 {% endblock %}
 
 
