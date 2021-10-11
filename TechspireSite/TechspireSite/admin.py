@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.template.response import TemplateResponse
-from .views import dict1, dict2, dict3, html_report, get_report_names
+from .views import dict1, dict2, dict3, html_report, get_report_names, erd1
 import os
 
 
@@ -30,7 +30,7 @@ class TechSpireAdminSite(admin.AdminSite):
         reports = get_report_names(module_dir)
         AdminTableRow("dict1", "Row Dictionary")
         db_info = [AdminTableRow("dict1", "Row Dictionary"), AdminTableRow("dict2", "Table Dictionary"),
-                   AdminTableRow("dict3", "Excel Dictionary")]
+                   AdminTableRow("dict3", "Excel Dictionary"), AdminTableRow("erd1", "Abstract ERD")]
 
         context = {
             **self.each_context(request),
@@ -54,5 +54,6 @@ class TechSpireAdminSite(admin.AdminSite):
             path('dict1/', self.admin_view(dict1), name="dict1"),
             path('dict2/', self.admin_view(dict2), name="dict2"),
             path('dict3/', self.admin_view(dict3), name="dict3"),
+            path('erd1/', self.admin_view(erd1), name="erd1"),
         ]
         return my_urls + urls

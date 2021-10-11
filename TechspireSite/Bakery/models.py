@@ -6,6 +6,9 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.db.models import CheckConstraint
+from django.db.models import Q
+
 from .Owners import Owners
 
 
@@ -80,6 +83,22 @@ class RewardStatus(StatusCode):
     class Meta:
         db_table = "RewardStatus"
         verbose_name_plural = "Reward Status"
+
+
+class BanType(LabelCode):
+    description = "Describes why a type of product is banned"
+
+    class Meta:
+        db_table = "BanType"
+        verbose_name_plural = "Ban Type"
+
+
+class PointReason(LabelCode):
+    description = "Describes why points were added or removed"
+
+    class Meta:
+        db_table = "PointLogType"
+        verbose_name_plural = "Point Log Type"
 
 
 class Country(DescriptiveModel):
@@ -226,7 +245,7 @@ class Order(DescriptiveModel):
 class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
-
+    ban_reason = models.ForeignKey(BanType, on_delete=models.RESTRICT, blank=True, null=True)
     class Meta:
         db_table = "ProductType"
         verbose_name_plural = "Product Type"
@@ -325,3 +344,25 @@ class StoreReward(DescriptiveModel):
     class Meta:
         db_table = "Store Reward"
         verbose_name_plural = "Store Reward"
+
+
+class CustomerReward(DescriptiveModel):
+    date_applied = models.DateField()
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
+    reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
+
+    class Meta:
+        db_table = "CustomerReward"
+        verbose_name_plural = "Customer Reward"
+
+
+class PointLog(DescriptiveModel):
+    quantity = models.IntegerField()
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
+    reason = models.ForeignKey(PointReason, on_delete=models.RESTRICT)
+    order = models.ForeignKey(Order, on_delete=models.RESTRICT, blank=True, null=True)
+    customer_reward = models.ForeignKey(CustomerReward, on_delete=models.RESTRICT, blank=True, null=True)
+
+    class Meta:
+        db_table = "PointLog"
+        verbose_name_plural = "Point Log"

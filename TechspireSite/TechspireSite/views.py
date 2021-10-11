@@ -1,4 +1,4 @@
-from .data_dict_helper import extract_all_field_props, generate_data_dict_excel
+from .data_dict_helper import extract_all_field_props, generate_data_dict_excel, generate_erd
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.apps import apps
@@ -10,6 +10,10 @@ import os
 class FieldTypeMap:
     field_type_dict = {"CharField": "varchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "int",
                        "EmailField": "varchar", "TextField": "text", "ForeignKey": "int"}
+
+
+def erd1(request):
+    return generate_erd("GeneratedFiles", "ERD1", "crow", True)
 
 
 # displays a page with all the props for each field of each model as a table

@@ -1,6 +1,10 @@
 from django.db import models
 import xlsxwriter
 from django.apps import apps
+from django.core import management
+import os
+import pydot
+from django.http import HttpResponse
 
 
 # Extracts the field props for a single field
@@ -91,3 +95,32 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
         header_dicts.append({"header": row})
     worksheet.add_table(0, 0, row_count, len(title_row) - 1, {"columns": header_dicts})
     workbook.close()
+
+
+def generate_erd(folder, file, shape, fields):
+    module_dir = os.path.dirname(__file__)
+    dot_path = os.path.join(module_dir, folder, file + ".dot")
+    png_path = os.path.join(module_dir, folder, file + ".png")
+    exclude_models = ["DescriptiveModel", "StatusCode", "Person", "LabelCode"]
+    if fields:
+        management.call_command("graph_models", "Bakery", "-o" + dot_path, disable_abstract_fields=True,
+                                arrow_shape="none", exclude_models=exclude_models,
+                                hide_edge_labels=True, disable_fields=True, inheritance=False)
+    else:
+        management.call_command("graph_models", "Bakery", "-o" + dot_path, disable_abstract_fields=True,
+                                arrow_shape="none", hide_edge_labels=True)
+    graphs = pydot.graph_from_dot_file(dot_path)
+    graph = graphs[0]
+    if shape == "crow":
+        for edge in graph.get_edges():
+            edge.set_arrowtail("crowodot")
+            edge.set_arrowhead("teetee")
+
+    #for node in graph.get_nodes():
+        #node_name = node.get_label()
+        #node.set_label(node_name)
+
+    graph.write_png(png_path)
+    response_file = open(png_path, 'rb')
+    response = HttpResponse(response_file, content_type="image/png")
+    return response
