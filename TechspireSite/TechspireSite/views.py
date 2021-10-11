@@ -8,8 +8,9 @@ import os
 
 
 class FieldTypeMap:
-    field_type_dict = {"CharField": "varchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "int",
-                       "EmailField": "varchar", "TextField": "text", "ForeignKey": "int"}
+    field_type_dict = {"CharField": "nvarchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "bigint",
+                       "EmailField": "nvarchar", "TextField": "text", "ForeignKey": "bigint", "IntegerField": "int",
+                       "DecimalField": "numeric"}
 
 
 def erd1(request):
@@ -19,7 +20,7 @@ def erd1(request):
 # displays a page with all the props for each field of each model as a table
 def dict1(request):
     context = {"titles": ["Table Name", "Row Name", "Row Desc", "Default", "Max Length", "Type", "PK", "FK",
-                          "Required", "Allow NULL", "C Delete", "C Update"], "tables": []}
+                          "Required", "Allow NULL", "C Delete", "C Update", "Domain"], "tables": []}
     blank_row = []
     for index in enumerate(context["titles"]):
         blank_row.append(" ")
@@ -68,7 +69,7 @@ def get_report_names(path):
 # Majority of function could be extracted into a different file
 def dict3(request):
     title_row = ["Table Name", "Table Desc", "Row Name", "Row Desc", "Default", "Max Length", "Type", "PK", "FK",
-                 "Required", "Allow NULL", "C Delete", "C Update"]
+                 "Required", "Allow NULL", "C Delete", "C Update", "Domain"]
     module_dir = os.path.dirname(__file__)
     file_path = os.path.join(module_dir, "GeneratedFiles", "DataDict.xlsx")
     generate_data_dict_excel(file_path, title_row, FieldTypeMap.field_type_dict)

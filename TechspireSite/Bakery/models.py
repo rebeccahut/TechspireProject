@@ -12,6 +12,13 @@ from django.db.models import Q
 from .Owners import Owners
 
 
+class ActualCharField(models.CharField):
+    def db_type(self, connection):
+        varchar: str = super().db_type(connection)
+        char: str = varchar.replace('varchar', 'char')
+        return char
+
+
 class DescriptiveModel(models.Model):
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
@@ -166,6 +173,7 @@ class Customer(Person):
     create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
     tier = models.ForeignKey(Tier, on_delete=models.RESTRICT)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = "Customer"
@@ -233,6 +241,7 @@ class EmployeeJob(DescriptiveModel):
 
 class Order(DescriptiveModel):
     order_date = models.DateField()
+    total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
@@ -245,7 +254,8 @@ class Order(DescriptiveModel):
 class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
-    ban_reason = models.ForeignKey(BanType, on_delete=models.RESTRICT, blank=True, null=True)
+    ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
+
     class Meta:
         db_table = "ProductType"
         verbose_name_plural = "Product Type"
@@ -254,6 +264,7 @@ class ProductType(DescriptiveModel):
 class Product(DescriptiveModel):
     product_name = models.CharField(max_length=40)
     product_desc = models.CharField(max_length=200)
+    product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
     product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
 
@@ -263,9 +274,12 @@ class Product(DescriptiveModel):
 
 
 class OrderLine(DescriptiveModel):
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
+    ind_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.RESTRICT)
+
 
     class Meta:
         db_table = "OrderLine"
@@ -357,11 +371,13 @@ class CustomerReward(DescriptiveModel):
 
 
 class PointLog(DescriptiveModel):
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
+    date = models.DateField()
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reason = models.ForeignKey(PointReason, on_delete=models.RESTRICT)
-    order = models.ForeignKey(Order, on_delete=models.RESTRICT, blank=True, null=True)
-    customer_reward = models.ForeignKey(CustomerReward, on_delete=models.RESTRICT, blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    customer_reward = models.ForeignKey(CustomerReward, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = "PointLog"

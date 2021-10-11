@@ -1,8 +1,8 @@
 BULK INSERT EmployeeJob
-FROM "D:\Scripts\Data\EmployeeJobList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeJobList.csv"
 WITH
 	(
 	FIELDTERMINATOR = '~',
 	ROWTERMINATOR = '\n'
 	)
-GO
+GO;

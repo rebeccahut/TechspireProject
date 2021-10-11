@@ -12,6 +12,7 @@ from django.http import HttpResponse
 def extract_field_props(current_field, model, field_type_dict):
     field_name = current_field.name
     field_type = type(current_field).__name__
+    domain = "NA"
     if current_field.primary_key:
         help_text = model.pk_desc
     else:
@@ -19,9 +20,12 @@ def extract_field_props(current_field, model, field_type_dict):
     c_delete = False
     c_update = False
     fk = False
+    null = current_field.null
     if field_type == "ForeignKey":
         fk = True
         field_name += "_id"
+        if null:
+            c_update = True
     try:
         field_type = field_type_dict[field_type]
     except KeyError:
@@ -29,10 +33,10 @@ def extract_field_props(current_field, model, field_type_dict):
     default = "NA" if current_field.default == models.fields.NOT_PROVIDED else current_field.default
     max_length = "NA" if current_field.max_length is None else current_field.max_length
     pk = current_field.primary_key
-    null = current_field.null
+
     blank = True if current_field.primary_key else not current_field.blank
     return [field_name, help_text, default, max_length, field_type, pk, fk, blank, null, c_delete,
-            c_update]
+            c_update, domain]
 
 
 # Given a model extracts a row of field properties for each field
