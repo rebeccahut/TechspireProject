@@ -72,7 +72,7 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
 
     for row, model in enumerate(model_list):
         model_object = model()
-        model_name = model.__name__
+        model_name = model._meta.db_table
         model_desc = model_object.description
         field_props = extract_all_field_props(model, field_type_dict)
         for count, props in enumerate(field_props):

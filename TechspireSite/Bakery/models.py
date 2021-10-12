@@ -49,16 +49,16 @@ class CustomerLabel(LabelCode):
     owner = Owners.Rebecca
 
     class Meta:
-        db_table = "Customer Label"
-        verbose_name_plural = "Customer Label"
+        db_table = "CustomerCategory"
+        verbose_name_plural = "Customer Category"
 
 
 class EmployeeLabel(LabelCode):
     owner = Owners.Kyle
 
     class Meta:
-        db_table = "Employee Label"
-        verbose_name_plural = "Employee Label"
+        db_table = "EmployeeCategory"
+        verbose_name_plural = "Employee Category"
 
 
 class EmployeeStatus(StatusCode):
@@ -91,7 +91,6 @@ class ProductStatus(StatusCode):
 class StoreStatus(StatusCode):
     description = 'Soft delete of store.'
     owner = Owners.Alanna
-
 
     class Meta:
         db_table = "StoreStatus"
@@ -157,9 +156,9 @@ class StateProvince(DescriptiveModel):
 
 class Location(DescriptiveModel):
     description = "Represents a complete address for a location"
-    zip_code = models.CharField(max_length=5, blank=True, null=True)
-    city = models.CharField(max_length=35, blank=True, null=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=10)
+    city = models.CharField(max_length=35)
+    address = models.CharField(max_length=100)
     state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT)
     owner = Owners.BrettM
     load_order = 3
@@ -243,8 +242,8 @@ class AssocEmployeeLabel(LabelCode):
     owner = Owners.Kyle
 
     class Meta:
-        db_table = "AssocEmployeeLabel"
-        verbose_name_plural = "Associative Employee Label"
+        db_table = "EmployeeEmployeeCategory"
+        verbose_name_plural = "Employee Employee Category"
 
 
 class AssocCustomerLabel(LabelCode):
@@ -253,8 +252,8 @@ class AssocCustomerLabel(LabelCode):
     owner = Owners.Rebecca
 
     class Meta:
-        db_table = "AssocCustomerLabel"
-        verbose_name_plural = "Associative Customer Label"
+        db_table = "CustomerCustomerCategory"
+        verbose_name_plural = "Customer Customer Category"
 
 
 class PaymentType(LabelCode):

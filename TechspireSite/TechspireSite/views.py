@@ -27,7 +27,7 @@ def dict1(request):
         blank_row.append(" ")
     model_list = apps.get_app_config('Bakery').get_models()
     for model in model_list:
-        model_name = model.__name__
+        model_name = model._meta.db_table
         field_props = extract_all_field_props(model, FieldTypeMap.field_type_dict)
         for count, row in enumerate(field_props):
             if count == 0:
@@ -45,7 +45,7 @@ def dict2(request):
     model_list = apps.get_app_config('Bakery').get_models()
     for model in model_list:
         model_object = model()
-        model_name = model.__name__
+        model_name = model._meta.db_table
         model_desc = model_object.description
         context["tables"].append([model_name, model_desc, model.owner.name, model.load_order])
 
