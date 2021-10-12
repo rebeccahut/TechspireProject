@@ -288,7 +288,6 @@ class Order(DescriptiveModel):
 class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
-    ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Srijana
 
     class Meta:
@@ -302,6 +301,7 @@ class Product(DescriptiveModel):
     product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
     product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
+    ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Srijana
 
     class Meta:
