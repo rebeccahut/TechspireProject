@@ -287,6 +287,7 @@ class OrderLine(DescriptiveModel):
 
 
 class Reward(DescriptiveModel):
+    description ='All benefits that are offered by the business for being an active loyalty customer that can be claimed by converting some of their earned points. “Rewards” can be coupons ($5 off) or birthday reward (does not need point conversion, it’s just a redemption code for a freebie)'
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
