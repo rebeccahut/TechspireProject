@@ -63,37 +63,42 @@ class EmployeeLabel(LabelCode):
 
 
 class EmployeeStatus(StatusCode):
+    description = 'Defines whether an employee is currently active or inactive'
     class Meta:
         db_table = "EmployeeStatus"
         verbose_name_plural = "Employee Status"
 
 
 class CustomerStatus(StatusCode):
+    description = 'Describes the current relationship between the customer and the business (are they an Active customer? are they an inactive customer?)'
     class Meta:
         db_table = "CustomerStatus"
         verbose_name_plural = "Customer Status"
 
 
 class ProductStatus(StatusCode):
+    description = 'Refers to whether a product is available or not. Not that it is unavailable but also if it is not offered anymore'
     class Meta:
         db_table = "ProductStatus"
         verbose_name_plural = "Product Status"
 
 
 class StoreStatus(StatusCode):
+    description = 'Soft delete of store.'
     class Meta:
         db_table = "StoreStatus"
         verbose_name_plural = "Store Status"
 
 
 class RewardStatus(StatusCode):
+    description = 'Defines whether a particular reward is active/inactive. Primary attributes: active, inactive'
     class Meta:
         db_table = "RewardStatus"
         verbose_name_plural = "Reward Status"
 
 
 class BanType(LabelCode):
-    description = "Describes why a type of product is banned"
+    description = "Describes why a specific product that is banned"
 
     class Meta:
         db_table = "BanType"
@@ -109,6 +114,7 @@ class PointReason(LabelCode):
 
 
 class Country(DescriptiveModel):
+    description = 'The nation that a particular entity (a store, a customer) is located in.'
     country_name = models.CharField(max_length=60)
 
     class Meta:
@@ -117,6 +123,7 @@ class Country(DescriptiveModel):
 
 
 class State(DescriptiveModel):
+    description = 'The state that a particular entity (a store, a customer) is located in.'
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
 
@@ -138,6 +145,7 @@ class Location(DescriptiveModel):
 
 
 class Tier(LabelCode):
+    description = 'Categories that loyalty customers become a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
 
     class Meta:
         db_table = "Tier"
