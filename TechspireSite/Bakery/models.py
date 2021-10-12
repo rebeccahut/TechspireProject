@@ -62,6 +62,7 @@ class EmployeeLabel(LabelCode):
 
 
 class EmployeeStatus(StatusCode):
+    description = 'Defines whether an employee is currently active or inactive'
     owner = Owners.Alanna
 
     class Meta:
@@ -70,13 +71,16 @@ class EmployeeStatus(StatusCode):
 
 
 class CustomerStatus(StatusCode):
+    description = 'Describes the current relationship between the customer and the business (are they an Active customer? are they an inactive customer?)'
     owner = Owners.Umair
+
     class Meta:
         db_table = "CustomerStatus"
         verbose_name_plural = "Customer Status"
 
 
 class ProductStatus(StatusCode):
+    description = 'Refers to whether a product is available or not. Not that it is unavailable but also if it is not offered anymore'
     owner = Owners.Srijana
 
     class Meta:
@@ -85,7 +89,9 @@ class ProductStatus(StatusCode):
 
 
 class StoreStatus(StatusCode):
+    description = 'Soft delete of store.'
     owner = Owners.Alanna
+
 
     class Meta:
         db_table = "StoreStatus"
@@ -93,6 +99,7 @@ class StoreStatus(StatusCode):
 
 
 class RewardStatus(StatusCode):
+    description = 'Defines whether a particular reward is active/inactive. Primary attributes: active, inactive'
     owner = Owners.Alanna
 
     class Meta:
@@ -101,10 +108,9 @@ class RewardStatus(StatusCode):
 
 
 class BanType(LabelCode):
+    description = "Describes why a specific product that is banned"
     owner = Owners.Alanna
     load_order = 1
-
-    description = "Describes why a type of product is banned"
 
     class Meta:
         db_table = "BanType"
@@ -121,6 +127,7 @@ class PointReason(LabelCode):
 
 
 class Country(DescriptiveModel):
+    description = 'The nation that a particular entity (a store, a customer) is located in.'
     country_name = models.CharField(max_length=60)
     owner = Owners.Rebecca
     load_order = 1
@@ -132,8 +139,9 @@ class Country(DescriptiveModel):
         db_table = "Country"
         verbose_name_plural = "Country"
 
-
+        
 class StateProvince(DescriptiveModel):
+
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
@@ -162,6 +170,7 @@ class Location(DescriptiveModel):
 
 
 class Tier(LabelCode):
+    description = 'Categories that loyalty customers are a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
     owner = Owners.Umair
 
     class Meta:
