@@ -16,7 +16,7 @@ class DescriptiveModel(models.Model):
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
     owner = Owners.TableOwner
-    load_order = 1
+    load_order = -1
 
     class Meta:
         abstract = True
@@ -28,6 +28,7 @@ class StatusCode(DescriptiveModel):
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200)
     is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
+    load_order = 1
 
     class Meta:
         abstract = True
@@ -38,6 +39,7 @@ class LabelCode(DescriptiveModel):
     description = "Allows for multiple named labels"
     label_name = models.CharField(max_length=40)
     label_desc = models.CharField(max_length=200)
+    load_order = 1
 
     class Meta:
         abstract = True
@@ -100,6 +102,7 @@ class RewardStatus(StatusCode):
 
 class BanType(LabelCode):
     owner = Owners.Alanna
+    load_order = 1
 
     description = "Describes why a type of product is banned"
 
@@ -120,6 +123,7 @@ class PointReason(LabelCode):
 class Country(DescriptiveModel):
     country_name = models.CharField(max_length=60)
     owner = Owners.Rebecca
+    load_order = 1
 
     def __str__(self):
         return self.country_name
@@ -133,6 +137,7 @@ class StateProvince(DescriptiveModel):
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
+    load_order = 2
 
     def __str__(self):
         return self.state_name
@@ -149,6 +154,7 @@ class Location(DescriptiveModel):
     address = models.CharField(max_length=100, blank=True, null=True)
     state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT)
     owner = Owners.BrettM
+    load_order = 3
 
     class Meta:
         db_table = "Location"
@@ -191,6 +197,7 @@ class Employee(Person):
     employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
     employee_type = models.ForeignKey(EmployeeType, on_delete=models.RESTRICT)
     owner = Owners.BrettM
+    load_order = 4
 
     class Meta:
         db_table = "Employee"
@@ -203,6 +210,7 @@ class Customer(Person):
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Julia
+    load_order = 5
 
     class Meta:
         db_table = "Customer"
@@ -213,13 +221,11 @@ class Job(DescriptiveModel):
     job_name = models.CharField(max_length=40)
     job_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.BrettM
+    load_order = 1
 
     class Meta:
         db_table = "Job"
         verbose_name_plural = "Job"
-
-
-
 
 
 class AssocEmployeeLabel(LabelCode):
@@ -254,6 +260,7 @@ class Store(DescriptiveModel):
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
     owner = Owners.Srijana
+    load_order = 4
 
     class Meta:
         db_table = "Store"
@@ -266,6 +273,7 @@ class EmployeeJob(DescriptiveModel):
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     job = models.ForeignKey(Job, on_delete=models.RESTRICT)
     owner = Owners.BrettM
+    load_order = 5
 
     class Meta:
         db_table = "EmployeeJob"
@@ -281,6 +289,8 @@ class Order(DescriptiveModel):
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     owner = Owners.Torrey
+    load_order = 6
+
     class Meta:
         db_table = "Order"
         verbose_name_plural = "Order/Transaction"
@@ -290,6 +300,7 @@ class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
     owner = Owners.Srijana
+    load_order = 1
 
     class Meta:
         db_table = "ProductType"
@@ -304,6 +315,7 @@ class Product(DescriptiveModel):
     product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
     ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Srijana
+    load_order = 2
 
     class Meta:
         db_table = "Product"
@@ -317,7 +329,7 @@ class OrderLine(DescriptiveModel):
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.RESTRICT)
     owner = Owners.Julia
-
+    load_order = 7
 
     class Meta:
         db_table = "OrderLine"
@@ -340,6 +352,7 @@ class Reward(DescriptiveModel):
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateField()
     owner = Owners.Umair
+    load_order = 3
 
     class Meta:
         db_table = "Reward"
@@ -350,6 +363,7 @@ class SocialMediaType(DescriptiveModel):
     social_media_name = models.CharField(max_length=40)
     social_media_desc = models.CharField(max_length=200)
     owner = Owners.Jade
+    load_order = 1
 
     class Meta:
         db_table = "SocialMediaType"
@@ -362,6 +376,7 @@ class StoreSocialMedia(DescriptiveModel):
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
     owner = Owners.Saja
+    load_order = 5
 
     class Meta:
         db_table = "StoreSocialMedia"
@@ -374,7 +389,7 @@ class EmployeeSocialMedia(DescriptiveModel):
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
     owner = Owners.Saja
-
+    load_order = 5
 
     class Meta:
         db_table = "EmployeeSocialMedia"
@@ -387,6 +402,7 @@ class CustomerSocialMedia(DescriptiveModel):
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     date_added = models.DateField()
     owner = Owners.Jade
+    load_order = 6
 
     class Meta:
         db_table = "CustomerSocialMedia"
@@ -398,6 +414,7 @@ class StoreProduct(DescriptiveModel):
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     product_assigned = models.DateField()
     owner = Owners.Torrey
+    load_order = 5
 
     class Meta:
         db_table = "StoreProduct"
@@ -409,6 +426,7 @@ class StoreReward(DescriptiveModel):
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     reward_assigned = models.DateField()
     owner = Owners.Saja
+    load_order = 5
 
     class Meta:
         db_table = "Store Reward"
@@ -420,6 +438,7 @@ class CustomerReward(DescriptiveModel):
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     owner = Owners.Julia
+    load_order = 6
 
     class Meta:
         db_table = "CustomerReward"
@@ -435,6 +454,7 @@ class PointLog(DescriptiveModel):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
     customer_reward = models.ForeignKey(CustomerReward, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Jade
+    load_order = 7
 
     class Meta:
         db_table = "PointLog"
