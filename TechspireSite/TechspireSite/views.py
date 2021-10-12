@@ -68,8 +68,8 @@ def get_report_names(path):
 # Title row could be passed as a parameter
 # Majority of function could be extracted into a different file
 def dict3(request):
-    title_row = ["Table Name", "Table Desc", "Row Name", "Row Desc", "Default", "Max Length", "Type", "PK", "FK",
-                 "Required", "Allow NULL", "C Delete", "C Update", "Domain"]
+    title_row = ["Owner", "Table Name", "Row Name", "Default", "Max Length", "Type", "PK", "FK",
+                 "Required", "Allow NULL", "C Delete", "C Update", "Domain", "Row Desc", "Table Desc"]
     module_dir = os.path.dirname(__file__)
     file_path = os.path.join(module_dir, "GeneratedFiles", "DataDict.xlsx")
     generate_data_dict_excel(file_path, title_row, FieldTypeMap.field_type_dict)
