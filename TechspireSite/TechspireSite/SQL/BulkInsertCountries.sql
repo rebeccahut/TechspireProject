@@ -2,8 +2,9 @@ BULK INSERT Country
 FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CountryList.csv"
 WITH
 	(
-	FIELDTERMINATOR = '~',
+	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
-	KEEPIDENTITY
+	KEEPIDENTITY,
+	CODEPAGE = 65001
 	)
 GO

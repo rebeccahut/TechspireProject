@@ -26,6 +26,7 @@ def extract_field_props(current_field, model, field_type_dict):
         field_name += "_id"
         if null:
             c_update = True
+
     try:
         field_type = field_type_dict[field_type]
     except KeyError:
@@ -74,12 +75,17 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
         model_desc = model_object.description
         field_props = extract_all_field_props(model, field_type_dict)
         for count, props in enumerate(field_props):
+            props.append(props.pop(1))
             if count == 0:
-                props.insert(0, model_desc)
                 props.insert(0, model_name)
+                props.insert(0, model.owner.name)
+                props.insert(0, model.load_order)
+                props.append(model_desc)
             else:
                 props.insert(0, " ")
                 props.insert(0, " ")
+                props.insert(0, " ")
+                props.append(" ")
 
         for field_index, field in enumerate(field_props):
             for col_index, col in enumerate(field):

@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django_extensions',
+    'import_export',
     'TechspireSite.apps.TechSpireAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
