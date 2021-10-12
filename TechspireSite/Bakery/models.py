@@ -274,12 +274,13 @@ class EmployeeJob(DescriptiveModel):
 
 class Order(DescriptiveModel):
     order_date = models.DateField()
-    total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    original_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    final_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     owner = Owners.Torrey
-
     class Meta:
         db_table = "Order"
         verbose_name_plural = "Order/Transaction"
@@ -324,10 +325,18 @@ class OrderLine(DescriptiveModel):
 
 
 class Reward(DescriptiveModel):
-    description ='All benefits that are offered by the business for being an active loyalty customer that can be claimed by converting some of their earned points. “Rewards” can be coupons ($5 off) or birthday reward (does not need point conversion, it’s just a redemption code for a freebie)'
+    description = 'All benefits that are offered by the business ' \
+                  'for being an active loyalty customer that can be ' \
+                  'claimed by converting some of their earned points. ' \
+                  '“Rewards” can be coupons ($5 off) or birthday reward ' \
+                  '(does not need point conversion, it’s just a redemption code for a freebie)'
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
+    point_cost = models.IntegerField(default=0)
+    reset_period = models.IntegerField(default=0, blank=True, null=True)
+    discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    free_product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateField()
     owner = Owners.Umair
