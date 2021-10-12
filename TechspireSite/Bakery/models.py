@@ -44,48 +44,63 @@ class LabelCode(DescriptiveModel):
 
 
 class CustomerLabel(LabelCode):
+    owner = Owners.Rebecca
+
     class Meta:
         db_table = "Customer Label"
         verbose_name_plural = "Customer Label"
 
 
 class EmployeeLabel(LabelCode):
+    owner = Owners.Kyle
+
     class Meta:
         db_table = "Employee Label"
         verbose_name_plural = "Employee Label"
 
 
 class EmployeeStatus(StatusCode):
+    owner = Owners.Alanna
+
     class Meta:
         db_table = "EmployeeStatus"
         verbose_name_plural = "Employee Status"
 
 
 class CustomerStatus(StatusCode):
+    owner = Owners.Umair
     class Meta:
         db_table = "CustomerStatus"
         verbose_name_plural = "Customer Status"
 
 
 class ProductStatus(StatusCode):
+    owner = Owners.Srijana
+
     class Meta:
         db_table = "ProductStatus"
         verbose_name_plural = "Product Status"
 
 
 class StoreStatus(StatusCode):
+    owner = Owners.Alanna
+
     class Meta:
         db_table = "StoreStatus"
         verbose_name_plural = "Store Status"
 
 
 class RewardStatus(StatusCode):
+    owner = Owners.Alanna
+
     class Meta:
         db_table = "RewardStatus"
         verbose_name_plural = "Reward Status"
 
 
 class BanType(LabelCode):
+    owner = Owners.Alanna
+
     description = "Describes why a type of product is banned"
 
     class Meta:
@@ -95,6 +110,7 @@ class BanType(LabelCode):
 
 class PointReason(LabelCode):
     description = "Describes why points were added or removed"
+    owner = Owners.Jade
 
     class Meta:
         db_table = "PointLogType"
@@ -103,6 +119,7 @@ class PointReason(LabelCode):
 
 class Country(DescriptiveModel):
     country_name = models.CharField(max_length=60)
+    owner = Owners.Rebecca
 
     def __str__(self):
         return self.country_name
@@ -115,6 +132,7 @@ class Country(DescriptiveModel):
 class StateProvince(DescriptiveModel):
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
+    owner = Owners.Rebecca
 
     def __str__(self):
         return self.state_name
@@ -130,6 +148,7 @@ class Location(DescriptiveModel):
     city = models.CharField(max_length=35, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT)
+    owner = Owners.BrettM
 
     class Meta:
         db_table = "Location"
@@ -137,6 +156,7 @@ class Location(DescriptiveModel):
 
 
 class Tier(LabelCode):
+    owner = Owners.Umair
 
     class Meta:
         db_table = "Tier"
@@ -158,9 +178,18 @@ class Person(DescriptiveModel):
         abstract = True
 
 
+class EmployeeType(LabelCode):
+    owner = Owners.Kyle
+
+    class Meta:
+        db_table = "EmployeeType"
+        verbose_name_plural = "Employee Type"
+
+
 class Employee(Person):
     end_date = models.DateField(blank=True, null=True)
     employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
+    employee_type = models.ForeignKey(EmployeeType, on_delete=models.RESTRICT)
     owner = Owners.BrettM
 
     class Meta:
@@ -173,6 +202,7 @@ class Customer(Person):
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
+    owner = Owners.Julia
 
     class Meta:
         db_table = "Customer"
@@ -195,6 +225,7 @@ class Job(DescriptiveModel):
 class AssocEmployeeLabel(LabelCode):
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
+    owner = Owners.Kyle
 
     class Meta:
         db_table = "AssocEmployeeLabel"
@@ -204,6 +235,7 @@ class AssocEmployeeLabel(LabelCode):
 class AssocCustomerLabel(LabelCode):
     customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
+    owner = Owners.Rebecca
 
     class Meta:
         db_table = "AssocCustomerLabel"
@@ -211,6 +243,7 @@ class AssocCustomerLabel(LabelCode):
 
 
 class PaymentType(LabelCode):
+    owner = Owners.Umair
 
     class Meta:
         db_table = "PaymentType"
@@ -220,6 +253,7 @@ class PaymentType(LabelCode):
 class Store(DescriptiveModel):
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
+    owner = Owners.Srijana
 
     class Meta:
         db_table = "Store"
@@ -244,6 +278,7 @@ class Order(DescriptiveModel):
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
+    owner = Owners.Torrey
 
     class Meta:
         db_table = "Order"
@@ -254,6 +289,7 @@ class ProductType(DescriptiveModel):
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
     ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
+    owner = Owners.Srijana
 
     class Meta:
         db_table = "ProductType"
@@ -266,6 +302,7 @@ class Product(DescriptiveModel):
     product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
     product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
+    owner = Owners.Srijana
 
     class Meta:
         db_table = "Product"
@@ -278,6 +315,7 @@ class OrderLine(DescriptiveModel):
     total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.RESTRICT)
+    owner = Owners.Julia
 
 
     class Meta:
@@ -291,6 +329,7 @@ class Reward(DescriptiveModel):
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateField()
+    owner = Owners.Umair
 
     class Meta:
         db_table = "Reward"
@@ -300,6 +339,7 @@ class Reward(DescriptiveModel):
 class SocialMediaType(DescriptiveModel):
     social_media_name = models.CharField(max_length=40)
     social_media_desc = models.CharField(max_length=200)
+    owner = Owners.Jade
 
     class Meta:
         db_table = "SocialMediaType"
@@ -311,6 +351,7 @@ class StoreSocialMedia(DescriptiveModel):
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
+    owner = Owners.Saja
 
     class Meta:
         db_table = "StoreSocialMedia"
@@ -322,6 +363,8 @@ class EmployeeSocialMedia(DescriptiveModel):
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     date_added = models.DateField()
+    owner = Owners.Saja
+
 
     class Meta:
         db_table = "EmployeeSocialMedia"
@@ -333,6 +376,7 @@ class CustomerSocialMedia(DescriptiveModel):
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     date_added = models.DateField()
+    owner = Owners.Jade
 
     class Meta:
         db_table = "CustomerSocialMedia"
@@ -343,6 +387,7 @@ class StoreProduct(DescriptiveModel):
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     product_assigned = models.DateField()
+    owner = Owners.Torrey
 
     class Meta:
         db_table = "StoreProduct"
@@ -353,6 +398,7 @@ class StoreReward(DescriptiveModel):
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     reward_assigned = models.DateField()
+    owner = Owners.Saja
 
     class Meta:
         db_table = "Store Reward"
@@ -363,6 +409,7 @@ class CustomerReward(DescriptiveModel):
     date_applied = models.DateField()
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
+    owner = Owners.Julia
 
     class Meta:
         db_table = "CustomerReward"
@@ -377,7 +424,11 @@ class PointLog(DescriptiveModel):
     reason = models.ForeignKey(PointReason, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
     customer_reward = models.ForeignKey(CustomerReward, on_delete=models.SET_NULL, blank=True, null=True)
+    owner = Owners.Jade
 
     class Meta:
         db_table = "PointLog"
         verbose_name_plural = "Point Log"
+
+
+

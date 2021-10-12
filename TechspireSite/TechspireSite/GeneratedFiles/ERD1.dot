@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2021-10-11 20:35
+  // Created: 2021-10-11 21:52
   
 
   fontname = "Roboto"
@@ -146,6 +146,16 @@ digraph model_graph {
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Tier<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    </B></FONT></TD></TR>
+  
+    </TABLE>
+    >]
+
+  Bakery_models_EmployeeType [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    EmployeeType<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -376,6 +386,9 @@ digraph model_graph {
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Employee -> Bakery_models_EmployeeStatus
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_Employee -> Bakery_models_EmployeeType
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Customer -> Bakery_models_Employee
