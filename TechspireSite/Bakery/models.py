@@ -145,7 +145,7 @@ class Location(DescriptiveModel):
 
 
 class Tier(LabelCode):
-    description = 'Categories that loyalty customers become a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
+    description = 'Categories that loyalty customers are a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
 
     class Meta:
         db_table = "Tier"
