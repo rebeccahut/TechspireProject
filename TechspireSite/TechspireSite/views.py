@@ -40,13 +40,13 @@ def dict1(request):
 
 # displays a page with the name and description of each model
 def dict2(request):
-    context = {"titles": ["Table Name", "Table Desc", "Owner"], "tables": []}
+    context = {"titles": ["Table Name", "Table Desc", "Owner", "Load Order"], "tables": []}
     model_list = apps.get_app_config('Bakery').get_models()
     for model in model_list:
         model_object = model()
         model_name = model.__name__
         model_desc = model_object.description
-        context["tables"].append([model_name, model_desc, model.owner.name])
+        context["tables"].append([model_name, model_desc, model.owner.name, model.load_order])
 
     return render(request, 'admin/display_report.html', context)
 
@@ -68,7 +68,7 @@ def get_report_names(path):
 # Title row could be passed as a parameter
 # Majority of function could be extracted into a different file
 def dict3(request):
-    title_row = ["Owner", "Table Name", "Row Name", "Default", "Max Length", "Type", "PK", "FK",
+    title_row = ["Load Order", "Owner", "Table Name", "Row Name", "Default", "Max Length", "Type", "PK", "FK",
                  "Required", "Allow NULL", "C Delete", "C Update", "Domain", "Row Desc", "Table Desc"]
     module_dir = os.path.dirname(__file__)
     file_path = os.path.join(module_dir, "GeneratedFiles", "DataDict.xlsx")

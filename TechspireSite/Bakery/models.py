@@ -16,6 +16,7 @@ class DescriptiveModel(models.Model):
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
     owner = Owners.TableOwner
+    load_order = 1
 
     class Meta:
         abstract = True
@@ -27,7 +28,6 @@ class StatusCode(DescriptiveModel):
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200)
     is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
-    status_assigned = models.DateField()
 
     class Meta:
         abstract = True

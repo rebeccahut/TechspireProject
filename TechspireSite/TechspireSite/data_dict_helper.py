@@ -79,8 +79,10 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
             if count == 0:
                 props.insert(0, model_name)
                 props.insert(0, model.owner.name)
+                props.insert(0, model.load_order)
                 props.append(model_desc)
             else:
+                props.insert(0, " ")
                 props.insert(0, " ")
                 props.insert(0, " ")
                 props.append(" ")

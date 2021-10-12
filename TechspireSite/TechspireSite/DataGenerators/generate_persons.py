@@ -43,13 +43,16 @@ def generate_employees():
     employee_job_writer = csv.writer(employee_jobs, delimiter='\t')
     with open('EmployeeList.csv', 'w', newline='', ) as customer_csv:
         employee_writer = csv.writer(customer_csv, delimiter='\t')
-        for row in range(0, 200):
+        for row in range(1, 201):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             email = first_name + last_name + "@gmail.com"
             start_date = date_in_range(datetime.date(2010, 1, 1), datetime.date(2015, 1, 1))
             birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(2000, 1, 1))
-            employee_writer.writerow([row, start_date, "", first_name, last_name, email, random_phone(), "", birth_date])
+            type = random.randrange(1, 4)
+            status = random.randrange(1, 5)
+
+            employee_writer.writerow([row, first_name, last_name, email, random_phone(), "", birth_date, start_date, "", status, row, type])
             job_type = random.randrange(0, 4)
 
             if job_type == 1 or job_type == 2:

@@ -6,4 +6,4 @@ WITH
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY 
 	)
-GO;
+GO

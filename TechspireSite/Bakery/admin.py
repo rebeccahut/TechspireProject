@@ -3,22 +3,28 @@ from django.apps import apps
 # Register your models here.
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Country,StateProvince
+from .models import Country, StateProvince, Location
 from django.contrib.auth.models import User, Group
 from django.db.models import Model
+
 
 class CountryAdmin(ImportExportModelAdmin):
     search_fields = ["country_name", "id"]
     list_display = ["id", "country_name"]
+
 
 class StateAdmin(ImportExportModelAdmin):
     search_fields = ["state_name", "id"]
     list_display = ["id", "state_name", "country"]
 
 
+class LocationAdmin(ImportExportModelAdmin):
+    list_display = ["state"]
+
 
 admin.site.register(Country, CountryAdmin)
 admin.site.register(StateProvince, StateAdmin)
+admin.site.register(Location, LocationAdmin)
 
 admin.site.unregister(User)
 admin.site.unregister(Group)

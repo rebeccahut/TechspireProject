@@ -5,4 +5,4 @@ WITH
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n'
 	)
-GO;
+GO
