@@ -12,13 +12,6 @@ from django.db.models import Q
 from .Owners import Owners
 
 
-class ActualCharField(models.CharField):
-    def db_type(self, connection):
-        varchar: str = super().db_type(connection)
-        char: str = varchar.replace('varchar', 'char')
-        return char
-
-
 class DescriptiveModel(models.Model):
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
@@ -111,26 +104,32 @@ class PointReason(LabelCode):
 class Country(DescriptiveModel):
     country_name = models.CharField(max_length=60)
 
+    def __str__(self):
+        return self.country_name
+
     class Meta:
         db_table = "Country"
         verbose_name_plural = "Country"
 
 
-class State(DescriptiveModel):
+class StateProvince(DescriptiveModel):
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
 
+    def __str__(self):
+        return self.state_name
+
     class Meta:
-        db_table = "State"
+        db_table = "StateProvince"
         verbose_name_plural = "State/Province"
 
 
 class Location(DescriptiveModel):
     description = "Represents a complete address for a location"
-    zip_code = models.CharField(max_length=5)
-    city = models.CharField(max_length=35)
-    address = models.CharField(max_length=100)
-    state = models.ForeignKey(State, on_delete=models.RESTRICT)
+    zip_code = models.CharField(max_length=5, blank=True, null=True)
+    city = models.CharField(max_length=35, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT)
 
     class Meta:
         db_table = "Location"
@@ -172,7 +171,7 @@ class Employee(Person):
 class Customer(Person):
     create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
-    tier = models.ForeignKey(Tier, on_delete=models.RESTRICT)
+    tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
@@ -290,7 +289,7 @@ class Reward(DescriptiveModel):
     reward_name = models.CharField(max_length=40)
     reward_desc = models.CharField(max_length=200)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
-    tier = models.ForeignKey(Tier, on_delete=models.RESTRICT)
+    tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateField()
 
     class Meta:

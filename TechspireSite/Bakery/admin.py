@@ -1,18 +1,24 @@
 from django.contrib import admin
 from django.apps import apps
 # Register your models here.
-from .models import Employee, EmployeeJob, Job
+from import_export.admin import ImportExportModelAdmin
+
+from .models import Country,StateProvince
 from django.contrib.auth.models import User, Group
 from django.db.models import Model
 
-admin.site.register(Employee)
-admin.site.register(EmployeeJob)
-admin.site.register(Job)
+class CountryAdmin(ImportExportModelAdmin):
+    search_fields = ["country_name", "id"]
+    list_display = ["id", "country_name"]
+
+class StateAdmin(ImportExportModelAdmin):
+    search_fields = ["state_name", "id"]
+    list_display = ["id", "state_name", "country"]
 
 
 
-
-
+admin.site.register(Country, CountryAdmin)
+admin.site.register(StateProvince, StateAdmin)
 
 admin.site.unregister(User)
 admin.site.unregister(Group)

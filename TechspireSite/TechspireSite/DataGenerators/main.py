@@ -40,9 +40,9 @@ def job_start_date(start_date, add_days):
 def generate_employees():
     fake = Faker()
     employee_jobs = open('EmployeeJobList.csv', 'w', newline='', )
-    employee_job_writer = csv.writer(employee_jobs, delimiter='~')
+    employee_job_writer = csv.writer(employee_jobs, delimiter='\t')
     with open('EmployeeList.csv', 'w', newline='', ) as customer_csv:
-        employee_writer = csv.writer(customer_csv, delimiter='~')
+        employee_writer = csv.writer(customer_csv, delimiter='\t')
         for row in range(0, 200):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
@@ -66,7 +66,7 @@ def generate_employees():
 def generate_employee_jobs():
     fake = Faker()
     with open('EmployeeJobList.csv', 'w', newline='', ) as customer_csv:
-        writer = csv.writer(customer_csv, delimiter='~')
+        writer = csv.writer(customer_csv, delimiter='\t')
         for row in range(0, 200):
             writer.writerow(["", random.randrange(0, 199), random.randrange(1, 2), ])
 
