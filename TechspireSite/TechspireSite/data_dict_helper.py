@@ -69,6 +69,7 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
         max_lengths.append(col_length)
 
     row_count = 1
+
     for row, model in enumerate(model_list):
         model_object = model()
         model_name = model.__name__

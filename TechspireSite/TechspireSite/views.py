@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.apps import apps
 from django.db import connection
+from operator import itemgetter
 import glob
 import os
 
@@ -48,6 +49,7 @@ def dict2(request):
         model_desc = model_object.description
         context["tables"].append([model_name, model_desc, model.owner.name, model.load_order])
 
+    context["tables"] = sorted(context["tables"], key=itemgetter(3))
     return render(request, 'admin/display_report.html', context)
 
 

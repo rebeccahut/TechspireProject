@@ -30,8 +30,6 @@ admin.site.unregister(User)
 admin.site.unregister(Group)
 
 
-
-
 app = apps.get_app_config("Bakery")
 
 for model_name, model in app.models.items():
