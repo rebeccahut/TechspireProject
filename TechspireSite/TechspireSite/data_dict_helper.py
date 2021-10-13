@@ -12,6 +12,7 @@ from django.http import HttpResponse
 def extract_field_props(current_field, model, field_type_dict):
     field_name = current_field.name
     field_type = type(current_field).__name__
+    max_length = "NA" if current_field.max_length is None else current_field.max_length
     domain = "NA"
     if current_field.primary_key:
         help_text = model.pk_desc
@@ -28,11 +29,15 @@ def extract_field_props(current_field, model, field_type_dict):
             c_update = True
 
     try:
+        if field_type == "TextField":
+            max_length = "max"
         field_type = field_type_dict[field_type]
     except KeyError:
         pass
+
+
     default = "NA" if current_field.default == models.fields.NOT_PROVIDED else current_field.default
-    max_length = "NA" if current_field.max_length is None else current_field.max_length
+
     pk = current_field.primary_key
 
     blank = True if current_field.primary_key else not current_field.blank

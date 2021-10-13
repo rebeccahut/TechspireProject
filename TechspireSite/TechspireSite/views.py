@@ -10,7 +10,7 @@ import os
 
 class FieldTypeMap:
     field_type_dict = {"CharField": "nvarchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "bigint",
-                       "EmailField": "nvarchar", "TextField": "text", "ForeignKey": "bigint", "IntegerField": "int",
+                       "EmailField": "nvarchar", "TextField": "nvarchar", "ForeignKey": "bigint", "IntegerField": "int",
                        "DecimalField": "numeric"}
 
 
