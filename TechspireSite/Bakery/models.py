@@ -36,7 +36,7 @@ class StatusCode(DescriptiveModel):
 
 #Used as an abstract parent for labels
 class LabelCode(DescriptiveModel):
-    description = "Allows for multiple named labels"
+    description = "Allows for multiple named categories"
     label_name = models.CharField(max_length=40)
     label_desc = models.CharField(max_length=200)
     load_order = 1
@@ -46,6 +46,7 @@ class LabelCode(DescriptiveModel):
 
 
 class CustomerLabel(LabelCode):
+    description = 'Categorizes customers based on the opinion of the store owner.' 
     owner = Owners.Rebecca
 
     class Meta:
@@ -54,6 +55,7 @@ class CustomerLabel(LabelCode):
 
 
 class EmployeeLabel(LabelCode):
+    description = 'Categorizes employee based on the opinion of the store owner.'
     owner = Owners.Kyle
 
     class Meta:
@@ -141,7 +143,7 @@ class Country(DescriptiveModel):
 
         
 class StateProvince(DescriptiveModel):
-
+    description = 'The state/province that a particular entity (a store, a customer) is located in.'
     state_name = models.CharField(max_length=60)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
@@ -194,6 +196,7 @@ class Person(DescriptiveModel):
 
 
 class EmployeeType(LabelCode):
+    description = 'The working type of an employee such as part-time or full-time. '
     owner = Owners.Kyle
 
     class Meta:
@@ -202,6 +205,7 @@ class EmployeeType(LabelCode):
 
 
 class Employee(Person):
+    description = 'Person that works at the store and deals with either the store products or maintenance of said store.'
     end_date = models.DateField(blank=True, null=True)
     employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
     employee_type = models.ForeignKey(EmployeeType, on_delete=models.RESTRICT)
@@ -214,6 +218,7 @@ class Employee(Person):
 
 
 class Customer(Person):
+    description = 'Someone who potentially purchases an item/service from our client and whose general information has been collected by our loyalty system database.'
     create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
@@ -227,6 +232,7 @@ class Customer(Person):
 
 
 class Job(DescriptiveModel):
+    description = 'The type of role that an employee of a store holds such as cashier, manager, etc.'
     job_name = models.CharField(max_length=40)
     job_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.BrettM
@@ -238,6 +244,7 @@ class Job(DescriptiveModel):
 
 
 class AssocEmployeeLabel(LabelCode):
+    description = 'Allows an employee to have multiple categories'
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
     owner = Owners.Kyle
@@ -248,6 +255,7 @@ class AssocEmployeeLabel(LabelCode):
 
 
 class AssocCustomerLabel(LabelCode):
+    description = 'Allows a customer to have multiple categories'
     customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
@@ -258,6 +266,7 @@ class AssocCustomerLabel(LabelCode):
 
 
 class PaymentType(LabelCode):
+    description = 'The way a customer pays for a service or product such as cash, credit, Google Pay, etc.'
     owner = Owners.Umair
 
     class Meta:
@@ -266,6 +275,7 @@ class PaymentType(LabelCode):
 
 
 class Store(DescriptiveModel):
+    description = 'A physical location where customers go to complete transactions.'
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
     owner = Owners.Srijana
@@ -277,6 +287,7 @@ class Store(DescriptiveModel):
 
 
 class EmployeeJob(DescriptiveModel):
+    description = 'Allows an employee to have multiple jobs at the same or different stores.'
     assign_date = models.DateField()
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
@@ -290,6 +301,7 @@ class EmployeeJob(DescriptiveModel):
 
 
 class Order(DescriptiveModel):
+    description = 'The customer’s finalized transaction of products purchased. This order generates customer loyalty points based on the monetary total of the transaction.'
     order_date = models.DateField()
     original_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     final_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
@@ -306,6 +318,7 @@ class Order(DescriptiveModel):
 
 
 class ProductType(DescriptiveModel):
+    description = ' Identifying certain product types that are eligible to be purchased with points, versus products that are not eligible to earn points on; used to distinguish exclusions. '
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200)
     owner = Owners.Srijana
@@ -317,6 +330,7 @@ class ProductType(DescriptiveModel):
 
 
 class Product(DescriptiveModel):
+    description = 'An item purchased by the customer in a transaction.'
     product_name = models.CharField(max_length=40)
     product_desc = models.CharField(max_length=200)
     product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
@@ -332,6 +346,7 @@ class Product(DescriptiveModel):
 
 
 class OrderLine(DescriptiveModel):
+    description 'Represents information located on a singular line found on a receipt/invoice produced after a completed transaction that describes the customer’s transaction and product details (quantity, product type, total price for that order line).'
     quantity = models.IntegerField(default=0)
     ind_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
@@ -369,6 +384,7 @@ class Reward(DescriptiveModel):
 
 
 class SocialMediaType(DescriptiveModel):
+    description = 'The different types of social media that exist for use such as Instagram, Snapchat, etc.'
     social_media_name = models.CharField(max_length=40)
     social_media_desc = models.CharField(max_length=200)
     owner = Owners.Jade
@@ -380,6 +396,7 @@ class SocialMediaType(DescriptiveModel):
 
 
 class StoreSocialMedia(DescriptiveModel):
+    description = 'Social media of the store.'
     social_media_code = models.CharField(max_length=60)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
@@ -393,6 +410,7 @@ class StoreSocialMedia(DescriptiveModel):
 
 
 class EmployeeSocialMedia(DescriptiveModel):
+    description = 'Employee social media.'
     social_media_code = models.CharField(max_length=60)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
@@ -406,6 +424,7 @@ class EmployeeSocialMedia(DescriptiveModel):
 
 
 class CustomerSocialMedia(DescriptiveModel):
+    description = 'Customer social media.'
     social_media_code = models.CharField(max_length=60)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
@@ -419,6 +438,7 @@ class CustomerSocialMedia(DescriptiveModel):
 
 
 class StoreProduct(DescriptiveModel):
+    description = 'Products that are either associated with or are offered at a specific store location.'
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     product_assigned = models.DateField()
@@ -431,6 +451,7 @@ class StoreProduct(DescriptiveModel):
 
 
 class StoreReward(DescriptiveModel):
+    description = 'Rewards available to loyalty customers based on which specific store points are redeemed at.'
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     reward_assigned = models.DateField()
@@ -443,6 +464,7 @@ class StoreReward(DescriptiveModel):
 
 
 class CustomerReward(DescriptiveModel):
+    description = 'Rewards available to a SINGLE loyalty customer to be redeemed, based on the amount of points they have accumulated to date. Available rewards that they (a single loyalty customer) has earned, based on their personal points. A points bank.'
     date_applied = models.DateField()
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
@@ -455,6 +477,7 @@ class CustomerReward(DescriptiveModel):
 
 
 class PointLog(DescriptiveModel):
+    description = ' Keeping track of a customers existing loyalty points and used points?'
     quantity = models.IntegerField(default=0)
     date = models.DateField()
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
