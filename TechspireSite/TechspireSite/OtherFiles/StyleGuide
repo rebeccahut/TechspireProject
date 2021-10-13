@@ -17,3 +17,10 @@ Naming
 5. Scripts that return columns using SELECT should start with Report and end with a descriptive name. For example ReportEmployeesByLocation.sql
 6. Bulk Insert scripts should start with BulkInsert and end with the exact name of the table. For example BulkInsertCountry.sql
 7. Delete, Insert, and Update scripts should start with their respective key word and end with a descriptive name. For example Update.
+
+File Location
+1. SQL scripts should be within individual folders
+2. Data files should be located within the Data folder
+
+Data
+1. All data files should have the .csv file extension and have tabs as delimitors
