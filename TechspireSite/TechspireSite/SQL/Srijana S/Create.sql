@@ -1,26 +1,25 @@
-CREATE TABLE product ( --Product
-    id INT PRIMARY KEY IDENTITY(1,1), --id
-    product_name VARCHAR(40) NOT NULL,
-    product_description VARCHAR (200) NOT NULL, --product_desc
-    product_price DECIMAL (10,2) CHECK (product_price >= 0) NOT NULL, --numeric(19,4)
-    product_status_id INT NOT NULL, --Alter Script
-    ban_reason_id INT
-); --Alter
+CREATE TABLE Product ( 
+    id int PRIMARY KEY IDENTITY(1,1), 
+    product_name nvarchar (40) NOT NULL,
+    product_desc nvarchar (200) NOT NULL, 
+    product_price numeric(19,4) CHECK (product_price >= 0) NOT NULL, 
+    ban_reason_id int
+); 
 
-CREATE TABLE product_type(
-    id int PRIMARY KEY IDENTITY(1,1),--id
-    product_type_name VARCHAR(40) NOT NULL,
-    product_type_description VARCHAR(200)
+CREATE TABLE ProductType(
+    id int PRIMARY KEY IDENTITY(1,1),
+    product_type_name varchar (40) NOT NULL,
+    product_type_desc varchar (200)
 );
 
-CREATE TABLE product_status (
-    id int PRIMARY KEY IDENTITY(1,1), --id IDENTITY(1,1)
+CREATE TABLE ProductStatus (
+    id int PRIMARY KEY IDENTITY(1,1),
     product_status_name nvarchar (50) NOT NULL,
-    product_status_desc nvarchar (200) --200
+    product_status_desc nvarchar (200)
 );
 
-CREATE TABLE store(
-    id INT PRIMARY KEY IDENTITY(1,1),--id
+CREATE TABLE Store(
+    id INT PRIMARY KEY IDENTITY(1,1),
     store_name nvarchar(50) NOT NULL,
     store_phone nvarchar(14) NOT NULL,
     store_email_address nvarchar(100) NOT NULL,
