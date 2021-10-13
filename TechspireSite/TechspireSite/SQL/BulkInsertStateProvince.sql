@@ -1,5 +1,5 @@
 BULK INSERT StateProvince
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\StateList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\StateProvinceList.csv"
 WITH
 	(
 	FIELDTERMINATOR = '\t',
