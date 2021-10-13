@@ -140,3 +140,9 @@ def generate_erd(folder, file, shape, fields):
     response_file = open(png_path, 'rb')
     response = HttpResponse(response_file, content_type="image/png")
     return response
+
+
+
+
+    
+
