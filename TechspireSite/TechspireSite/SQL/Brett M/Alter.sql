@@ -1,7 +1,7 @@
 ALTER TABLE EmployeeJob ADD
     employee_id int FOREIGN KEY REFERENCES Employee(id),
-    job_id int FOREIGN KEY REFERENCES Store(id),
-    store_id int FOREIGN KEY REFERENCES Job(id);
+    job_id int FOREIGN KEY REFERENCES Job(id),
+    store_id int FOREIGN KEY REFERENCES Store(id);
 
 ALTER TABLE Employee ADD
     location_id int FOREIGN KEY REFERENCES Location(id),

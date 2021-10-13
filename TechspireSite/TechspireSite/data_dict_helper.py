@@ -18,6 +18,11 @@ def extract_field_props(current_field, model, field_type_dict):
         help_text = model.pk_desc
     else:
         help_text = current_field.help_text
+
+    if isinstance(current_field, models.fields.DecimalField):
+        max_length = current_field.max_digits
+        domain = "{} Decimals".format(current_field.decimal_places)
+
     c_delete = False
     c_update = False
     fk = False

@@ -15,6 +15,7 @@ from .Owners import Owners
 
 
 class DescriptiveModel(models.Model):
+    id = models.AutoField(primary_key=True)
     description = "Blank Description"
     pk_desc = "Standard Auto-Increment PK"
     owner = Owners.TableOwner
@@ -277,8 +278,13 @@ class PaymentType(LabelCode):
 
 class Store(DescriptiveModel):
     description = 'A physical location where customers go to complete transactions.'
+    phone_number = PhoneNumberField(max_length=15)
+    email_address = models.EmailField(max_length=254)
+    store_name = models.CharField(max_length=40)
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
     owner = Owners.Srijana
     load_order = 4
 

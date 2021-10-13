@@ -10,8 +10,8 @@ import os
 
 class FieldTypeMap:
     field_type_dict = {"CharField": "nvarchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "bigint",
-                       "EmailField": "nvarchar", "TextField": "nvarchar", "ForeignKey": "bigint", "IntegerField": "int",
-                       "DecimalField": "numeric"}
+                       "EmailField": "nvarchar", "TextField": "nvarchar", "ForeignKey": "int", "IntegerField": "int",
+                       "DecimalField": "numeric", "AutoField": "int", "PhoneNumberField": "nvarchar"}
 
 
 def erd1(request):
