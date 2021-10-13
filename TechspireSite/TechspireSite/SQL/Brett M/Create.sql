@@ -5,14 +5,14 @@ CREATE TABLE Employee(
     email_address nvarchar(254) NOT NULL,
     phone_number nvarchar(14) NOT NULL,
     comments nvarchar(max),
-    birthdate date NOT NULL
+    birthdate date NOT NULL,
     begin_date date NOT NULL,
     end_date date,
 );
 
 CREATE TABLE EmployeeJob(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    assign_date date NOT NULL
+    assign_date date NOT NULL,
 );
 
 CREATE TABLE Job(
