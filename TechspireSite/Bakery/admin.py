@@ -21,6 +21,12 @@ class EmployeeAdmin(admin.ModelAdmin):
     }
 
 
+class CustomerAdmin(admin.ModelAdmin):
+    model = Customer
+    widgets = {
+        'phone_number': PhoneForm
+    }
+
 
 class CountryAdmin(ImportExportModelAdmin):
     search_fields = ["country_name", "id"]
@@ -35,6 +41,8 @@ class StateAdmin(ImportExportModelAdmin):
 class LocationAdmin(ImportExportModelAdmin):
     list_display = ["state"]
 
+
+admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(StateProvince, StateAdmin)

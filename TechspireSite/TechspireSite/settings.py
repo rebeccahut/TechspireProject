@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+PHONENUMBER_DEFAULT_REGION = 'US'
+
 INSTALLED_APPS = [
     'phonenumber_field',
     'django_extensions',
