@@ -2,8 +2,7 @@ CREATE TABLE Product (
     id int PRIMARY KEY IDENTITY(1,1), 
     product_name nvarchar (40) NOT NULL,
     product_desc nvarchar (200) NOT NULL, 
-    product_price numeric(19,4) CHECK (product_price >= 0) NOT NULL, 
-    ban_reason_id int
+    product_price numeric(19,4) CHECK (product_price >= 0) NOT NULL
 ); 
 
 CREATE TABLE ProductType(
@@ -14,15 +13,16 @@ CREATE TABLE ProductType(
 
 CREATE TABLE ProductStatus (
     id int PRIMARY KEY IDENTITY(1,1),
-    product_status_name nvarchar (50) NOT NULL,
-    product_status_desc nvarchar (200)
+    status_name nvarchar (50) NOT NULL,
+    status_desc nvarchar (200),
+    is_active bit NOT NULL DEFAULT 1
 );
 
 CREATE TABLE Store(
     id INT PRIMARY KEY IDENTITY(1,1),
     store_name nvarchar(40) NOT NULL,
-    store_phone nvarchar(15) NOT NULL,
-    store_email_address nvarchar(254) NOT NULL,
-    store_launch_date date,
-    store_close_date date
+    phone_number nvarchar(15) NOT NULL,
+    email_address nvarchar(254) NOT NULL,
+    start_date date NOT NULL,
+    end_date date
 );
