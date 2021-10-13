@@ -345,7 +345,7 @@ class Product(DescriptiveModel):
 
 
 class OrderLine(DescriptiveModel):
-    description 'Represents information located on a singular line found on a receipt/invoice produced after a completed transaction that describes the customer’s transaction and product details (quantity, product type, total price for that order line).'
+    description = 'Represents information located on a singular line found on a receipt/invoice produced after a completed transaction that describes the customer’s transaction and product details (quantity, product type, total price for that order line).'
     quantity = models.IntegerField(default=0)
     ind_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
