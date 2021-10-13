@@ -8,6 +8,8 @@
 from django.db import models
 from django.db.models import CheckConstraint
 from django.db.models import Q
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 from .Owners import Owners
 
@@ -26,7 +28,7 @@ class DescriptiveModel(models.Model):
 class StatusCode(DescriptiveModel):
     description = "Used to soft delete rows with a reason name and desc"
     status_name = models.CharField(max_length=40)
-    status_desc = models.CharField(max_length=200)
+    status_desc = models.CharField(max_length=200, blank=True, null=True)
     is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
     load_order = 1
 
@@ -38,7 +40,7 @@ class StatusCode(DescriptiveModel):
 class LabelCode(DescriptiveModel):
     description = "Allows for multiple named categories"
     label_name = models.CharField(max_length=40)
-    label_desc = models.CharField(max_length=200)
+    label_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
 
     class Meta:
@@ -144,7 +146,7 @@ class Country(DescriptiveModel):
 class StateProvince(DescriptiveModel):
     description = 'The state/province that a particular entity (a store, a customer) is located in.'
     state_name = models.CharField(max_length=60)
-    country = models.ForeignKey(Country, on_delete=models.RESTRICT)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, default=233)
     owner = Owners.Rebecca
     load_order = 2
 
@@ -158,10 +160,10 @@ class StateProvince(DescriptiveModel):
 
 class Location(DescriptiveModel):
     description = "Represents a complete address for a location"
-    zip_code = models.CharField(max_length=10)
-    city = models.CharField(max_length=35)
-    address = models.CharField(max_length=100)
-    state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT)
+    zip_code = models.CharField(max_length=10, default="77339")
+    city = models.CharField(max_length=35, default="Houston")
+    address = models.CharField(max_length=100, default="3242 StreetName")
+    state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT, default=1407)
     owner = Owners.BrettM
     load_order = 3
 
@@ -184,7 +186,7 @@ class Person(DescriptiveModel):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
-    phone_number = models.CharField(max_length=14)
+    phone_number = PhoneNumberField(max_length=15)
     comments = models.TextField(blank=True, null=True)
     birthdate = models.DateField()
     created_date = models.DateField()
@@ -319,7 +321,7 @@ class Order(DescriptiveModel):
 class ProductType(DescriptiveModel):
     description = ' Identifying certain product types that are eligible to be purchased with points, versus products that are not eligible to earn points on; used to distinguish exclusions. '
     product_type_name = models.CharField(max_length=40)
-    product_type_desc = models.CharField(max_length=200)
+    product_type_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.Srijana
     load_order = 1
 
@@ -331,7 +333,7 @@ class ProductType(DescriptiveModel):
 class Product(DescriptiveModel):
     description = 'An item purchased by the customer in a transaction.'
     product_name = models.CharField(max_length=40)
-    product_desc = models.CharField(max_length=200)
+    product_desc = models.CharField(max_length=200, blank=True, null=True)
     product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
     product_status = models.ForeignKey(ProductStatus, on_delete=models.RESTRICT)
@@ -366,7 +368,7 @@ class Reward(DescriptiveModel):
                   '“Rewards” can be coupons ($5 off) or birthday reward ' \
                   '(does not need point conversion, it’s just a redemption code for a freebie)'
     reward_name = models.CharField(max_length=40)
-    reward_desc = models.CharField(max_length=200)
+    reward_desc = models.CharField(max_length=200, blank=True, null=True)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
     point_cost = models.IntegerField(default=0)
     reset_period = models.IntegerField(default=0, blank=True, null=True)
@@ -385,7 +387,7 @@ class Reward(DescriptiveModel):
 class SocialMediaType(DescriptiveModel):
     description = 'The different types of social media that exist for use such as Instagram, Snapchat, etc.'
     social_media_name = models.CharField(max_length=40)
-    social_media_desc = models.CharField(max_length=200)
+    social_media_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.Jade
     load_order = 1
 

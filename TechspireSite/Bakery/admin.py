@@ -3,9 +3,23 @@ from django.apps import apps
 # Register your models here.
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Country, StateProvince, Location
+from .models import Country, StateProvince, Location, Employee, Customer
 from django.contrib.auth.models import User, Group
 from django.db.models import Model
+from phonenumber_field.formfields import PhoneNumberField
+from django import forms
+
+
+class PhoneForm(forms.Form):
+    phone = PhoneNumberField()
+
+
+class EmployeeAdmin(admin.ModelAdmin):
+    model = Employee
+    widgets = {
+        'phone_number': PhoneForm
+    }
+
 
 
 class CountryAdmin(ImportExportModelAdmin):
@@ -21,7 +35,7 @@ class StateAdmin(ImportExportModelAdmin):
 class LocationAdmin(ImportExportModelAdmin):
     list_display = ["state"]
 
-
+admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(StateProvince, StateAdmin)
 admin.site.register(Location, LocationAdmin)

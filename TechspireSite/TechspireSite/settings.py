@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'phonenumber_field',
     'django_extensions',
     'import_export',
     'TechspireSite.apps.TechSpireAdminConfig',
