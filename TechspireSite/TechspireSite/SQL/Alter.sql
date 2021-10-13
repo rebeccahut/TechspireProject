@@ -1,3 +1,4 @@
+--Brett M
 ALTER TABLE EmployeeJob 
 ADD employee_id int FOREIGN KEY REFERENCES Employee(id);
 
@@ -18,4 +19,5 @@ ADD employee_type_id int FOREIGN KEY REFERENCES EmployeeType(id);
 
 ALTER TABLE Location
 ADD state_id int FOREIGN KEY REFERENCES StateProvince(id);
+
 
