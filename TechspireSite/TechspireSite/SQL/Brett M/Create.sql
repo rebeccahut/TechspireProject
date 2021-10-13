@@ -23,7 +23,7 @@ job_desc nvarchar(200),
 
 CREATE TABLE Location(
 id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-zip_code nvarchar(10)
-city nvarchar(35)
-address nvarchar(100)
+zip_code nvarchar(10) NOT NULL,
+city nvarchar(35) NOT NULL,
+address nvarchar(100) NOT NULL,
 );
