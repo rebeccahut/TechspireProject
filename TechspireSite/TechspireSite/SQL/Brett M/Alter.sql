@@ -9,4 +9,4 @@ ALTER TABLE Employee ADD
     employee_type_id int FOREIGN KEY REFERENCES EmployeeType(id);
 
 ALTER TABLE Location ADD
-     state_id int FOREIGN KEY REFERENCES StateProvince(id);
+     state_id int FOREIGN KEY REFERENCES StateProvince(id) DEFAULT 1407;
