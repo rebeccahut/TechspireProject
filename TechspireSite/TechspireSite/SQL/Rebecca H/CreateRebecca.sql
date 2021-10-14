@@ -14,7 +14,6 @@ state_province_name varchar(60) NOT NULL
 );
 
 CREATE TABLE Country(
-id int NOT NULL PRIMARY KEY IDENTITY(1,1)
-country_iso number NOT NULL,
+id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 country_name varchar(60) NOT NULL
 );
