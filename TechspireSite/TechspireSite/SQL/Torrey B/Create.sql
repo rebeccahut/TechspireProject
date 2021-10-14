@@ -13,5 +13,4 @@ CREATE TABLE StoreProduct(
 id int NOT NULL PRIMARY KEY IDENTITY (1,1),
 product_assigned date NOT NULL,
 
-)
-
+);
