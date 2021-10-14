@@ -53,6 +53,7 @@ class CustomerLabel(DescriptiveModel):
     owner = Owners.Rebecca
     category_name = models.CharField(max_length=40)
     category_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "CustomerCategory"
@@ -64,6 +65,7 @@ class EmployeeLabel(DescriptiveModel):
     owner = Owners.Kyle
     category_name = models.CharField(max_length=40)
     category_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "EmployeeCategory"
@@ -132,6 +134,7 @@ class PointReason(DescriptiveModel):
     owner = Owners.Jade
     reason_name = models.CharField(max_length=40)
     reason_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "PointReasonType"
@@ -186,6 +189,7 @@ class Tier(DescriptiveModel):
     owner = Owners.Umair
     tier_name = models.CharField(max_length=40)
     tier_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "Tier"
@@ -260,6 +264,7 @@ class AssocEmployeeLabel(DescriptiveModel):
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
     owner = Owners.Kyle
+    load_order = 5
 
     class Meta:
         db_table = "EmployeeEmployeeCategory"
@@ -271,6 +276,7 @@ class AssocCustomerLabel(DescriptiveModel):
     customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
+    load_order = 6
 
     class Meta:
         db_table = "CustomerCustomerCategory"
