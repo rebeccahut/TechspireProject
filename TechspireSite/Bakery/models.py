@@ -40,26 +40,32 @@ class StatusCode(DescriptiveModel):
 #Used as an abstract parent for labels
 class LabelCode(DescriptiveModel):
     description = "Allows for multiple named categories"
-    label_name = models.CharField(max_length=40)
-    label_desc = models.CharField(max_length=200, blank=True, null=True)
+    type_name = models.CharField(max_length=40)
+    type_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
 
     class Meta:
         abstract = True
 
 
-class CustomerLabel(LabelCode):
+class CustomerLabel(DescriptiveModel):
     description = 'Categorizes customers based on the opinion of the store owner.' 
     owner = Owners.Rebecca
+    category_name = models.CharField(max_length=40)
+    category_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "CustomerCategory"
         verbose_name_plural = "Customer Category"
 
 
-class EmployeeLabel(LabelCode):
+class EmployeeLabel(DescriptiveModel):
     description = 'Categorizes employee based on the opinion of the store owner.'
     owner = Owners.Kyle
+    category_name = models.CharField(max_length=40)
+    category_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "EmployeeCategory"
@@ -111,23 +117,28 @@ class RewardStatus(StatusCode):
         verbose_name_plural = "Reward Status"
 
 
-class BanType(LabelCode):
+class BanType(DescriptiveModel):
     description = "Describes why a specific product that is banned"
     owner = Owners.Alanna
     load_order = 1
+    ban_name = models.CharField(max_length=40)
+    ban_desc = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         db_table = "BanType"
         verbose_name_plural = "Ban Type"
 
 
-class PointReason(LabelCode):
+class PointReason(DescriptiveModel):
     description = "Describes why points were added or removed"
     owner = Owners.Jade
+    reason_name = models.CharField(max_length=40)
+    reason_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
-        db_table = "PointLogType"
-        verbose_name_plural = "Point Log Type"
+        db_table = "PointReasonType"
+        verbose_name_plural = "PointReasonType"
 
 
 class Country(DescriptiveModel):
@@ -173,9 +184,12 @@ class Location(DescriptiveModel):
         verbose_name_plural = "Location/Address"
 
 
-class Tier(LabelCode):
+class Tier(DescriptiveModel):
     description = 'Categories that loyalty customers are a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
     owner = Owners.Umair
+    tier_name = models.CharField(max_length=40)
+    tier_desc = models.CharField(max_length=200, blank=True, null=True)
+    load_order = 1
 
     class Meta:
         db_table = "Tier"
@@ -245,22 +259,24 @@ class Job(DescriptiveModel):
         verbose_name_plural = "Job"
 
 
-class AssocEmployeeLabel(LabelCode):
+class AssocEmployeeLabel(DescriptiveModel):
     description = 'Allows an employee to have multiple categories'
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
+    employee_category = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
     owner = Owners.Kyle
+    load_order = 5
 
     class Meta:
         db_table = "EmployeeEmployeeCategory"
         verbose_name_plural = "Employee Employee Category"
 
 
-class AssocCustomerLabel(LabelCode):
+class AssocCustomerLabel(DescriptiveModel):
     description = 'Allows a customer to have multiple categories'
     customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
+    customer_category = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
+    load_order = 6
 
     class Meta:
         db_table = "CustomerCustomerCategory"
