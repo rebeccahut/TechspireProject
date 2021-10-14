@@ -24,6 +24,6 @@ CREATE TABLE Job(
 CREATE TABLE Location(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     zip_code nvarchar(10) NOT NULL DEFAULT 77339,
-    city nvarchar(35) NOT NULL DEFAULT "Houston",
-    address nvarchar(100) NOT NULL DEFAULT "3242 StreetName",
+    city nvarchar(35) NOT NULL DEFAULT 'Houston',
+    address nvarchar(100) NOT NULL DEFAULT '3242 StreetName',
 );
