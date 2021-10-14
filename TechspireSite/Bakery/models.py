@@ -262,7 +262,7 @@ class Job(DescriptiveModel):
 class AssocEmployeeLabel(DescriptiveModel):
     description = 'Allows an employee to have multiple categories'
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    employee_label = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
+    employee_category = models.ForeignKey(EmployeeLabel, on_delete=models.RESTRICT)
     owner = Owners.Kyle
     load_order = 5
 
@@ -274,7 +274,7 @@ class AssocEmployeeLabel(DescriptiveModel):
 class AssocCustomerLabel(DescriptiveModel):
     description = 'Allows a customer to have multiple categories'
     customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    customer_label = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
+    customer_category = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
     load_order = 6
 
