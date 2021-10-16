@@ -1,4 +1,4 @@
-﻿CREATE TABLE Customer(
+CREATE TABLE Customer(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,

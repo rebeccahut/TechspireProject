@@ -19,10 +19,12 @@ CREATE TABLE Reward(
     reset_period int DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,
     date_added date NOT NULL,
+    date_disabled date,
 );
 
 CREATE TABLE Tier(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     tier_name varchar(40) NOT NULL,
     tier_desc varchar(200) NOT NULL,
+    min_points int NOT NULL DEFAULT 0,
 );

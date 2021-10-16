@@ -152,5 +152,15 @@ def get_solid_models(app_name):
     solid_models = app.models.values()
     solid_models = [item() for item in solid_models]
     return [item for item in solid_models if not item._meta.abstract]
-    
+
+
+def generate_ordered_sql(app_name, order, statement, file_name):
+    solid_tables = get_solid_models(app_name)
+    solid_tables.sort(key=lambda x: x.load_order, reverse=order)
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(module_dir, "SQL", file_name)
+    drop_file = open(path, "w")
+    for table in solid_tables:
+        drop_file.write(statement + " " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
+    drop_file.close()
 

@@ -120,27 +120,12 @@ def html_report(request, index):
 
 
 def generate_drop(request):
-    solid_tables = ddh.get_solid_models("Bakery")
-    solid_tables.sort(key=lambda x: x.load_order, reverse=True)
-    module_dir = os.path.dirname(__file__)
-    path = os.path.join(module_dir, "SQL", "Drop.sql")
-    drop_file = open(path, "w")
-    for table in solid_tables:
-        drop_file.write("DROP TABLE " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
-    drop_file.close()
+    ddh.generate_ordered_sql("Bakery", True, "DROP TABLE", "Drop.sql")
     return HttpResponse("Success")
 
 
 def generate_delete(request):
-    solid_tables = ddh.get_solid_models("Bakery")
-    solid_tables.sort(key=lambda x: x.load_order, reverse=True)
-    module_dir = os.path.dirname(__file__)
-    path = os.path.join(module_dir, "SQL", "Delete.sql")
-    drop_file = open(path, "w")
-    for table in solid_tables:
-        drop_file.write("DELETE FROM " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
-    drop_file.close()
-
+    ddh.generate_ordered_sql("Bakery", True, "DELETE FROM", "Delete.sql")
     return HttpResponse("Success")
 
 
@@ -163,3 +148,24 @@ def generate_bulk(request):
         bulk_file.write("\n\n")
     bulk_file.close()
     return HttpResponse("Success")
+
+
+def data_status(request):
+    context = {"titles": ["Table", "Data Status"], "tables": []}
+
+    module_dir = os.path.dirname(__file__)
+    bulk_paths = glob.glob(os.path.join(module_dir, "SQL/*/*List.csv"))
+    path_dict = {}
+    for path in bulk_paths:
+        name = os.path.basename(path).replace("List", "")[:-4]
+        path_dict[name] = path
+
+    solid_tables = ddh.get_solid_models("Bakery")
+    for table in solid_tables:
+        try:
+            var = path_dict[table._meta.db_table]
+            status = "Available"
+        except KeyError:
+            status = "Not Available"
+        context["tables"].append([table._meta.db_table, status])
+    return render(request, 'admin/display_report.html', context)

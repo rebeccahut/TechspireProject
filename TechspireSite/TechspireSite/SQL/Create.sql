@@ -68,7 +68,8 @@ CREATE TABLE PointReasonType(
 
 CREATE TABLE PointLog(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	quantity int NOT NULL DEFAULT 0, 
+	points_consumed int NOT NULL DEFAULT 0,
+	points_produced int NOT NULL DEFAULT 0,
 	date date NOT NULL
 );
 
@@ -78,11 +79,6 @@ CREATE TABLE CustomerSocialMedia(
 	date_added date NOT NULL
 );
 
-CREATE TABLE SocialMediaType(
-	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	social_media_name nvarchar(40) NOT NULL,
-	social_media_desc nvarchar(200) 
-);
 
 --Julia C
 CREATE TABLE Customer(
@@ -211,6 +207,12 @@ CREATE TABLE StoreProduct(
     product_assigned date NOT NULL,
 );
 
+CREATE TABLE SocialMediaType(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_name nvarchar(40) NOT NULL,
+	social_media_desc nvarchar(200)
+);
+
 
 --Umair
 CREATE TABLE CustomerStatus(
@@ -234,11 +236,13 @@ CREATE TABLE Reward(
     reset_period int DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,
     date_added date NOT NULL,
+    date_disabled date,
 );
 
 CREATE TABLE Tier(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     tier_name varchar(40) NOT NULL,
     tier_desc varchar(200) NOT NULL,
+    min_points int NOT NULL DEFAULT 0,
 );
 

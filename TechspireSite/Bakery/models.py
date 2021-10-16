@@ -189,6 +189,7 @@ class Tier(DescriptiveModel):
     owner = Owners.Umair
     tier_name = models.CharField(max_length=40)
     tier_desc = models.CharField(max_length=200, blank=True, null=True)
+    min_points = models.IntegerField(default=0)
     load_order = 1
 
     class Meta:
@@ -398,6 +399,7 @@ class Reward(DescriptiveModel):
     free_product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateField()
+    date_disabled = models.DateField(blank=True, null=True)
     owner = Owners.Umair
     load_order = 3
 
@@ -501,7 +503,8 @@ class CustomerReward(DescriptiveModel):
 
 class PointLog(DescriptiveModel):
     description = ' Keeping track of a customers existing loyalty points and used points?'
-    quantity = models.IntegerField(default=0)
+    points_consumed = models.IntegerField(default=0)
+    points_produced = models.IntegerField(default=0)
     date = models.DateField()
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
