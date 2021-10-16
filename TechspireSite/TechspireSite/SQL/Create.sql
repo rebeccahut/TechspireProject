@@ -61,9 +61,51 @@ CREATE TABLE Location(
 
 --Jade N
 CREATE TABLE PointReasonType(
-id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-reason_name varchar(40) NOT NULL,
-reason_desc varchar(200) NOT NULL
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	reason_name nvarchar(40) NOT NULL,
+	reason_desc nvarchar(200) 
+);
+
+CREATE TABLE PointLog(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	quantity int NOT NULL DEFAULT 0, 
+	date date NOT NULL
+);
+
+CREATE TABLE CustomerSocialMedia(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_code nvarchar(60) NOT NULL, 
+	date_added date NOT NULL
+);
+
+CREATE TABLE SocialMediaType(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_name nvarchar(40) NOT NULL,
+	social_media_desc nvarchar(200) 
+);
+
+--Julia C
+CREATE TABLE Customer(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    first_name nvarchar(40) NOT NULL,
+    last_name nvarchar(40) NOT NULL,
+    email_address nvarchar(254) NOT NULL,
+    phone_number nvarchar(15) NOT NULL,
+    comments nvarchar(max),
+    birthdate date NOT NULL,
+    created_date date NOT NULL,
+);
+
+CREATE TABLE OrderLine(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    quantity int NOT NULL DEFAULT 0,
+    ind_price numeric(19,4) NOT NULL DEFAULT 0,
+    total_price numeric(19,4) NOT NULL DEFAULT 0,
+);
+
+CREATE TABLE CustomerReward(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    date_applied date NOT NULL,
 );
 
 --Kyle D
@@ -88,24 +130,41 @@ CREATE TABLE EmployeeType(
 CREATE TABLE CustomerCategory(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     category_name nvarchar(40) NOT NULL,
-    category_desc nvarchar(200)
+    category_desc nvarchar(200),
 );
 
 CREATE TABLE CustomerCustomerCategory(
-    id int NOT NULL PRIMARY KEY IDENTITY(1,1)
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 );
 
 CREATE TABLE StateProvince(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    state_province_name nvarchar(60) NOT NULL
+    state_name nvarchar(60) NOT NULL,
 );
 
 CREATE TABLE Country(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    country_iso number NOT NULL,
-    country_name varchar(60) NOT NULL
+    country_name nvarchar(60) NOT NULL,
 );
 
+
+--Saja A
+CREATE TABLE StoreReward(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	reward_assigned date NOT NULL
+);
+
+CREATE TABLE StoreSocialMedia(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_code nvarchar(60) NOT NULL, 
+	date_added date NOT NULL
+);
+
+CREATE TABLE EmployeeSocialMedia(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_code nvarchar(60) NOT NULL,
+	date_added date NOT NULL
+);
 
 --Srijana S
 CREATE TABLE Product ( 
@@ -152,4 +211,34 @@ CREATE TABLE StoreProduct(
     product_assigned date NOT NULL,
 );
 
+
+--Umair
+CREATE TABLE CustomerStatus(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    status_name varchar(40) NOT NULL,
+    status_desc varchar(200) NOT NULL,
+    is_active bit NOT NULL DEFAULT 1,
+);
+
+CREATE TABLE PaymentType(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    type_name varchar(40) NOT NULL,
+    type_desc varchar(200) NOT NULL,
+);
+
+CREATE TABLE Reward(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    reward_name varchar(40) NOT NULL,
+    reward_desc varchar(200) NOT NULL,
+    point_cost int NOT NULL DEFAULT 0,
+    reset_period int DEFAULT 0,
+    discount_amount numeric(19,4) NOT NULL DEFAULT 0,
+    date_added date NOT NULL,
+);
+
+CREATE TABLE Tier(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    tier_name varchar(40) NOT NULL,
+    tier_desc varchar(200) NOT NULL,
+);
 

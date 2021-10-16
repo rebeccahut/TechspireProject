@@ -1,5 +1,5 @@
 ALTER TABLE "Order" ADD
-	customer_id int FOREIGN KEY REFERENCES CustomerType(id),
+	customer_id int FOREIGN KEY REFERENCES Customer(id),
 	payment_type_id int FOREIGN KEY REFERENCES PaymentType(id),
 	store_id int FOREIGN KEY REFERENCES Store(id);
 

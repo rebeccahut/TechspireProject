@@ -1,9 +1,10 @@
 from .data_dict_helper import extract_all_field_props, generate_data_dict_excel, generate_erd
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.apps import apps
 from django.db import connection
+from django.contrib import admin
 from operator import itemgetter
+from django.apps import apps
 import glob
 import os
 
@@ -50,7 +51,25 @@ def dict2(request):
         context["tables"].append([model_name, model_desc, model.owner.name, model.load_order])
 
     context["tables"] = sorted(context["tables"], key=itemgetter(3))
-    return render(request, 'admin/display_report.html', context)
+    app = apps.get_app_config("Bakery")
+
+    models = app.models.values()
+    models = [item() for item in models]
+    valid_tables = [item for item in models if not item._meta.abstract]
+    foreign_count = 0
+    for table in valid_tables:
+        model_fields = table._meta.get_fields(include_parents=False)
+        for field in model_fields:
+            name = type(field).__name__
+            if name == "ForeignKey":
+                foreign_count += 1
+            else:
+                pass
+    foreign_count = "Foreign Keys: " + str(foreign_count)
+    table_count = "Table count: " + str(len(valid_tables))
+
+    context["extra_info"] = [table_count, foreign_count]
+    return render(request, 'admin/table_report.html', context)
 
 
 def get_reports(path):
@@ -98,3 +117,17 @@ def html_report(request, index):
         context["tables"] = cursor.fetchall()
 
     return render(request, 'admin/display_report.html', context)
+
+def generate_drop(request):
+    app = apps.get_app_config("Bakery")
+    models = app.models.values()
+    models = [item() for item in models]
+    solid_tables = [item for item in models if not item._meta.abstract]
+    solid_tables.sort(key=lambda x: x.load_order, reverse=True)
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(module_dir, "SQL", "Drop.sql")
+    drop_file = open(path, "w")
+    for table in solid_tables:
+        drop_file.write("DROP TABLE " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
+    drop_file.close()
+    return HttpResponse("Success")

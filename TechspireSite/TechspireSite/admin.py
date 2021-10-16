@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.template.response import TemplateResponse
-from .views import dict1, dict2, dict3, html_report, get_report_names, erd1
+from . import views
 import os
 
 
@@ -27,10 +27,11 @@ class TechSpireAdminSite(admin.AdminSite):
         """
         app_list = self.get_app_list(request)
         module_dir = os.path.dirname(__file__)  # get current directory
-        reports = get_report_names(module_dir)
+        reports = views.get_report_names(module_dir)
         AdminTableRow("dict1", "Row Dictionary")
-        db_info = [AdminTableRow("dict1", "Row Dictionary"), AdminTableRow("dict2", "Table Dictionary"),
-                   AdminTableRow("dict3", "Excel Dictionary"), AdminTableRow("erd1", "Abstract ERD")]
+        db_links = [["dict1", "Row Dictionary"], ["dict2", "Table Dictionary"], ["dict3", "Excel Dictionary"],
+                    ["erd1", "Abstract ERD"], ["drop", "Generate Drop"]]
+        db_info = [AdminTableRow(x[0], x[1]) for x in db_links]
 
         context = {
             **self.each_context(request),
@@ -50,10 +51,11 @@ class TechSpireAdminSite(admin.AdminSite):
         urls = super().get_urls()
         my_urls = [
 
-            path('report/<int:index>/', self.admin_view(html_report), name="report"),
-            path('dict1/', self.admin_view(dict1), name="dict1"),
-            path('dict2/', self.admin_view(dict2), name="dict2"),
-            path('dict3/', self.admin_view(dict3), name="dict3"),
-            path('erd1/', self.admin_view(erd1), name="erd1"),
+            path('report/<int:index>/', self.admin_view(views.html_report), name="report"),
+            path('dict1/', self.admin_view(views.dict1), name="dict1"),
+            path('dict2/', self.admin_view(views.dict2), name="dict2"),
+            path('dict3/', self.admin_view(views.dict3), name="dict3"),
+            path('erd1/', self.admin_view(views.erd1), name="erd1"),
+            path('drop/', self.admin_view(views.generate_drop), name="drop"),
         ]
         return my_urls + urls

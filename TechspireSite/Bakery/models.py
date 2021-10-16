@@ -482,7 +482,7 @@ class StoreReward(DescriptiveModel):
     load_order = 5
 
     class Meta:
-        db_table = "Store Reward"
+        db_table = "StoreReward"
         verbose_name_plural = "Store Reward"
 
 

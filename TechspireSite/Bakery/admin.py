@@ -57,11 +57,8 @@ app = apps.get_app_config("Bakery")
 for model_name, model in app.models.items():
     try:
         model_object = model()
-        if model == User or model == Group:
-            admin.site.unregister(model)
-        else:
-            if not model_object._meta.abstract:
-                admin.site.register(model)
+        if not model_object._meta.abstract:
+            admin.site.register(model)
 
     except admin.sites.AlreadyRegistered:
         pass

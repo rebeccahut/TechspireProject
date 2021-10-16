@@ -1,8 +1,8 @@
 ALTER TABLE StateProvince 
-ADD FOREIGN KEY(country_id) REFERENCES Country(id);
+    ADD country_id int FOREIGN KEY REFERENCES Country(id);
 
 ALTER TABLE CustomerCustomerCategory 
-ADD FOREIGN KEY(customer_id) REFERENCES Customer(id);
+    ADD customer_id int FOREIGN KEY REFERENCES Customer(id);
 
 ALTER TABLE CustomerCustomerCategory 
-ADD FOREIGN KEY(customer_category_id) REFERENCES CustomerCategory(id);
+    ADD customer_category_id int FOREIGN KEY REFERENCES CustomerCategory(id);
