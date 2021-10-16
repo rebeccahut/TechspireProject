@@ -15,9 +15,3 @@ CREATE TABLE CustomerSocialMedia(
 	social_media_code nvarchar(60) NOT NULL, 
 	date_added date NOT NULL
 );
-
-CREATE TABLE SocialMediaType(
-	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	social_media_name nvarchar(40) NOT NULL,
-	social_media_desc nvarchar(200) 
-);

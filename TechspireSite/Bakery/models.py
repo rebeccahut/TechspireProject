@@ -410,7 +410,7 @@ class SocialMediaType(DescriptiveModel):
     description = 'The different types of social media that exist for use such as Instagram, Snapchat, etc.'
     social_media_name = models.CharField(max_length=40)
     social_media_desc = models.CharField(max_length=200, blank=True, null=True)
-    owner = Owners.Jade
+    owner = Owners.Torrey
     load_order = 1
 
     class Meta:

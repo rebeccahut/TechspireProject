@@ -10,3 +10,9 @@ CREATE TABLE StoreProduct(
     id int NOT NULL PRIMARY KEY IDENTITY (1,1),
     product_assigned date NOT NULL,
 );
+
+CREATE TABLE SocialMediaType(
+	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	social_media_name nvarchar(40) NOT NULL,
+	social_media_desc nvarchar(200)
+);
