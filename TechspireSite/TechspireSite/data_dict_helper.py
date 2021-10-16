@@ -147,7 +147,10 @@ def generate_erd(folder, file, shape, fields):
     return response
 
 
-
-
+def get_solid_models(app_name):
+    app = apps.get_app_config(app_name)
+    solid_models = app.models.values()
+    solid_models = [item() for item in solid_models]
+    return [item for item in solid_models if not item._meta.abstract]
     
 

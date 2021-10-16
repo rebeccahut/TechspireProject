@@ -30,7 +30,8 @@ class TechSpireAdminSite(admin.AdminSite):
         reports = views.get_report_names(module_dir)
         AdminTableRow("dict1", "Row Dictionary")
         db_links = [["dict1", "Row Dictionary"], ["dict2", "Table Dictionary"], ["dict3", "Excel Dictionary"],
-                    ["erd1", "Abstract ERD"], ["drop", "Generate Drop"]]
+                    ["erd1", "Abstract ERD"], ["drop", "Generate Drop"], ["bulk", "Generate Bulk Insert"],
+                    ["delete", "Generate Bulk Delete"]]
         db_info = [AdminTableRow(x[0], x[1]) for x in db_links]
 
         context = {
@@ -57,5 +58,7 @@ class TechSpireAdminSite(admin.AdminSite):
             path('dict3/', self.admin_view(views.dict3), name="dict3"),
             path('erd1/', self.admin_view(views.erd1), name="erd1"),
             path('drop/', self.admin_view(views.generate_drop), name="drop"),
+            path('bulk/', self.admin_view(views.generate_bulk), name="bulk"),
+            path('delete/', self.admin_view(views.generate_delete), name="delete"),
         ]
         return my_urls + urls

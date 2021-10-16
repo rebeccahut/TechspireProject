@@ -1,4 +1,4 @@
-from .data_dict_helper import extract_all_field_props, generate_data_dict_excel, generate_erd
+from . import data_dict_helper as ddh
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db import connection
@@ -16,7 +16,7 @@ class FieldTypeMap:
 
 
 def erd1(request):
-    return generate_erd("GeneratedFiles", "ERD1", "crow", True)
+    return ddh.generate_erd("GeneratedFiles", "ERD1", "crow", True)
 
 
 # displays a page with all the props for each field of each model as a table
@@ -29,7 +29,7 @@ def dict1(request):
     model_list = apps.get_app_config('Bakery').get_models()
     for model in model_list:
         model_name = model._meta.db_table
-        field_props = extract_all_field_props(model, FieldTypeMap.field_type_dict)
+        field_props = ddh.extract_all_field_props(model, FieldTypeMap.field_type_dict)
         for count, row in enumerate(field_props):
             if count == 0:
                 row.insert(0, model_name)
@@ -50,7 +50,7 @@ def dict2(request):
         model_desc = model_object.description
         context["tables"].append([model_name, model_desc, model.owner.name, model.load_order])
 
-    context["tables"] = sorted(context["tables"], key=itemgetter(3))
+    context["tables"] = sorted(context["tables"], key=itemgetter(2))
     app = apps.get_app_config("Bakery")
 
     models = app.models.values()
@@ -93,7 +93,7 @@ def dict3(request):
                  "Required", "Allow NULL", "C Delete", "C Update", "Domain", "Row Desc", "Table Desc"]
     module_dir = os.path.dirname(__file__)
     file_path = os.path.join(module_dir, "GeneratedFiles", "DataDict.xlsx")
-    generate_data_dict_excel(file_path, title_row, FieldTypeMap.field_type_dict)
+    ddh.generate_data_dict_excel(file_path, title_row, FieldTypeMap.field_type_dict)
     final_sheet = open(file_path, "rb")
     response = HttpResponse(final_sheet,
                             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
@@ -118,11 +118,9 @@ def html_report(request, index):
 
     return render(request, 'admin/display_report.html', context)
 
+
 def generate_drop(request):
-    app = apps.get_app_config("Bakery")
-    models = app.models.values()
-    models = [item() for item in models]
-    solid_tables = [item for item in models if not item._meta.abstract]
+    solid_tables = ddh.get_solid_models("Bakery")
     solid_tables.sort(key=lambda x: x.load_order, reverse=True)
     module_dir = os.path.dirname(__file__)
     path = os.path.join(module_dir, "SQL", "Drop.sql")
@@ -130,4 +128,38 @@ def generate_drop(request):
     for table in solid_tables:
         drop_file.write("DROP TABLE " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
     drop_file.close()
+    return HttpResponse("Success")
+
+
+def generate_delete(request):
+    solid_tables = ddh.get_solid_models("Bakery")
+    solid_tables.sort(key=lambda x: x.load_order, reverse=True)
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(module_dir, "SQL", "Delete.sql")
+    drop_file = open(path, "w")
+    for table in solid_tables:
+        drop_file.write("DELETE FROM " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
+    drop_file.close()
+
+    return HttpResponse("Success")
+
+
+def generate_bulk(request):
+    solid_tables = ddh.get_solid_models("Bakery")
+    solid_tables.sort(key=lambda x: x.load_order)
+    module_dir = os.path.dirname(__file__)
+    bulk_paths = glob.glob(os.path.join(module_dir, "SQL/*/BulkInsert*"))
+    path_dict = {}
+    for path in bulk_paths:
+        name = os.path.basename(path).replace("BulkInsert", "")[:-4]
+        path_dict[name] = path
+    path = os.path.join(module_dir, "SQL", "BulkInsert.sql")
+    bulk_file = open(path, "w")
+    for table in solid_tables:
+        bulk_path = path_dict[table._meta.db_table]
+        current_bulk_file = open(bulk_path, "r")
+        bulk_file.write("--" + table.owner.name + "\n")
+        bulk_file.writelines(current_bulk_file.readlines())
+        bulk_file.write("\n\n")
+    bulk_file.close()
     return HttpResponse("Success")
