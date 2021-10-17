@@ -20,9 +20,10 @@ CREATE TABLE ProductStatus (
 
 CREATE TABLE Store(
     id INT PRIMARY KEY IDENTITY(1,1),
-    store_name nvarchar(40) NOT NULL,
-    phone_number nvarchar(15) NOT NULL,
-    email_address nvarchar(254) NOT NULL,
+    store_name nvarchar(40),
+    phone_number nvarchar(15),
+    email_address nvarchar(254),
+    website_address nvarchar(300),
     start_date date NOT NULL,
     end_date date
 );

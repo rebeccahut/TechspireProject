@@ -1,7 +1,8 @@
 BULK INSERT Order
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderList.tsv"
 WITH
 	(
+	CHECK_CONSTRAINTS,
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY,

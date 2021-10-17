@@ -1,7 +1,8 @@
 BULK INSERT OrderLine
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderLineList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderLineList.tsv"
 WITH
 	(
+	CHECK_CONSTRAINTS,
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY,

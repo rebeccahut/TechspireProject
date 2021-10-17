@@ -1,7 +1,8 @@
 BULK INSERT EmployeeSocialMedia
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeSocialMediaList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeSocialMediaList.tsv"
 WITH
 	(
+	CHECK_CONSTRAINTS,
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY,

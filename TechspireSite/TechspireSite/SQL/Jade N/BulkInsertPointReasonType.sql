@@ -1,7 +1,8 @@
 BULK INSERT PointReasonType
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\PointReasonTypeList.csv"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\PointReasonTypeList.tsv"
 WITH
 	(
+	CHECK_CONSTRAINTS,
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY,

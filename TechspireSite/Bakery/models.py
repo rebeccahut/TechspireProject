@@ -295,9 +295,10 @@ class PaymentType(LabelCode):
 
 class Store(DescriptiveModel):
     description = 'A physical location where customers go to complete transactions.'
-    phone_number = PhoneNumberField(max_length=15)
-    email_address = models.EmailField(max_length=254)
     store_name = models.CharField(max_length=40)
+    phone_number = PhoneNumberField(max_length=15, blank=True, null=True)
+    email_address = models.EmailField(max_length=254, blank=True, null=True)
+    website_address = models.CharField(max_length=300, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
     start_date = models.DateField()
