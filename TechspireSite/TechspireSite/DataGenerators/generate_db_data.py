@@ -60,7 +60,7 @@ def generate_employees():
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             email = first_name + last_name + "@gmail.com"
-            start_date = date_in_range(datetime.date(2010, 1, 1), datetime.date(2015, 1, 1))
+            start_date = date_in_range(datetime.date(2010, 1, 1), datetime.date(2020, 1, 1))
             birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(2000, 1, 1))
             type = random.randrange(1, 3)
             status = random.randrange(1, 6)
@@ -87,25 +87,40 @@ def generate_employee_jobs():
             writer.writerow(["", random.randrange(0, 199), random.randrange(1, 2), ])
 
 
-def generate_order_lines(order_id):
-    num = random.randrange(1, 6)
-    for index in range(num):
-        product = random.randrange(100, 375)
-        amount = random.randrange(1, 6)
+#qty, ind_price, total_price, product, order
+def generate_order_lines(num_orders):
+    product_list = pandas.read_csv("RawProductList.csv")
+    order_list = []
+    for ord_index in range(num_orders):
+        num = random.randrange(1, 6)
+        selected_products = product_list.sample(num)
+        selected_products.reset_index(inplace=True)
+        for index in range(num):
+            line_id = selected_products.at[index, "ID"]
+            amount = random.randrange(1, 6)
+            ind_price = int(selected_products.at[index, 'Price'] * 100)
+            total_price = int(amount * ind_price)
+            row = [amount, ind_price, total_price, line_id, ord_index+1]
+            order_list.append(row)
+    order_lines = pandas.DataFrame(order_list)
+    module_dir = os.path.dirname(__file__)
+    path_name = os.path.join(os.path.dirname(module_dir), "SQL", "Data", "OrderLineList.csv")
+    order_lines.index += 1
+    order_lines.to_csv(path_name, header=False, index=True)
+
 
 # ID, Quantity, ind_price, total_price, product, order
 def generate_orders():
-    order_csv = open('EmployeeJobList.csv', 'w', newline='')
-    order_line_csv = open('EmployeeJobList.csv', 'w', newline='')
-    product_csv = open('EmployeeJobList.csv', 'r', newline='')
+    pandas.read_csv("ProductType.csv")
 
 
 
 
 if __name__ == '__main__':
     #generate_customers()
-    generate_employees()
+    #generate_employees()
     #generate_orders()
+    generate_order_lines(200)
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

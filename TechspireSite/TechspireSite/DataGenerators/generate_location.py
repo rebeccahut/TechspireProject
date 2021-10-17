@@ -17,8 +17,10 @@ if __name__ == '__main__':
     zip_codes = zip_codes.join(cities, on=1, how="inner", lsuffix="l", rsuffix="r")
     zip_codes["addr"] = addresses
     zip_codes["state"] = 1407
-    zip_codes = zip_codes.reset_index()
     zip_codes = zip_codes[[0, "1r", "addr", "state"]]
+    addr1 = ["", "", "", ""]
+    addr2 = ["", "", "", ""]
+    zip_codes = zip_codes.reset_index()
     zip_codes.index += 1
     module_dir = os.path.dirname(__file__)
     path_name = os.path.join(os.path.dirname(module_dir), "SQL", "Data", "LocationList.csv")
