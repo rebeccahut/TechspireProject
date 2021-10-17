@@ -3,13 +3,23 @@ import csv
 import names
 import random
 import datetime
+import pandas
+import os
 
-def random_phone():
-    output = ""
-    for element in range(0, 10):
-        output += str(random.randrange(0, 9))
-    output = "001" + output
-    return output
+
+def generate_phones(count):
+    country = "+1"
+    area_codes = pandas.read_csv("Area.tsv", sep="\t", header=None, index_col=0)
+    area_codes = area_codes.sample(count, replace=True)
+    codes = area_codes[1].tolist()
+    numbers = []
+    for code in codes:
+        last_digits = ""
+        for index in range(0, 7):
+            digit = random.randrange(0, 10)
+            last_digits += str(digit)
+        numbers.append(country + str(code) + last_digits)
+    return numbers
 
 
 def date_in_range(start_date, end_date):
@@ -22,7 +32,7 @@ def date_in_range(start_date, end_date):
 
 def generate_customers():
     fake = Faker()
-    with open('customers.csv', 'w',newline='', ) as customer_csv:
+    with open('customers.csv', 'w', newline='', ) as customer_csv:
         writer = csv.writer(customer_csv)
         print(fake.date())
         for row in range(0, 200):
@@ -41,27 +51,30 @@ def generate_employees():
     fake = Faker()
     employee_jobs = open('EmployeeJobList.csv', 'w', newline='', )
     employee_job_writer = csv.writer(employee_jobs, delimiter='\t')
-    with open('EmployeeList.csv', 'w', newline='', ) as customer_csv:
+    module_dir = os.path.dirname(__file__)
+    path_name = os.path.join(os.path.dirname(module_dir), "SQL", "Data", "EmployeeList.csv")
+    with open(path_name, 'w', newline='', ) as customer_csv:
         employee_writer = csv.writer(customer_csv, delimiter='\t')
-        for row in range(1, 201):
+        phone_numbers = generate_phones(100)
+        for row in range(0, 100):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             email = first_name + last_name + "@gmail.com"
             start_date = date_in_range(datetime.date(2010, 1, 1), datetime.date(2015, 1, 1))
             birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(2000, 1, 1))
-            type = random.randrange(1, 4)
-            status = random.randrange(1, 5)
+            type = random.randrange(1, 3)
+            status = random.randrange(1, 6)
 
-            employee_writer.writerow([row, first_name, last_name, email, random_phone(), "", birth_date, start_date, "", status, row, type])
+            employee_writer.writerow([row+1, first_name, last_name, email, phone_numbers[row], "", birth_date, start_date, "", row+1, status, 25])
             job_type = random.randrange(0, 4)
 
             if job_type == 1 or job_type == 2:
-                employee_job_writer.writerow(["", job_start_date(start_date, 200), row, job_type])
+                employee_job_writer.writerow(["", job_start_date(start_date, 200), row+1, job_type])
                 continue
 
             if job_type == 3:
-                employee_job_writer.writerow(["", job_start_date(start_date, 200), row, 1])
-                employee_job_writer.writerow(["", job_start_date(start_date, 200), row, 2])
+                employee_job_writer.writerow(["", job_start_date(start_date, 200), row+1, 1])
+                employee_job_writer.writerow(["", job_start_date(start_date, 200), row+1, 2])
                 continue
     employee_jobs.close()
 
@@ -74,11 +87,25 @@ def generate_employee_jobs():
             writer.writerow(["", random.randrange(0, 199), random.randrange(1, 2), ])
 
 
+def generate_order_lines(order_id):
+    num = random.randrange(1, 6)
+    for index in range(num):
+        product = random.randrange(100, 375)
+        amount = random.randrange(1, 6)
+
+# ID, Quantity, ind_price, total_price, product, order
+def generate_orders():
+    order_csv = open('EmployeeJobList.csv', 'w', newline='')
+    order_line_csv = open('EmployeeJobList.csv', 'w', newline='')
+    product_csv = open('EmployeeJobList.csv', 'r', newline='')
+
 
 
 
 if __name__ == '__main__':
     #generate_customers()
     generate_employees()
+    #generate_orders()
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

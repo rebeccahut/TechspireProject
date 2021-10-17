@@ -168,4 +168,5 @@ def data_status(request):
         except KeyError:
             status = "Not Available"
         context["tables"].append([table._meta.db_table, status])
+    context["tables"].sort(key=itemgetter(1))
     return render(request, 'admin/display_report.html', context)
