@@ -10,7 +10,7 @@ def convert_to_csv():
         f.close()
 
         newdata = filedata.replace("csv", "tsv")
-        newdata = newdata.replace("KEEPIDENTITY,\n", "KEEPIDENTITY,\n\tCHECK_CONSTRAINTS,\n")
+        newdata = newdata.replace(")", "\tCHECK_CONSTRAINTS,\n)")
 
         f = open(path, 'w')
         f.write(newdata)
