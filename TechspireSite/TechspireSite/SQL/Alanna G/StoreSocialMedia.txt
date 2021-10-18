@@ -1,0 +1,5 @@
+profile_name	platform	store
+HoustonHotBreads	Facebook	Houston Hot Breads
+redberrybakery	Facebook	Red Berries Bake Shop
+houstonhotbreads	Instagram	Houston Hot Breads
+redberriesbakeshop	Instagram	Red Berries Bake Shop
