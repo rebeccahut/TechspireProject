@@ -6,7 +6,7 @@ CREATE TABLE Customer(
     phone_number nvarchar(15) NOT NULL,
     comments nvarchar(max),
     birthdate date NOT NULL,
-    created_date date NOT NULL,
+    begin_date date NOT NULL,
 );
 
 CREATE TABLE OrderLine(

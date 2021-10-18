@@ -1,6 +1,6 @@
 CREATE TABLE Product ( 
     id int PRIMARY KEY IDENTITY(1,1), 
-    product_name nvarchar (40) NOT NULL,
+    product_name nvarchar (80) NOT NULL,
     product_desc nvarchar (200) NOT NULL, 
     product_price numeric(19,4) CHECK (product_price >= 0) NOT NULL
 ); 

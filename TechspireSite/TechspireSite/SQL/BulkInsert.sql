@@ -225,7 +225,9 @@ with
 	CHECK_CONSTRAINTS,
     FIELDTERMINATOR = '\t',
     ROWTERMINATOR = '\n',
-    KEEPIDENTITY
+    KEEPIDENTITY,
+    FIELDQUOTE = '~',
+    FIRSTROW = 2
     )
 GO
 
@@ -249,7 +251,8 @@ with
 	CHECK_CONSTRAINTS,
     FIELDTERMINATOR = '\t',
     ROWTERMINATOR = '\n',
-    KEEPIDENTITY
+    KEEPIDENTITY,
+    FIRSTROW = 2
     )
 GO
 
@@ -292,8 +295,8 @@ WITH
 GO
 
 --Kyle Dela Pena
-BULK INSERT EmployeeStatus
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerSocialMediaList.tsv"
+BULK INSERT "EmployeeEmployeeCategory"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeEmployeeCategoryList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,
@@ -381,7 +384,7 @@ WITH
 GO
 
 --Torrey Brett
-BULK INSERT Order
+BULK INSERT "Order"
 FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderList.tsv"
 WITH
 	(

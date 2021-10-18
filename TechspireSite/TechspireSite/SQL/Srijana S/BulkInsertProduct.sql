@@ -5,6 +5,8 @@ with
 	CHECK_CONSTRAINTS,
     FIELDTERMINATOR = '\t',
     ROWTERMINATOR = '\n',
-    KEEPIDENTITY
+    KEEPIDENTITY,
+    FIELDQUOTE = '~',
+    FIRSTROW = 2
     )
 GO

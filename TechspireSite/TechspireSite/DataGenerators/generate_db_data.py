@@ -5,7 +5,9 @@ import random
 import datetime
 import pandas
 import os
+import math
 from decimal import Decimal
+import pyodbc
 
 
 def generate_phones(count):
@@ -32,16 +34,75 @@ def date_in_range(start_date, end_date):
 
 
 def generate_customers():
-    fake = Faker()
-    with open('customers.tsv', 'w', newline='', ) as customer_tsv:
-        writer = tsv.writer(customer_tsv)
-        print(fake.date())
-        for row in range(0, 200):
-            first_name = names.get_first_name()
-            last_name = names.get_last_name()
-            email = first_name + last_name + "@gmail.com"
-            confirmed = bool(random.getrandbits(1))
-            writer.writerow([first_name, last_name, fake.date(), email, confirmed, fake.phone_number()])
+    module_dir = os.path.dirname(__file__)
+    target_dir = os.path.join(os.path.dirname(module_dir), "SQL", "Data")
+    path_name = os.path.join(target_dir, "EmployeeJobList.tsv")
+
+    #Use employee jobs to get list of cashiers
+    employee_jobs = pandas.read_csv(path_name, delimiter="\t", header=None)
+    valid_jobs = employee_jobs[employee_jobs[3] == 2]
+    emp_indices = valid_jobs[2].values.tolist()
+    emp_indices = [x-1 for x in emp_indices]
+    path_name = os.path.join(target_dir, "EmployeeList.tsv")
+    employees = pandas.read_csv(path_name, delimiter="\t", header=None, index_col=0)
+    employees = employees.iloc[emp_indices]
+
+    #Sample 100 valid employees to use as customer creators
+    employees = employees.sample(100, replace=True)
+    start_dates = employees[7].values.tolist()
+    end_dates = employees[8].values.tolist()
+    employees.reset_index(inplace=True)
+    customers = employees[[0]].copy()
+    customers.index += 1
+    dates = []
+
+    #Builds customer create dates from employee start/end dates
+    for index, start_date in enumerate(start_dates):
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date = end_dates[index]
+
+        if isinstance(end_date, float):
+            end_date = datetime.date(2020, 1, 1)
+        else:
+            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+        date = date_in_range(start_date, end_date)
+        dates.append(date)
+
+    #Builds profile data for each customer
+    cust_info = []
+    for index in range(0, 100):
+        first_name = names.get_first_name()
+        last_name = names.get_last_name()
+        email = first_name + last_name + "@gmail.com"
+        status = random.choice([1, 3, 4])
+        birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(2000, 1, 1))
+        cust_info.append([first_name, last_name, email, birth_date, status])
+
+    customers[1] = dates
+    phone_numbers = generate_phones(100)
+    customers[2] = phone_numbers
+    customers[3] = ""
+    customers[[4, 5, 6, 7, 8]] = cust_info
+    customers = customers[[4, 5, 6, 2, 3, 7, 1, 0, 8]]
+    customers[9] = ""
+    locations = [x for x in range(101, 201)]
+    customers[10] = locations
+    path_name = os.path.join(target_dir, "CustomerList.tsv")
+    customers.to_csv(path_name, header=False, index=True, sep="\t")
+
+    #Build Customer Social Media
+    cust_ss = customers.sample(20)
+    cust_ss["ss_code"] = cust_ss[4] + cust_ss[5]
+    ss_types = []
+    for index in range(0, 20):
+        ss_types.append(random.randrange(1, 4))
+    cust_ss["type"] = ss_types
+    cust_ss["cust_id"] = cust_ss.index
+    cust_ss.reset_index(inplace=True)
+    cust_ss.index += 1
+    cust_ss = cust_ss[["ss_code", 1, "cust_id", "type"]]
+    path_name = os.path.join(target_dir, "CustomerSocialMediaList.tsv")
+    cust_ss.to_csv(path_name, header=False, index=True, sep="\t")
 
 
 def job_start_date(start_date, add_days):
@@ -112,16 +173,48 @@ def generate_order_lines(num_orders):
 
 # ID, Quantity, ind_price, total_price, product, order
 def generate_orders():
-    pandas.read_csv("ProductType.tsv")
+    path_name = os.path.join(build_path(), "CustomerList.tsv")
+    customers = pandas.read_csv(path_name, delimiter="\t", header=None)
+    path_name = os.path.join(build_path(), "EmployeeJobList.tsv")
+    employee_jobs = pandas.read_csv(path_name, delimiter="\t", header=None)
+    print(employee_jobs)
+
+
+    #Get employee list
+    #Get customer list
+    #Extract create employee ID's from customer list
+    #Extract create employees from employee list using emp_ID
+
+def build_path():
+    module_dir = os.path.dirname(__file__)
+    base_path = os.path.join(os.path.dirname(module_dir), "SQL", "Data")
+    return base_path
 
 
 
+def generate_store_products():
+    path_name = os.path.join(build_path(), "ProductList.tsv")
+    products = pandas.read_csv(path_name, delimiter="\t")
+    product_ids = products["ID"].values.tolist()
+    options = [[1], [2], [1, 2]]
+    store_products = []
+    for id in product_ids:
+        stores = random.choice(options)
+        for store in stores:
+            store_products.append([datetime.date(2010, 1, 1), id, store])
+    store_products = pandas.DataFrame(store_products)
+    store_products.index += 1
+    path_name = os.path.join(build_path(), "StoreProductList.tsv")
+    store_products.to_csv(path_name, header=False, index=True, sep="\t")
 
+
+#Add end date to customers
+#
 if __name__ == '__main__':
+    #generate_employees()
     #generate_customers()
-    generate_employees()
     #generate_orders()
     #generate_order_lines(200)
+    #generate_store_products()
+    generate_orders()
 
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

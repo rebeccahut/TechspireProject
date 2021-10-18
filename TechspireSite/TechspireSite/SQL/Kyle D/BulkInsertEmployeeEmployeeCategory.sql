@@ -1,5 +1,5 @@
-BULK INSERT EmployeeStatus
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerSocialMediaList.tsv"
+BULK INSERT "EmployeeEmployeeCategory"
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeEmployeeCategoryList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,

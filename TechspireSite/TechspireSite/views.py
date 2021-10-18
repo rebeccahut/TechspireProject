@@ -154,7 +154,7 @@ def data_status(request):
     context = {"titles": ["Table", "Data Status"], "tables": []}
 
     module_dir = os.path.dirname(__file__)
-    bulk_paths = glob.glob(os.path.join(module_dir, "SQL/*/*List.csv"))
+    bulk_paths = glob.glob(os.path.join(module_dir, "SQL/*/*List.tsv"))
     path_dict = {}
     for path in bulk_paths:
         name = os.path.basename(path).replace("List", "")[:-4]

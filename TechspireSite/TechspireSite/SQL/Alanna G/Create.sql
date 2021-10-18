@@ -21,6 +21,6 @@ CREATE TABLE StoreStatus(
 
 CREATE TABLE BanType(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    label_name varchar(40) NOT NULL,
-    label_desc varchar(200),
+    ban_name varchar(40) NOT NULL,
+    ban_desc varchar(200),
 );

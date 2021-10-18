@@ -23,6 +23,7 @@ class DescriptiveModel(models.Model):
 
     class Meta:
         abstract = True
+        managed = False
 
 
 #Used as an abstract parent for status codes
@@ -33,19 +34,28 @@ class StatusCode(DescriptiveModel):
     is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
     load_order = 1
 
+    def __str__(self):
+        return self.status_name
+
     class Meta:
         abstract = True
+        managed = False
 
 
 #Used as an abstract parent for labels
 class LabelCode(DescriptiveModel):
+
     description = "Allows for multiple named categories"
     type_name = models.CharField(max_length=40)
     type_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
 
+    def __str__(self):
+        return self.type_name
+
     class Meta:
         abstract = True
+        managed = False
 
 
 class CustomerLabel(DescriptiveModel):
@@ -58,6 +68,7 @@ class CustomerLabel(DescriptiveModel):
     class Meta:
         db_table = "CustomerCategory"
         verbose_name_plural = "Customer Category"
+        managed = False
 
 
 class EmployeeLabel(DescriptiveModel):
@@ -70,6 +81,7 @@ class EmployeeLabel(DescriptiveModel):
     class Meta:
         db_table = "EmployeeCategory"
         verbose_name_plural = "Employee Category"
+        managed = False
 
 
 class EmployeeStatus(StatusCode):
@@ -79,6 +91,7 @@ class EmployeeStatus(StatusCode):
     class Meta:
         db_table = "EmployeeStatus"
         verbose_name_plural = "Employee Status"
+        managed = False
 
 
 class CustomerStatus(StatusCode):
@@ -88,6 +101,7 @@ class CustomerStatus(StatusCode):
     class Meta:
         db_table = "CustomerStatus"
         verbose_name_plural = "Customer Status"
+        managed = False
 
 
 class ProductStatus(StatusCode):
@@ -97,6 +111,7 @@ class ProductStatus(StatusCode):
     class Meta:
         db_table = "ProductStatus"
         verbose_name_plural = "Product Status"
+        managed = False
 
 
 class StoreStatus(StatusCode):
@@ -106,6 +121,7 @@ class StoreStatus(StatusCode):
     class Meta:
         db_table = "StoreStatus"
         verbose_name_plural = "Store Status"
+        managed = False
 
 
 class RewardStatus(StatusCode):
@@ -115,6 +131,7 @@ class RewardStatus(StatusCode):
     class Meta:
         db_table = "RewardStatus"
         verbose_name_plural = "Reward Status"
+        managed = False
 
 
 class BanType(DescriptiveModel):
@@ -127,6 +144,7 @@ class BanType(DescriptiveModel):
     class Meta:
         db_table = "BanType"
         verbose_name_plural = "Ban Type"
+        managed = False
 
 
 class PointReason(DescriptiveModel):
@@ -139,6 +157,7 @@ class PointReason(DescriptiveModel):
     class Meta:
         db_table = "PointReasonType"
         verbose_name_plural = "PointReasonType"
+        managed = False
 
 
 class Country(DescriptiveModel):
@@ -153,6 +172,7 @@ class Country(DescriptiveModel):
     class Meta:
         db_table = "Country"
         verbose_name_plural = "Country"
+        managed = False
 
         
 class StateProvince(DescriptiveModel):
@@ -168,6 +188,7 @@ class StateProvince(DescriptiveModel):
     class Meta:
         db_table = "StateProvince"
         verbose_name_plural = "State/Province"
+        managed = False
 
 
 class Location(DescriptiveModel):
@@ -182,6 +203,7 @@ class Location(DescriptiveModel):
     class Meta:
         db_table = "Location"
         verbose_name_plural = "Location/Address"
+        managed = False
 
 
 class Tier(DescriptiveModel):
@@ -195,6 +217,7 @@ class Tier(DescriptiveModel):
     class Meta:
         db_table = "Tier"
         verbose_name_plural = "Tier"
+        managed = False
 
 
 #Used as an abstract parent for people
@@ -203,13 +226,14 @@ class Person(DescriptiveModel):
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
     phone_number = PhoneNumberField(max_length=15)
-    comments = models.TextField(blank=True, null=True)
     birthdate = models.DateField()
-    created_date = models.DateField()
+    begin_date = models.DateField()
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
+    comments = models.TextField(blank=True, null=True)
 
     class Meta:
         abstract = True
+        managed = False
 
 
 class EmployeeType(LabelCode):
@@ -219,6 +243,7 @@ class EmployeeType(LabelCode):
     class Meta:
         db_table = "EmployeeType"
         verbose_name_plural = "Employee Type"
+        managed = False
 
 
 class Employee(Person):
@@ -232,11 +257,12 @@ class Employee(Person):
     class Meta:
         db_table = "Employee"
         verbose_name_plural = "Employee"
+        managed = False
 
 
 class Customer(Person):
     description = 'Someone who potentially purchases an item/service from our client and whose general information has been collected by our loyalty system database.'
-    create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT, blank=True, null=True)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
@@ -246,6 +272,7 @@ class Customer(Person):
     class Meta:
         db_table = "Customer"
         verbose_name_plural = "Loyalty Customer"
+        managed = False
 
 
 class Job(DescriptiveModel):
@@ -258,6 +285,7 @@ class Job(DescriptiveModel):
     class Meta:
         db_table = "Job"
         verbose_name_plural = "Job"
+        managed = False
 
 
 class AssocEmployeeLabel(DescriptiveModel):
@@ -270,6 +298,7 @@ class AssocEmployeeLabel(DescriptiveModel):
     class Meta:
         db_table = "EmployeeEmployeeCategory"
         verbose_name_plural = "Employee Employee Category"
+        managed = False
 
 
 class AssocCustomerLabel(DescriptiveModel):
@@ -282,6 +311,7 @@ class AssocCustomerLabel(DescriptiveModel):
     class Meta:
         db_table = "CustomerCustomerCategory"
         verbose_name_plural = "Customer Customer Category"
+        managed = False
 
 
 class PaymentType(LabelCode):
@@ -291,6 +321,7 @@ class PaymentType(LabelCode):
     class Meta:
         db_table = "PaymentType"
         verbose_name_plural = "Payment Type"
+        managed = False
 
 
 class Store(DescriptiveModel):
@@ -309,6 +340,7 @@ class Store(DescriptiveModel):
     class Meta:
         db_table = "Store"
         verbose_name_plural = "Store"
+        managed = False
 
 
 class EmployeeJob(DescriptiveModel):
@@ -323,6 +355,7 @@ class EmployeeJob(DescriptiveModel):
     class Meta:
         db_table = "EmployeeJob"
         verbose_name_plural = "Employee Job"
+        managed = False
 
 
 class Order(DescriptiveModel):
@@ -340,6 +373,7 @@ class Order(DescriptiveModel):
     class Meta:
         db_table = "Order"
         verbose_name_plural = "Order/Transaction"
+        managed = False
 
 
 class ProductType(DescriptiveModel):
@@ -352,11 +386,12 @@ class ProductType(DescriptiveModel):
     class Meta:
         db_table = "ProductType"
         verbose_name_plural = "Product Type"
+        managed = False
 
 
 class Product(DescriptiveModel):
     description = 'An item purchased by the customer in a transaction.'
-    product_name = models.CharField(max_length=40)
+    product_name = models.CharField(max_length=80)
     product_desc = models.CharField(max_length=200, blank=True, null=True)
     product_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
@@ -368,6 +403,7 @@ class Product(DescriptiveModel):
     class Meta:
         db_table = "Product"
         verbose_name_plural = "Product"
+        managed = False
 
 
 class OrderLine(DescriptiveModel):
@@ -383,6 +419,7 @@ class OrderLine(DescriptiveModel):
     class Meta:
         db_table = "OrderLine"
         verbose_name_plural = "Order Line"
+        managed = False
 
 
 class Reward(DescriptiveModel):
@@ -407,6 +444,7 @@ class Reward(DescriptiveModel):
     class Meta:
         db_table = "Reward"
         verbose_name_plural = "Reward"
+        managed = False
 
 
 class SocialMediaType(DescriptiveModel):
@@ -419,6 +457,7 @@ class SocialMediaType(DescriptiveModel):
     class Meta:
         db_table = "SocialMediaType"
         verbose_name_plural = "Social Media Type"
+        managed = False
 
 
 class StoreSocialMedia(DescriptiveModel):
@@ -433,6 +472,7 @@ class StoreSocialMedia(DescriptiveModel):
     class Meta:
         db_table = "StoreSocialMedia"
         verbose_name_plural = "Store Social Media"
+        managed = False
 
 
 class EmployeeSocialMedia(DescriptiveModel):
@@ -447,6 +487,7 @@ class EmployeeSocialMedia(DescriptiveModel):
     class Meta:
         db_table = "EmployeeSocialMedia"
         verbose_name_plural = "Employee Social Media"
+        managed = False
 
 
 class CustomerSocialMedia(DescriptiveModel):
@@ -461,6 +502,7 @@ class CustomerSocialMedia(DescriptiveModel):
     class Meta:
         db_table = "CustomerSocialMedia"
         verbose_name_plural = "Customer Social Media"
+        managed = False
 
 
 class StoreProduct(DescriptiveModel):
@@ -474,6 +516,7 @@ class StoreProduct(DescriptiveModel):
     class Meta:
         db_table = "StoreProduct"
         verbose_name_plural = "Store Product"
+        managed = False
 
 
 class StoreReward(DescriptiveModel):
@@ -487,6 +530,7 @@ class StoreReward(DescriptiveModel):
     class Meta:
         db_table = "StoreReward"
         verbose_name_plural = "Store Reward"
+        managed = False
 
 
 class CustomerReward(DescriptiveModel):
@@ -500,6 +544,7 @@ class CustomerReward(DescriptiveModel):
     class Meta:
         db_table = "CustomerReward"
         verbose_name_plural = "Customer Reward"
+        managed = False
 
 
 class PointLog(DescriptiveModel):
@@ -518,6 +563,7 @@ class PointLog(DescriptiveModel):
     class Meta:
         db_table = "PointLog"
         verbose_name_plural = "Point Log"
+        managed = False
 
 
 

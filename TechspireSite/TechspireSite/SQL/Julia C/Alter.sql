@@ -7,8 +7,8 @@ ALTER TABLE CustomerReward ADD
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
 
 ALTER TABLE Customer ADD
-    create_employee_id int NOT NULL FOREIGN KEY REFERENCES Employee(id),
+    create_employee_id int FOREIGN KEY REFERENCES Employee(id),
     customer_status_id int NOT NULL FOREIGN KEY REFERENCES CustomerStatus(id),
-    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id),
-    location_id int NOT NULL FOREIGN KEY REFERENCES Location(id);
+    tier_id int FOREIGN KEY REFERENCES Tier(id),
+    location_id int FOREIGN KEY REFERENCES Location(id);
 

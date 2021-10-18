@@ -22,8 +22,8 @@ CREATE TABLE StoreStatus(
 
 CREATE TABLE BanType(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    label_name varchar(40) NOT NULL,
-    label_desc varchar(200),
+    ban_name varchar(40) NOT NULL,
+    ban_desc varchar(200),
 );
 
 
@@ -89,7 +89,7 @@ CREATE TABLE Customer(
     phone_number nvarchar(15) NOT NULL,
     comments nvarchar(max),
     birthdate date NOT NULL,
-    created_date date NOT NULL,
+    begin_date date NOT NULL,
 );
 
 CREATE TABLE OrderLine(
@@ -165,7 +165,7 @@ CREATE TABLE EmployeeSocialMedia(
 --Srijana S
 CREATE TABLE Product ( 
     id int PRIMARY KEY IDENTITY(1,1), 
-    product_name nvarchar (40) NOT NULL,
+    product_name nvarchar (80) NOT NULL,
     product_desc nvarchar (200) NOT NULL, 
     product_price numeric(19,4) CHECK (product_price >= 0) NOT NULL
 ); 
@@ -265,7 +265,7 @@ ALTER TABLE Location ADD
 --Jade N
 ALTER TABLE CustomerSocialMedia ADD
     customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
-    social_media_type int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
+    social_media_type_id int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
 
 ALTER TABLE PointLog ADD
     customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
@@ -284,10 +284,10 @@ ALTER TABLE CustomerReward ADD
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
 
 ALTER TABLE Customer ADD
-    create_employee_id int NOT NULL FOREIGN KEY REFERENCES Employee(id),
+    create_employee_id int FOREIGN KEY REFERENCES Employee(id),
     customer_status_id int NOT NULL FOREIGN KEY REFERENCES CustomerStatus(id),
-    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id),
-    location_id int NOT NULL FOREIGN KEY REFERENCES Location(id);
+    tier_id int FOREIGN KEY REFERENCES Tier(id),
+    location_id int FOREIGN KEY REFERENCES Location(id);
 
 
 
@@ -310,11 +310,11 @@ ALTER TABLE CustomerCustomerCategory
 --Saja A
 ALTER TABLE EmployeeSocialMedia ADD
     employee_id int NOT NULL FOREIGN KEY REFERENCES Employee(id),
-    social_media_type int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
+    social_media_type_id int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
 
 ALTER TABLE StoreSocialMedia ADD
     store_id int NOT NULL FOREIGN KEY REFERENCES Store(id),
-    social_media_type int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
+    social_media_type_id int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
 
 ALTER TABLE StoreReward ADD
     store_id int NOT NULL FOREIGN KEY REFERENCES Store(id),
@@ -324,7 +324,7 @@ ALTER TABLE StoreReward ADD
 ALTER TABLE Product ADD
 	product_type_id int NOT NULL FOREIGN KEY REFERENCES ProductType(id),
 	product_status_id int NOT NULL FOREIGN KEY REFERENCES ProductStatus(id),
-	ban_reason_id int NOT NULL FOREIGN KEY REFERENCES BanType(id);
+	ban_reason_id int FOREIGN KEY REFERENCES BanType(id);
 
 ALTER TABLE Store ADD
 	location_id int NOT NULL FOREIGN KEY REFERENCES Location(id),
@@ -345,6 +345,6 @@ ALTER TABLE StoreProduct ADD
 --Umair
 ALTER TABLE Reward ADD
     reward_status_id int NOT NULL FOREIGN KEY REFERENCES RewardStatus(id),
-    free_product_id int NOT NULL FOREIGN KEY REFERENCES Product(id),
-    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id);
+    free_product_id int FOREIGN KEY REFERENCES Product(id),
+    tier_id int FOREIGN KEY REFERENCES Tier(id);
 

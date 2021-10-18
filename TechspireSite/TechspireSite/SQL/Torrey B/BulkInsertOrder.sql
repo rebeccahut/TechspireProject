@@ -1,4 +1,4 @@
-BULK INSERT Order
+BULK INSERT "Order"
 FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderList.tsv"
 WITH
 	(

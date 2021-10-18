@@ -1,6 +1,6 @@
 ALTER TABLE CustomerSocialMedia ADD
     customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
-    social_media_type int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
+    social_media_type_id int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id);
 
 ALTER TABLE PointLog ADD
     customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
