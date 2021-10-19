@@ -319,8 +319,8 @@ WITH
 GO
 
 --Saja Alyasin
-BULK INSERT EmployeeType
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\EmployeeTypeList.tsv"
+BULK INSERT StoreSocialMedia
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\StoreSocialMediaList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,
