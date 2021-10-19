@@ -259,17 +259,86 @@ def generate_store_products():
     path_name = os.path.join(build_path(), "StoreProductList.tsv")
     store_products.to_csv(path_name, header=False, index=True, sep="\t")
 
+def generate_rewards():
+    num_rewards = 50
+    path_name = os.path.join(build_path(), "ProductList.tsv")
+    rewards = pandas.read_csv(path_name, delimiter="\t", converters={'Price': lambda a: Decimal(a)}, header=None)
+    rewards = rewards.loc[rewards["Price"] < 20]
+    rewards = rewards.sample(num_rewards)
+    rewards["Product"] = rewards["ID"]
+    rewards["Tier"] = ""
+    rewards["discount"] = 0
+    rewards["reset"] = ""
+    rewards["cost"] = rewards["Price"].astype(int)
+    dates = []
+    for index in range(num_rewards):
+        dates.append(date_in_range(datetime.date(2010, 1, 1), datetime.date(2018, 1, 1)))
+    rewards["s_date"] = dates
+    rewards["e_date"] = ""
+    rewards["status"] = 1
+    rewards["desc"] = ""
+    rewards.reset_index(inplace=True)
+    rewards.index += 1
+    rewards = rewards[["Name", "desc", "cost", "reset", "discount", "s_date", "e_date", "status", "Product", "Tier"]]
+    path_name = os.path.join(build_path(), "RewardList.tsv")
+    rewards.to_csv(path_name, header=False, index=True, sep="\t")
+    store_reward = pandas.DataFrame()
+    start_dates = rewards["s_date"].values.tolist()
+    store_reward["Reward"] = rewards.index
+    product_ids = rewards["Product"].values.tolist()
+    stores = []
+    path_name = os.path.join(build_path(), "StoreProductList.tsv")
+    store_products = pandas.read_csv(path_name, delimiter="\t", header=None, index_col=0)
+    for index, product in enumerate(product_ids):
+        valid_stores = store_products.loc[store_products[2] == product]
+        valid_stores = valid_stores[3].values.tolist()
+        for store in valid_stores:
+            stores.append([start_dates[index], store, index+1])
+    store_rewards = pandas.DataFrame(stores)
+    store_rewards.index += 1
+    path_name = os.path.join(build_path(), "StoreRewardList.tsv")
+    store_rewards.to_csv(path_name, header=False, index=True, sep="\t")
 
-# Add end date to customers
-#
+def generate_employee_ss():
+    path_name = os.path.join(build_path(), "EmployeeList.tsv")
+    employees = pandas.read_csv(path_name, delimiter="\t", header=None)
+    employees = employees.sample(20)
+    print(employees)
+    ss_types = []
+    for index in range(0, 20):
+        ss_types.append(random.randrange(1, 4))
+    employees["code"] = employees[1] + employees[2]
+    employees["type"] = ss_types
+    employees.reset_index()
+    employees.index += 1
+    employees = employees[["code", 7, 0, "type"]]
+    print(employees)
+    path_name = os.path.join(build_path(), "EmployeeSocialMediaList.tsv")
+    employees.to_csv(path_name, header=False, index=True, sep="\t")
+
+
+def update_employee_locations():
+    path_name = os.path.join(build_path(), "LocationList.tsv")
+    locations = pandas.read_csv(path_name, delimiter="\t", header=None)
+    city_zips = pandas.read_csv("CityZip.tsv", delimiter="\t", header=None)
+    locations.loc[:99, 2] = "Houston"
+    city_zips = city_zips.loc[city_zips[1] == 6].sample(100, replace=True)[0].values.tolist()
+    locations.loc[:99, 1] = city_zips
+    path_name = os.path.join(build_path(), "LocationList.tsv")
+    locations.to_csv(path_name, header=False, index=False, sep="\t")
+
+
 if __name__ == '__main__':
     # generate_employees()
     # generate_customers()
     #generate_orders()
     # generate_order_lines(200)
     # generate_store_products()
-    generate_orders()
+    #generate_orders()
     #products = get_product_list()
     #products.to_csv("Here.tsv", sep="\t")
     #print(products)
     #print(select_store_products(2, 5, products))
+    #generate_rewards()
+    #generate_employee_ss()
+    update_employee_locations()

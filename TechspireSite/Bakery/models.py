@@ -428,7 +428,7 @@ class Reward(DescriptiveModel):
                   'claimed by converting some of their earned points. ' \
                   '“Rewards” can be coupons ($5 off) or birthday reward ' \
                   '(does not need point conversion, it’s just a redemption code for a freebie)'
-    reward_name = models.CharField(max_length=40)
+    reward_name = models.CharField(max_length=80)
     reward_desc = models.CharField(max_length=200, blank=True, null=True)
     reward_status = models.ForeignKey(RewardStatus, on_delete=models.RESTRICT)
     point_cost = models.IntegerField(default=0)

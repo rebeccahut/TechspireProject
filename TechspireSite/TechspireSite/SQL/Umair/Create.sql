@@ -13,7 +13,7 @@ CREATE TABLE PaymentType(
 
 CREATE TABLE Reward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    reward_name varchar(40) NOT NULL,
+    reward_name varchar(80) NOT NULL,
     reward_desc varchar(200) NOT NULL,
     point_cost int NOT NULL DEFAULT 0,
     reset_period int DEFAULT 0,

@@ -6,8 +6,7 @@ CREATE TABLE PointReasonType(
 
 CREATE TABLE PointLog(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	points_consumed int NOT NULL DEFAULT 0,
-	points_produced int NOT NULL DEFAULT 0,
+	points_amount int NOT NULL DEFAULT 0,
 	date date NOT NULL
 );
 
