@@ -141,11 +141,14 @@ def generate_bulk(request):
     path = os.path.join(module_dir, "SQL", "BulkInsert.sql")
     bulk_file = open(path, "w")
     for table in solid_tables:
-        bulk_path = path_dict[table._meta.db_table]
-        current_bulk_file = open(bulk_path, "r")
-        bulk_file.write("--" + table.owner.name + "\n")
-        bulk_file.writelines(current_bulk_file.readlines())
-        bulk_file.write("\n\n")
+        try:
+            table.bulk_insert
+        except AttributeError:
+            bulk_path = path_dict[table._meta.db_table]
+            current_bulk_file = open(bulk_path, "r")
+            bulk_file.write("--" + table.owner.name + "\n")
+            bulk_file.writelines(current_bulk_file.readlines())
+            bulk_file.write("\n\n")
     bulk_file.close()
     return HttpResponse("Success")
 
@@ -170,3 +173,44 @@ def data_status(request):
         context["tables"].append([table._meta.db_table, status])
     context["tables"].sort(key=itemgetter(1))
     return render(request, 'admin/display_report.html', context)
+
+
+class ReportData:
+    owner = ""
+    name = ""
+    rule = ""
+    desc = ""
+    data = []
+    titles = []
+    sql = []
+    def __init__(self, owner, name, rule, data, titles, sql, desc):
+        self.owner = owner
+        self.name = name
+        self.rule = rule
+        self.data = data
+        self.titles = titles
+        self.sql = sql
+        self.desc = desc
+
+
+def generate_final_report(request):
+    module_dir = os.path.dirname(__file__)  # get current directory
+    reports = get_reports(module_dir)
+    context = {"reports": []}
+    for report in reports:
+        file_path = os.path.join(module_dir, report)
+        report_object = open(file_path, "r")
+        report_text = report_object.readlines()
+        owner = report_text.pop(0).replace("--", "")
+        name = report_text.pop(0).replace("--", "")
+        rule = report_text.pop(0).replace("--", "")
+        desc = report_text.pop(0).replace("--", "")
+        titles = report_text.pop(0).replace("--", "").split(",")
+        report_object = open(file_path, "r")
+        sql = report_object.read()
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            output = cursor.fetchall()
+        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
+        context["reports"].append(obj)
+    return render(request, 'admin/final_report.html', context)

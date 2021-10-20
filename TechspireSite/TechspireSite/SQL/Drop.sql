@@ -1,5 +1,7 @@
 DROP TABLE "OrderLine"
 
+DROP TABLE "CustomerReward"
+
 DROP TABLE "PointLog"
 
 DROP TABLE "CustomerCustomerCategory"
@@ -7,8 +9,6 @@ DROP TABLE "CustomerCustomerCategory"
 DROP TABLE "Order"
 
 DROP TABLE "CustomerSocialMedia"
-
-DROP TABLE "CustomerReward"
 
 DROP TABLE "Customer"
 

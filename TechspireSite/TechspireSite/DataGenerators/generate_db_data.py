@@ -195,6 +195,18 @@ def get_employee_store(emp_num):
     store = employee_jobs[0]
     return store
 
+def add_order_lines(emp_ids, product_list, stores):
+    order_lines = []
+    totals = []
+    for index, emp in enumerate(emp_ids):
+        store_id = get_employee_store(emp)
+        stores.append(store_id)
+        lines, total_price = generate_order_lines(index + 1, product_list, store_id)
+        totals.append(total_price)
+        order_lines += lines
+    return order_lines, totals
+
+
 
 # ID, Quantity, ind_price, total_price, product, order
 def generate_orders():
@@ -209,23 +221,17 @@ def generate_orders():
     orders["discount"] = 0
     emp_ids = orders[8].values.tolist()
     stores = []
-    order_lines = []
-    totals = []
-    for index, emp in enumerate(emp_ids):
-        store_id = get_employee_store(emp)
-        stores.append(store_id)
-        lines, total_price = generate_order_lines(index+1, product_list, store_id)
-        totals.append(total_price)
-        order_lines += lines
+    order_lines, totals = add_order_lines(emp_ids, product_list, stores)
     orders["store"] = stores
     orders["o_total"] = totals
     orders["f_total"] = totals
+    orders["emp_ids"] = emp_ids
     order_lines = pandas.DataFrame(order_lines)
     order_lines.index += 1
     path_name = os.path.join(build_path(), "OrderLineList.tsv")
     order_lines.to_csv(path_name, header=None, index=True, sep="\t")
     orders["cust_id"] = orders[0]
-    orders = orders[[0, 7, "o_total", "f_total", "discount", "cust_id", "payment", "store"]]
+    orders = orders[[0, 7, "o_total", "f_total", "discount", "cust_id", "payment", "store", "emp_ids"]]
     path_name = os.path.join(build_path(), "OrderList.tsv")
     orders.to_csv(path_name, header=None, index=False, sep="\t")
 
@@ -328,8 +334,74 @@ def update_employee_locations():
     locations.to_csv(path_name, header=False, index=False, sep="\t")
 
 
+def add_customer_orders():
+    path_name = os.path.join(build_path(), "OrderList.tsv")
+    orders = pandas.read_csv(path_name, delimiter="\t", header=None)
+    orders = orders.loc[orders[1] > "2011-1-1"]
+    orders = orders.sample(10)
+    orders = orders.sample(30, replace=True)
+    freq = orders[1].value_counts()
+    freq_dates = freq.reset_index().values.tolist()
+    dates = []
+    for x in freq_dates:
+        org_date = x[0]
+        count = x[1]
+        for index in range(count):
+            days = datetime.timedelta(days=index+1)
+            new_date = datetime.datetime.strptime(org_date, "%m/%d/%Y") + days
+            new_date = new_date.date()
+            dates.append(new_date)
+    orders[1] = dates
+    emp_ids = orders[8].values.tolist()
+    product_list = get_product_list()
+    order_lines, totals = add_order_lines(emp_ids, product_list, [])
+    order_lines = pandas.DataFrame(order_lines)
+    orders[2] = totals
+    orders[3] = totals
+
+    path_name = os.path.join(build_path(), "StoreRewardList.tsv")
+    ava_rewards = pandas.read_csv(path_name, delimiter="\t", header=None)
+    path_name = os.path.join(build_path(), "RewardList.tsv")
+    rewards = pandas.read_csv(path_name, delimiter="\t", header=None)
+    rewards.index = rewards[0]
+    joined_rewards = ava_rewards.join(rewards, on=3, lsuffix="ls")
+    store_list = orders[7].head(10).values.tolist()
+    points_prices = []
+    reward_list = []
+    for index, store in enumerate(store_list):
+        reward = joined_rewards.loc[joined_rewards["2ls"] == store].sample(1)
+        price = reward["3"].values.tolist()[0]
+        points_prices.append(price)
+        reward_id = reward["0"].values.tolist()[0]
+        order_id = index + 101
+        reward_list.append([order_id, reward_id])
+    reward_list = pandas.DataFrame(reward_list)
+    order_lines[4] += 100
+    path_name = os.path.join(build_path(), "OrderList.tsv")
+    original_orders = pandas.read_csv(path_name, delimiter="\t", header=None, index_col=0)
+    orders.drop(columns=[0,], inplace=True)
+    orders = original_orders.append(orders)
+    orders.reset_index(inplace=True)
+    orders.drop(columns=["index", ], inplace=True)
+    orders.index += 1
+    orders.to_csv(path_name, header=False, index=True, sep="\t")
+    order_lines.index += 292
+    reward_list.index += 1
+    path_name = os.path.join(build_path(), "CustomerRewardList.tsv")
+    reward_list.to_csv(path_name, header=False, index=True, sep="\t")
+
+    path_name = os.path.join(build_path(), "OrderLineList.tsv")
+    order_lines.to_csv(path_name, header=False, index=True, sep="\t", mode="a")
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    # generate_employees()
+    #generate_employees()
     # generate_customers()
     #generate_orders()
     # generate_order_lines(200)
@@ -341,4 +413,6 @@ if __name__ == '__main__':
     #print(select_store_products(2, 5, products))
     #generate_rewards()
     #generate_employee_ss()
-    update_employee_locations()
+    #update_employee_locations()
+    #add_customer_orders()
+

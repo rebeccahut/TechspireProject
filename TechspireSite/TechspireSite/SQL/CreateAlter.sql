@@ -69,7 +69,7 @@ CREATE TABLE PointReasonType(
 CREATE TABLE PointLog(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	points_amount int NOT NULL DEFAULT 0,
-	date date NOT NULL
+	created_date date NOT NULL
 );
 
 CREATE TABLE CustomerSocialMedia(
@@ -100,7 +100,6 @@ CREATE TABLE OrderLine(
 
 CREATE TABLE CustomerReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    date_applied date NOT NULL,
 );
 
 --Kyle D
@@ -268,10 +267,9 @@ ALTER TABLE CustomerSocialMedia ADD
 
 ALTER TABLE PointLog ADD
     customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
-    employee_id int NOT NULL FOREIGN KEY REFERENCES SocialMediaType(id),
+    employee_id int NOT NULL FOREIGN KEY REFERENCES Employee(id),
     reason_id int NOT NULL FOREIGN KEY REFERENCES PointReasonType(id),
-    order_id int NOT NULL FOREIGN KEY REFERENCES "Order"(id),
-    customer_reward_id int NOT NULL FOREIGN KEY REFERENCES CustomerReward(id);
+    order_id int FOREIGN KEY REFERENCES "Order"(id);
 
 --Julia C
 ALTER TABLE OrderLine ADD
@@ -279,7 +277,7 @@ ALTER TABLE OrderLine ADD
     order_id int NOT NULL FOREIGN KEY REFERENCES "Order"(id);
 
 ALTER TABLE CustomerReward ADD
-    customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
+    order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
 
 ALTER TABLE Customer ADD
@@ -334,7 +332,8 @@ ALTER TABLE Store ADD
 ALTER TABLE "Order" ADD
 	customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
 	payment_type_id int NOT NULL FOREIGN KEY REFERENCES PaymentType(id),
-	store_id int NOT NULL FOREIGN KEY REFERENCES Store(id);
+	store_id int NOT NULL FOREIGN KEY REFERENCES Store(id),
+	employee_id int NOT NULL FOREIGN KEY REFERENCES Employee(id);
 
 ALTER TABLE StoreProduct ADD
 	product_id int NOT NULL FOREIGN KEY REFERENCES Product(id),

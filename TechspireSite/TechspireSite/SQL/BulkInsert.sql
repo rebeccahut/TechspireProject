@@ -409,19 +409,6 @@ WITH
 GO
 
 --Julia Chen
-BULK INSERT CustomerReward
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerRewardList.tsv"
-WITH
-	(
-	CHECK_CONSTRAINTS,
-	FIELDTERMINATOR = '\t',
-	ROWTERMINATOR = '\n',
-	KEEPIDENTITY,
-	CODEPAGE = 65001
-	)
-GO
-
---Julia Chen
 BULK INSERT OrderLine
 FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderLineList.tsv"
 WITH
@@ -434,9 +421,9 @@ WITH
 	)
 GO
 
---Jade Nguyen
-BULK INSERT PointLog
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\PointLogList.tsv"
+--Julia Chen
+BULK INSERT CustomerReward
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerRewardList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,

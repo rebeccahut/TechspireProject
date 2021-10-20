@@ -3,7 +3,7 @@ ALTER TABLE OrderLine ADD
     order_id int NOT NULL FOREIGN KEY REFERENCES "Order"(id);
 
 ALTER TABLE CustomerReward ADD
-    customer_id int NOT NULL FOREIGN KEY REFERENCES Customer(id),
+    order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
 
 ALTER TABLE Customer ADD

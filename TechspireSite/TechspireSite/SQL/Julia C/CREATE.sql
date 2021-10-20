@@ -18,5 +18,4 @@ CREATE TABLE OrderLine(
 
 CREATE TABLE CustomerReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    date_applied date NOT NULL,
 );

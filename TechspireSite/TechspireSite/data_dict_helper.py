@@ -23,6 +23,12 @@ def extract_field_props(current_field, model, field_type_dict):
         max_length = current_field.max_digits
         domain = "{} Decimals".format(current_field.decimal_places)
 
+    if current_field.unique:
+        if domain == "NA":
+            domain = "UNIQUE"
+        else:
+            domain += "UNIQUE"
+
     c_delete = False
     c_update = False
     fk = False

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        h1 {text-align: center;}
+        div {
+            background-color:LightGray;
+            padding:5px;
+        }
+    </style>
+  </head>
+  {% block content %}
+  <body>
+    <h1>Techspire Reports</h1>
+    {% for report in reports %}
+        <h2>{{report.name}}</h2>
+        <h3>Creator: {{report.owner}}</h3>
+        <h3>Description: {{report.desc}}</h3>
+        <h3>Purpose: {{report.rule}}</h3>
+        <h3>SQL</h3>
+        <div>
+            {% for row in report.sql %}
+                <p>{{row}}</p>
+            {% endfor %}
+        </div>
+        <h3>Output</h3>
+        <table>
+        <tr>
+            {% for column in report.titles %}
+            <th>
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+
+            {% for row in report.data %}
+            <tr>
+                {% for column in row %}
+                <td>
+                    {{column}}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+    {% endfor %}
+  </body>
+    {% endblock %}
+</html>

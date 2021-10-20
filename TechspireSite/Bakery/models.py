@@ -535,11 +535,11 @@ class StoreReward(DescriptiveModel):
 
 class CustomerReward(DescriptiveModel):
     description = 'Rewards available to a SINGLE loyalty customer to be redeemed, based on the amount of points they have accumulated to date. Available rewards that they (a single loyalty customer) has earned, based on their personal points. A points bank.'
-    date_applied = models.DateField()
-    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
+    discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    order = models.ForeignKey(Order, on_delete=models.RESTRICT, unique=True)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     owner = Owners.Julia
-    load_order = 6
+    load_order = 7
 
     class Meta:
         db_table = "CustomerReward"
@@ -549,16 +549,15 @@ class CustomerReward(DescriptiveModel):
 
 class PointLog(DescriptiveModel):
     description = ' Keeping track of a customers existing loyalty points and used points?'
-    points_consumed = models.IntegerField(default=0)
-    points_produced = models.IntegerField(default=0)
-    date = models.DateField()
+    points_amount = models.IntegerField(default=0)
+    created_date = models.DateField()
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reason = models.ForeignKey(PointReason, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
-    customer_reward = models.ForeignKey(CustomerReward, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Jade
     load_order = 7
+    bulk_insert = False
 
     class Meta:
         db_table = "PointLog"

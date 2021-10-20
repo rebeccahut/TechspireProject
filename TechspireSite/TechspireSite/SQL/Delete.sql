@@ -1,5 +1,7 @@
 DELETE FROM "OrderLine"
 
+DELETE FROM "CustomerReward"
+
 DELETE FROM "PointLog"
 
 DELETE FROM "CustomerCustomerCategory"
@@ -7,8 +9,6 @@ DELETE FROM "CustomerCustomerCategory"
 DELETE FROM "Order"
 
 DELETE FROM "CustomerSocialMedia"
-
-DELETE FROM "CustomerReward"
 
 DELETE FROM "Customer"
 
