@@ -1,5 +1,5 @@
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
-SELECT Floor(final_total) AS point_cost,order_date, "Order".customer_id, "Order".employee_id, 4 AS reason_id, "Order".id
+SELECT (Floor(final_total)/10) AS point_cost,order_date, "Order".customer_id, "Order".employee_id, 4 AS reason_id, "Order".id
 FROM "Order"
 
 
