@@ -367,6 +367,7 @@ class Order(DescriptiveModel):
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
+    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     owner = Owners.Torrey
     load_order = 6
 
