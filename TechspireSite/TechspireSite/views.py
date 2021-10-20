@@ -7,6 +7,7 @@ from operator import itemgetter
 from django.apps import apps
 import glob
 import os
+import pyodbc
 
 
 class FieldTypeMap:
@@ -231,9 +232,30 @@ def generate_final_report(request):
             context["reports"].append(obj)
         except Exception as e:
             print(repr(e))
-            pass
-
-
-
-
     return render(request, 'admin/final_report.html', context)
+
+
+def report_status(request):
+    context = {"titles": ["Report Name", "Status"], "tables": []}
+    module_dir = os.path.dirname(__file__)
+    reports = get_reports(module_dir)
+
+    for report in reports:
+        file_path = os.path.join(module_dir, report)
+        report_object = open(file_path, "r")
+        report_text = report_object.read()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(report_text)
+                output = cursor.fetchall()
+            status = "Success"
+        except Exception as e:
+            print(e)
+            status = "Invalid"
+
+
+        name = os.path.basename(file_path)
+        context["tables"].append([name, status])
+    return render(request, 'admin/display_report.html', context)
+
+
