@@ -434,3 +434,30 @@ WITH
 	)
 GO
 
+
+UPDATE "Order"
+SET original_total = Totals.Total,
+final_total = Totals.Total
+FROM "Order"
+INNER JOIN (
+SELECT 
+SUM(OrderLine.total_price) AS Total, OrderLine.order_id
+FROM OrderLine 
+GROUP BY OrderLine.order_id)
+AS Totals ON Totals.order_id = "Order".id
+
+
+
+INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
+SELECT (Floor(final_total)/10) AS point_cost,order_date, "Order".customer_id, "Order".employee_id, 4 AS reason_id, "Order".id
+FROM "Order"
+
+
+
+INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
+SELECT -point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
+FROM "CustomerReward"
+JOIN Reward ON Reward.id = CustomerReward.id
+JOIN "Order" ON "Order".id = CustomerReward.order_id
+
+

@@ -129,6 +129,16 @@ def generate_delete(request):
     return HttpResponse("Success")
 
 
+
+def copy_from_file(path, bulk_file):
+    module_dir = os.path.dirname(__file__)
+    file = open(path, "r")
+    bulk_file.writelines(["\n"])
+    bulk_file.writelines(file.readlines())
+    file.close()
+
+
+
 def generate_bulk(request):
     solid_tables = ddh.get_solid_models("Bakery")
     solid_tables.sort(key=lambda x: x.load_order)
@@ -149,6 +159,11 @@ def generate_bulk(request):
             bulk_file.write("--" + table.owner.name + "\n")
             bulk_file.writelines(current_bulk_file.readlines())
             bulk_file.write("\n\n")
+
+    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateOrderTotals.sql")
+    copy_from_file(path, bulk_file)
+    path = os.path.join(module_dir, "SQL", "Brett M", "InsertPointLogs.sql")
+    copy_from_file(path, bulk_file)
     bulk_file.close()
     return HttpResponse("Success")
 

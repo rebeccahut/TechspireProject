@@ -535,7 +535,6 @@ class StoreReward(DescriptiveModel):
 
 class CustomerReward(DescriptiveModel):
     description = 'Rewards available to a SINGLE loyalty customer to be redeemed, based on the amount of points they have accumulated to date. Available rewards that they (a single loyalty customer) has earned, based on their personal points. A points bank.'
-    discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     order = models.ForeignKey(Order, on_delete=models.RESTRICT, unique=True)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     owner = Owners.Julia

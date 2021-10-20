@@ -49,11 +49,10 @@ class TechSpireAdminSite(admin.AdminSite):
 
         return TemplateResponse(request, self.index_template or 'admin/index.html', context)
 
+    #path('report/<int:index>/', self.admin_view(views.html_report), name="report")
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-
-            path('report/<int:index>/', self.admin_view(views.html_report), name="report"),
             path('dict1/', self.admin_view(views.dict1), name="dict1"),
             path('dict2/', self.admin_view(views.dict2), name="dict2"),
             path('dict3/', self.admin_view(views.dict3), name="dict3"),
