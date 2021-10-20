@@ -213,19 +213,27 @@ def generate_final_report(request):
     reports = get_reports(module_dir)
     context = {"reports": []}
     for report in reports:
-        file_path = os.path.join(module_dir, report)
-        report_object = open(file_path, "r")
-        report_text = report_object.readlines()
-        owner = report_text.pop(0).replace("--", "")
-        name = report_text.pop(0).replace("--", "")
-        rule = report_text.pop(0).replace("--", "")
-        desc = report_text.pop(0).replace("--", "")
-        titles = report_text.pop(0).replace("--", "").split(",")
-        report_object = open(file_path, "r")
-        sql = report_object.read()
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-            output = cursor.fetchall()
-        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
-        context["reports"].append(obj)
+        try:
+            file_path = os.path.join(module_dir, report)
+            report_object = open(file_path, "r")
+            report_text = report_object.readlines()
+            owner = report_text.pop(0).replace("--", "")
+            name = report_text.pop(0).replace("--", "")
+            rule = report_text.pop(0).replace("--", "")
+            desc = report_text.pop(0).replace("--", "")
+            titles = report_text.pop(0).replace("--", "").split(",")
+            report_object = open(file_path, "r")
+            sql = report_object.read()
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                output = cursor.fetchall()
+            obj = ReportData(owner, name, rule, output, titles, report_text, desc)
+            context["reports"].append(obj)
+        except Exception as e:
+            print(repr(e))
+            pass
+
+
+
+
     return render(request, 'admin/final_report.html', context)
