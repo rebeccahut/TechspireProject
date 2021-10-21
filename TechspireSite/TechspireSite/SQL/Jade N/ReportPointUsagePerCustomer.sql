@@ -10,15 +10,13 @@ Customer.first_name AS "Customer First Name",
 Customer.last_name AS "Customer Last Name", 
 "Order".id AS "Order #", 
 "Order".order_date AS "Order Date",
-PointReasonType.reason_name AS "Reason"
+Points."Points Used"
 
 FROM Customer
-INNER JOIN(SELECT (PointLog.points_amount) AS "Points Used", PointLog.customer_id
-			FROM PointLog
-			WHERE PointLog.points_amount < 0
-			GROUP BY PointLog.customer_id) 
-			AS Points ON Customer.id = Points.customer_id
 INNER JOIN CustomerStatus ON CustomerStatus.id = Customer.customer_status_id
 INNER JOIN "Order" ON Customer.id = "Order".customer_id
-INNER JOIN PointLog ON PointLog.customer_id = Customer.id
-INNER JOIN PointReasonType ON PointLog.reason_id = PointReasonType.id
+INNER JOIN (SELECT SUM(PointLog.points_amount) AS "Points Used", PointLog.order_id
+			FROM PointLog
+			WHERE PointLog.points_amount < 0
+			GROUP BY PointLog.order_id) 
+			AS Points ON "Order".id = Points.order_id
