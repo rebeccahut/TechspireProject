@@ -2,7 +2,7 @@
 --Product Name and Total Sales
 --The client can use this query to provide the products name and the sum of it's total sales
 --Displays the product and the sum of the total sales
---Product Name, Sum
+--Row Number, Product Name, Sum
 
 SELECT ROW_NUMBER() OVER(ORDER BY Product.product_name) AS num_row,
 Product.product_name, Sum(OrderLine.total_price) AS Sum_Total_Sales 
