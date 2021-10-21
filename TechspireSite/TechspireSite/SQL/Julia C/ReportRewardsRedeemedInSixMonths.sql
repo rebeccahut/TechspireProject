@@ -12,10 +12,12 @@ COUNT(Reward.reward_name) AS 'Times Redeemed'
 
 FROM Reward
 INNER JOIN CustomerReward ON  Reward.id = CustomerReward.reward_id 
+INNER JOIN Customer ON CustomerReward.customer_id = Customer.id
+INNER JOIN "Order" ON "Order".customer_id = Customer.id
 INNER JOIN RewardStatus ON RewardStatus.id = Reward.reward_status_id
-INNER JOIN PointLog on Reward.point_cost = PointLog.points_amount
+INNER JOIN PointLog on Reward.point_cost = PointLog.points_amount 
 
 WHERE RewardStatus.is_active = 1
-AND "CustomerReward".date_applied > '2012-01-01' AND "CustomerReward".date_applied < '2012-06-30'
+AND "Order".order_date > '2012-01-01' AND "Order".order_date < '2012-06-30'
 
 GROUP BY CustomerReward.date_applied, Reward.reward_name, Reward.point_cost
