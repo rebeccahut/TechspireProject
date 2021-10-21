@@ -5,7 +5,7 @@
 --Product Category name, Total Revenue 
 
 
-Select Top 10 (concat("$", p.product_name, sum(ol.total_price))) as TotalRevenue
+Select Top 10 (concat('$', cast(sum(ol.total_price) AS decimal(18,2)))) as TotalRevenue, p.product_name
 From orderline as ol
 Left join "Order" as o on ol.order_id=o.id
 Left join product as p on ol.product_id=p.id
