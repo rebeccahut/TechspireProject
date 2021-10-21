@@ -1,8 +1,8 @@
 -- Kyle Dela Pena
--- Employment duration of all employees
--- Report can be used for finding the correlation between the most senior employees and their different job associations (e.g. role, category, and type).
--- Displays all employees with their associations along with the date they stopped being an employee
--- row num, first name, last name, duration, job name, type name, category name, status name, end date -ordered by duration, last name
+-- Newest employees based on employment type
+-- Report can be used to see all the new hires so that the client can assign training with ease
+-- Displays new hires with all the different employee associations along with contact information 
+-- row num, first name, last name, duration, job name, type name, category name, status name, end date -ordered by duration, last name (new hire <= 20 days of employment)
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Employee.last_name) AS 'Row Num', 
@@ -23,4 +23,5 @@ INNER JOIN EmployeeStatus ON Employee.employee_status_id = EmployeeStatus.id
 INNER JOIN EmployeeEmployeeCategory ON EmployeeEmployeeCategory.employee_id = Employee.id
 INNER JOIN EmployeeCategory ON EmployeeEmployeeCategory.employee_category_id = EmployeeCategory.id
 
-ORDER BY 'Duration in days' DESC
+WHERE (DATEDIFF(day, begin_date, IIF(end_date IS NOT NULL , end_date, getdate() ))) <= 20
+ORDER BY EmployeeType.id
