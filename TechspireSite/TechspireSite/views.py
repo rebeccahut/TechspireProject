@@ -1,7 +1,9 @@
 from . import data_dict_helper as ddh
+
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.db import connection
+from django.db import connection, ProgrammingError
+
 from django.contrib import admin
 from operator import itemgetter
 from django.apps import apps
@@ -236,7 +238,7 @@ def generate_final_report(request):
 
 
 def report_status(request):
-    context = {"titles": ["Report Name", "Status"], "tables": []}
+    context = {"titles": ["Report Name", "Owner", "Status"], "tables": []}
     module_dir = os.path.dirname(__file__)
     reports = get_reports(module_dir)
 
@@ -249,13 +251,21 @@ def report_status(request):
                 cursor.execute(report_text)
                 output = cursor.fetchall()
             status = "Success"
-        except Exception as e:
-            print(e)
+        except ProgrammingError as e:
+            open("Error.txt", "w").write(repr(e))
             status = "Invalid"
 
-
+        owner = os.path.basename(os.path.dirname(file_path))
         name = os.path.basename(file_path)
-        context["tables"].append([name, status])
-    return render(request, 'admin/display_report.html', context)
+        context["tables"].append([name, owner, status])
+    num_reports = len(context["tables"])
+    num_reports = "Num reports: " + str(num_reports)
+    num_errors = 0
+    for row in context["tables"]:
+        if row[2] == "Invalid":
+            num_errors += 1
+    num_errors = "Num Errors: " + str(num_errors)
+    context["extra_info"] = [num_reports, num_errors]
+    return render(request, 'admin/table_report.html', context)
 
 
