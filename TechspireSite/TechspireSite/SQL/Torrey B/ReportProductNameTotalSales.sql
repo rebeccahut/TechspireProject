@@ -4,6 +4,7 @@
 --Displays the product and the sum of the total sales
 --Product Name, Sum
 
+
 Select Product.Product_name, Sum(OrderLine.total_price) AS Sum_Total_Sales 
 From OrderLine
 INNER JOIN "Order"
@@ -14,4 +15,5 @@ INNER JOIN ProductStatus
 ON Product.product_status_id = productStatus.id
 Group By Product.product_name
 ;
+
 
