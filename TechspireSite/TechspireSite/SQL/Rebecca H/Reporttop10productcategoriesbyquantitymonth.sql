@@ -1,6 +1,6 @@
 --Rebecca Hutchinson
---Top 10 product categories by quantity sold this month
---This report is to show the top ten types of items are sold in a month.
+--Top 10 product categories by quantity sold historically
+--This report is to show the top ten types of items are sold over all history.
 --Display top 10 product categories by quantity, order most to least.
 --Product Type, Quantity Sold
 
