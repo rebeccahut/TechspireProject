@@ -4,8 +4,8 @@
 --Displays all customers and their spending totals/point totals
 --Row Number,First Name,Last Name,Spending Total,Point Total
 
-
-SELECT Customer.first_name, Customer.last_name, Totals.total, Points.total FROM
+SELECT ROW_NUMBER() OVER(ORDER BY Customer.id) AS num_row,
+Customer.first_name, Customer.last_name, Totals.total, Points.total FROM
 (SELECT
 SUM ("ORDER".final_total) AS total, "Order".customer_id
 FROM "ORDER"
