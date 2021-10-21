@@ -1,7 +1,7 @@
 --Jade Nguyen
 --Points Spent Per Customer
---The client can use this report to analyze which customers have spent the most points and which reward was typically associated with the point usage. This will help the client determine which rewards are popular amongst her customers, as well as the frequency of point usage amongst her customers. 
---Displays only the customers that have used points and the rewards that they have used in conjunction with the point usage. In addition, the order is detailed to serve as a guide in case the client would like to look into a particular order more. 
+--The client can use this report to analyze which customers have spent points in assocation with which order on specific dates. This will help the client determine which customer is shown to regularly use their points, as well as around what time period points are being used more often. 
+--Displays only the customers that have used points and the orders in conjunction with the point usage. In addition, the order number and date is detailed to serve as a guide in case the client would like to look into a particular order more. 
 --Row Number, First Name, Last Name, Order Number, Order Date, Point Reason Name
 
 SELECT ROW_NUMBER() 
