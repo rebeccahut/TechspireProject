@@ -2,10 +2,10 @@
 --Points Spent Per Customer
 --The client can use this report to analyze which customers have spent points in assocation with which order on specific dates. This will help the client determine which customer is shown to regularly use their points, as well as around what time period points are being used more often. 
 --Displays only the customers that have used points and the orders in conjunction with the point usage. In addition, the order number and date is detailed to serve as a guide in case the client would like to look into a particular order more. 
---Row Number, First Name, Last Name, Order Number, Order Date, Point Reason Name
+--Row Number, First Name, Last Name, Order Number, Order Date, Points Used
 
 SELECT ROW_NUMBER() 
-OVER(ORDER BY Customer.first_name) AS num_row, 
+OVER(ORDER BY "Order".order_date) AS num_row, 
 Customer.first_name AS "Customer First Name", 
 Customer.last_name AS "Customer Last Name", 
 "Order".id AS "Order #", 
