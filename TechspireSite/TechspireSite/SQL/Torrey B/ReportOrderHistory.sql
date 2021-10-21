@@ -4,8 +4,8 @@
 --Displays the customer information and their associated order information
 --First Name, Last Name, Order ID, Order Date, Product Name, Product Description, Status Name
 
-
-Select Customer.first_name, Customer.last_name, "Order".id, "Order".order_date, Product.product_name, Product_desc, CustomerStatus.status_name
+SELECT ROW_NUMBER() OVER(ORDER BY Customer.id) AS num_row,
+Customer.first_name, Customer.last_name, "Order".id, "Order".order_date, Product.product_name, Product_desc, CustomerStatus.status_name
 From Customer
 INNER JOIN "Order"
 ON Customer.id = "Order".customer_id
