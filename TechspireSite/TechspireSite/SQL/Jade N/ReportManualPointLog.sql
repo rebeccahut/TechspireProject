@@ -6,7 +6,7 @@
 
 SELECT ROW_NUMBER() 
 
-OVER(ORDER BY Employee.id) AS num_row, 
+OVER(ORDER BY Employee.id, PointReasonType.id) AS num_row, 
 Employee.first_name AS "Employee First Name", 
 Employee.last_name AS "Employee Last Name", 
 Customer.first_name AS "Customer First Name", 
