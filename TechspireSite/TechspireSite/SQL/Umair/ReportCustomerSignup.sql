@@ -10,7 +10,7 @@ OVER(ORDER BY Customer.first_name ASC) AS Row_Num,
 Customer.first_name AS "Customer First Name",
 Customer.last_name AS "Customer Last Name",
 Customer.begin_date AS "Loyalty Membership Beginning",
-CustomerStatus.status_name AS "Customer Status",
+CustomerStatus.status_id AS "Customer Status",
 Store.id AS "Store",
 Employee.first_name AS "Employee First Name", 
 EmployeeStatus.id AS "Employee Status"
