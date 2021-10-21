@@ -1,12 +1,15 @@
 from . import data_dict_helper as ddh
+
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.db import connection
+from django.db import connection, ProgrammingError
+
 from django.contrib import admin
 from operator import itemgetter
 from django.apps import apps
 import glob
 import os
+import pyodbc
 
 
 class FieldTypeMap:
@@ -231,9 +234,38 @@ def generate_final_report(request):
             context["reports"].append(obj)
         except Exception as e:
             print(repr(e))
-            pass
-
-
-
-
     return render(request, 'admin/final_report.html', context)
+
+
+def report_status(request):
+    context = {"titles": ["Report Name", "Owner", "Status"], "tables": []}
+    module_dir = os.path.dirname(__file__)
+    reports = get_reports(module_dir)
+
+    for report in reports:
+        file_path = os.path.join(module_dir, report)
+        report_object = open(file_path, "r")
+        report_text = report_object.read()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(report_text)
+                output = cursor.fetchall()
+            status = "Success"
+        except ProgrammingError as e:
+            open("Error.txt", "w").write(repr(e))
+            status = "Invalid"
+
+        owner = os.path.basename(os.path.dirname(file_path))
+        name = os.path.basename(file_path)
+        context["tables"].append([name, owner, status])
+    num_reports = len(context["tables"])
+    num_reports = "Num reports: " + str(num_reports)
+    num_errors = 0
+    for row in context["tables"]:
+        if row[2] == "Invalid":
+            num_errors += 1
+    num_errors = "Num Errors: " + str(num_errors)
+    context["extra_info"] = [num_reports, num_errors]
+    return render(request, 'admin/table_report.html', context)
+
+
