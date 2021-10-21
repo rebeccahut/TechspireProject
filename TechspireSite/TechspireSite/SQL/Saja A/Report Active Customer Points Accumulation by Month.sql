@@ -14,11 +14,11 @@ CustomerCategory.category_name AS "Category"
 
 FROM Customer
 INNER JOIN CustomerStatus ON CustomerStatus.id = Customer.customer_status_id
-INNER JOIN (SELECT SUM(PointLog.points_amount) AS "Points Accumulated", PointLog.customer_id
+INNER JOIN (SELECT SUM(PointLog.points_amount) AS "Points Accumulated", PointLog.points_amount
 			FROM PointLog
 			WHERE PointLog.points_amount < 0
-			GROUP BY PointLog.customer_id) 
-			AS Points ON Customer.id = Points.customer_id
+			GROUP BY PointLog.points_amount) 
+			AS Points ON Customer.id = Points.points_amount
 INNER JOIN CustomerCustomerCategory ON CustomerCustomerCategory.customer_id = Customer.id
 INNER JOIN CustomerCategory ON CustomerCustomerCategory.customer_category_id = CustomerCategory.id
 
