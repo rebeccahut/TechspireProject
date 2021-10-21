@@ -2,7 +2,7 @@
 --Employee Amount of Manual Points
 --The client can use this report as a way to keep track of the amount of points that are added to a customer manually.
 --Displays employee first and last name, the amount of points, the reason name, and the id, first and last name of the customer.
---row number,first_name,last_name,points_amount,reason_name,reason_desc,id,first_name,last_name
+--Row number,first_name,last_name,points_amount,reason_name,reason_desc,id,first_name,last_name
 
 Select ROW_NUMBER()
 
