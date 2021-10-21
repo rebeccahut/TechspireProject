@@ -1,4 +1,4 @@
--- Kyle Dela Pena
+-- Srijana Shrestha
 -- Newest employees based on job role
 -- Report can be used to see all the new hires so that the client can assign training with ease
 -- Displays new hires with all the different employee associations along with contact information (new hire <= 20 days)
