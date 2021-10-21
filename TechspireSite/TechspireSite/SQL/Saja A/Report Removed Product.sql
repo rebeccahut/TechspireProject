@@ -5,7 +5,7 @@
 -- Row Number, Product Name, Product Type, Product Status, Inactivity Reason, Store 
 
 SELECT ROW_NUMBER()
-OVER(ORDER BY Product.product_name ASC) AS Row_Num,
+OVER(ORDER BY Product.product_name DESC) AS Row_Num,
 Product.product_name AS 'Product Name',
 Product.product_type_id AS 'Product Type',
 Product.product_status_id AS 'Product Status',
