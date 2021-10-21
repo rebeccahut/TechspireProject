@@ -33,8 +33,12 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+PHONENUMBER_DEFAULT_REGION = 'US'
+
 INSTALLED_APPS = [
+    'phonenumber_field',
     'django_extensions',
+    'import_export',
     'TechspireSite.apps.TechSpireAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',

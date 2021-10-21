@@ -1,0 +1,8 @@
+{% extends 'admin/display_report.html' %}
+
+{% block content %}
+    {% for info in extra_info %}
+        <p>{{info}}</p>
+    {% endfor %}
+    {{ block.super }}
+{% endblock %}
