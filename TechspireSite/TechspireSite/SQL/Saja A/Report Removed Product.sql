@@ -14,9 +14,6 @@ Store.store_name AS 'From Store'
 
 FROM Product
 INNER JOIN ProductStatus ON Product.product_status_id = ProductStatus.id
-INNER JOIN BanType ON Product.product_status_id = BanType.id
+INNER JOIN BanType ON Product.ban_reason_id = BanType.id
 INNER JOIN StoreProduct ON Product.id = StoreProduct.product_id
 INNER JOIN Store ON StoreProduct.store_id = Store.id
-
-
-WHERE ProductStatus.is_active = 3 ;
