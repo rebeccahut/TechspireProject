@@ -4,8 +4,8 @@
 --Displays the product and the sum of the total sales
 --Product Name, Sum
 
-
-Select Product.Product_name, Sum(OrderLine.total_price) AS Sum_Total_Sales 
+SELECT ROW_NUMBER() OVER(ORDER BY Product.product_name) AS num_row,
+Product.product_name, Sum(OrderLine.total_price) AS Sum_Total_Sales 
 From OrderLine
 INNER JOIN "Order"
 ON OrderLine.order_id = "Order".ID
@@ -14,6 +14,6 @@ ON OrderLine.product_id = Product.id
 INNER JOIN ProductStatus
 ON Product.product_status_id = productStatus.id
 Group By Product.product_name
+ORDER BY Sum(OrderLine.total_price) desc
 ;
-
 
