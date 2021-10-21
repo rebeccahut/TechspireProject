@@ -2,10 +2,10 @@
 --Customer Status and Social Media
 --could add sum for total points and see which Social media type has warned the most rewards
 --The client can use this query to understand a customer Status, what social media platform they use and the date it was added.
---First Name, Last Name, Status, Social Media Name, Date
+--Row Number,First Name, Last Name, Status, Social Media Name, Date
 
-
-SELECT Customer.first_name, Customer.last_name, CustomerStatus.status_name, SocialMediaType.Social_media_name, CustomerSocialMedia.date_added
+SELECT ROW_NUMBER() OVER(ORDER BY Customer.id) AS num_row,
+Customer.first_name, Customer.last_name, CustomerStatus.status_name, SocialMediaType.Social_media_name, CustomerSocialMedia.date_added
 FROM Customer
 INNER JOIN CustomerReward
 ON Customer.id = CustomerReward.customer_id
