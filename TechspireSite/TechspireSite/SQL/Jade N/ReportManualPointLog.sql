@@ -11,7 +11,7 @@ Employee.first_name AS "Employee First Name",
 Employee.last_name AS "Employee Last Name", 
 Customer.first_name AS "Customer First Name", 
 Customer.last_name AS "Customer Last Name", 
-"Order".id AS "Order #", 
+"Order".id AS "Order Number", 
 "Order".order_date AS "Order Date",
 PointReasonType.reason_name AS "Reason"
 
