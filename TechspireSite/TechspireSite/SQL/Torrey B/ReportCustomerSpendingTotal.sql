@@ -4,11 +4,10 @@
 --Displays all customers and their spending totals/point totals
 --Row Number,First Name,Last Name,Spending Total,Point Total
 
-SELECT ROW_NUMBER() OVER(ORDER BY Totals.total AS num_row,
-Customer.first_name, Customer.last_name, Totals.total, Points.total 
-FROM
+
+SELECT Customer.first_name, Customer.last_name, Totals.total, Points.total FROM
 (SELECT
-SUM ("ORDER".final_total) AS total, "Order".customer_id --, count("Order.id") AS "Total Orders Placed",
+SUM ("ORDER".final_total) AS total, "Order".customer_id
 FROM "ORDER"
 GROUP BY "Order".customer_id)
 AS Totals
@@ -19,4 +18,3 @@ FROM PointLog
 GROUP BY PointLog.customer_id)
 AS Points ON Points.customer_id = Totals.customer_id
 ORDER BY Totals.total
------------------------------------------------------------------------
