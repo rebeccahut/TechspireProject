@@ -5,7 +5,7 @@
 --Product Type, Quantity Sold
 
 
-Select pt.product_type_name, sum(ol.quantity) as QuantitySold
+Select TOP 10 pt.product_type_name, sum(ol.quantity) as QuantitySold
 From orderline as ol
 Left join "Order" as o on ol.order_id=o.id
 Left join product as p on ol.product_id=p.id 
@@ -15,4 +15,4 @@ Where YEAR(o.order_date) = YEAR(getdate())
 AND MONTH(o.order_date) = MONTH(getdate())
 Group by pt.product_type_name
 Order by sum(ol.quantity) desc
-Limit 10
+
