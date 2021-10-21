@@ -2,7 +2,7 @@
 --Order History
 --The client can use this report to view the order history of clients.
 --Displays the customer information and their associated order information
---First Name, Last Name, Order ID, Order Date, Product Name, Product Description, Status Name
+--Row Number, First Name, Last Name, Order ID, Order Date, Product Name, Product Description, Status Name
 
 SELECT ROW_NUMBER() OVER(ORDER BY Customer.id) AS num_row,
 Customer.first_name, Customer.last_name, "Order".id, "Order".order_date, Product.product_name, Product_desc, CustomerStatus.status_name
