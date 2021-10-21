@@ -2,7 +2,7 @@
 --Total Points Accumulated Per Customer
 --The client can use this report to analyze which customers have accumulated the most points based on their entire order history. This will help the client easily view her most-valuable customers as well as understand the retention rate she has of her customers. 
 --Displays only the customers that have accumulated points in an order of who has accumulated the most to the least. 
---Row Number, First Name, Last Name, Order Number, Points Accumulated, Category Name
+--Row Number, Customer First Name, Customer Last Name, Order Number, Points Accumulated, Category Name
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Points."Points Accumulated" DESC) AS num_row, 
