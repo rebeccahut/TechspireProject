@@ -16,6 +16,6 @@ Store.id AS "Store"
 
 
 From Customer
-INNER JOIN CustomerStatus ON CustomerStatus.id = Customer.id
+INNER JOIN CustomerStatus ON CustomerStatus.id = Customer.customer_status_id
 INNER JOIN Tier ON Tier.id = Customer.id
 INNER JOIN Store ON Store.id = Tier.id
