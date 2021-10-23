@@ -1,9 +1,8 @@
 --Alanna Gilcrease
 --Current Active Employees
---The client could use this report to view a list of current active employees.
---For example, the client could use this report to call employees in the event of an emergency or to call someone in to work if shorthanded.
+--The client could use this report to view a list of current active employees. For example, the client could use this report to call employees in the event of an emergency or to call someone in to work if shorthanded.
 --Displays all active employees per store
---Row Number, First Name, Last Name, Status, Store
+--Row Number, First Name, Last Name, Status, Store,Is Active
 
 SELECT ROW_NUMBER () OVER(ORDER BY Employee.last_name) AS 'Row Num',
 Employee.id AS 'ID',

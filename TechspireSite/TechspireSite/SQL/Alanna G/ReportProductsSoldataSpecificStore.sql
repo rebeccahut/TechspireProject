@@ -1,8 +1,7 @@
 --Alanna Gilcrease
 --Products Sold at Specific Store
 --The client could use this report to list and compare what product each store sells,
---the quantity of each product sold, and the amount of each product sold.
---Displays all products sold at each store
+--Displays all products sold at each store. The quantity of each product sold, and the amount of each product sold.
 --Row Number, Product Name, Status, Store Name
 
 SELECT ROW_NUMBER () OVER(ORDER BY ProductType.id) AS 'Row Num',

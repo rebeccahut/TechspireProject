@@ -6,12 +6,23 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django import forms
 from django.db.models import CheckConstraint
 from django.db.models import Q
 from phonenumber_field.modelfields import PhoneNumberField
-
-
+from datetime import datetime
+from decimal import Decimal
 from .Owners import Owners
+
+
+class MoneyField(models.DecimalField):
+    def __init__(self):
+        super().__init__(max_digits=19, decimal_places=4, default=0)
+
+    def __str__(self):
+        return "$" + super.__str__(self)
+
+    widget = forms.Textarea
 
 
 class DescriptiveModel(models.Model):
@@ -26,7 +37,7 @@ class DescriptiveModel(models.Model):
         managed = False
 
 
-#Used as an abstract parent for status codes
+# Used as an abstract parent for status codes
 class StatusCode(DescriptiveModel):
     description = "Used to soft delete rows with a reason name and desc"
     status_name = models.CharField(max_length=40)
@@ -42,9 +53,8 @@ class StatusCode(DescriptiveModel):
         managed = False
 
 
-#Used as an abstract parent for labels
+# Used as an abstract parent for labels
 class LabelCode(DescriptiveModel):
-
     description = "Allows for multiple named categories"
     type_name = models.CharField(max_length=40)
     type_desc = models.CharField(max_length=200, blank=True, null=True)
@@ -59,7 +69,7 @@ class LabelCode(DescriptiveModel):
 
 
 class CustomerLabel(DescriptiveModel):
-    description = 'Categorizes customers based on the opinion of the store owner.' 
+    description = 'Categorizes customers based on the opinion of the store owner.'
     owner = Owners.Rebecca
     category_name = models.CharField(max_length=40)
     category_desc = models.CharField(max_length=200, blank=True, null=True)
@@ -174,7 +184,7 @@ class Country(DescriptiveModel):
         verbose_name_plural = "Country"
         managed = False
 
-        
+
 class StateProvince(DescriptiveModel):
     description = 'The state/province that a particular entity (a store, a customer) is located in.'
     state_name = models.CharField(max_length=60)
@@ -220,7 +230,7 @@ class Tier(DescriptiveModel):
         managed = False
 
 
-#Used as an abstract parent for people
+# Used as an abstract parent for people
 class Person(DescriptiveModel):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
@@ -234,6 +244,9 @@ class Person(DescriptiveModel):
     class Meta:
         abstract = True
         managed = False
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name
 
 
 class EmployeeType(LabelCode):
@@ -342,6 +355,9 @@ class Store(DescriptiveModel):
         verbose_name_plural = "Store"
         managed = False
 
+    def __str__(self):
+        return self.store_name
+
 
 class EmployeeJob(DescriptiveModel):
     description = 'Allows an employee to have multiple jobs at the same or different stores.'
@@ -361,7 +377,7 @@ class EmployeeJob(DescriptiveModel):
 class Order(DescriptiveModel):
     description = 'The customer’s finalized transaction of products purchased. This order generates customer loyalty points based on the monetary total of the transaction.'
     order_date = models.DateField()
-    original_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    original_total = MoneyField()
     final_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
@@ -376,6 +392,11 @@ class Order(DescriptiveModel):
         verbose_name_plural = "Order/Transaction"
         managed = False
 
+    def __str__(self):
+        return str(self.store) + "-" + str(self.customer) + "-" + str(self.order_date)
+
+
+
 
 class ProductType(DescriptiveModel):
     description = ' Identifying certain product types that are eligible to be purchased with points, versus products that are not eligible to earn points on; used to distinguish exclusions. '
@@ -388,6 +409,9 @@ class ProductType(DescriptiveModel):
         db_table = "ProductType"
         verbose_name_plural = "Product Type"
         managed = False
+
+    def __str__(self):
+        return self.product_type_name
 
 
 class Product(DescriptiveModel):
@@ -406,6 +430,9 @@ class Product(DescriptiveModel):
         verbose_name_plural = "Product"
         managed = False
 
+    def __str__(self):
+        return self.product_name
+
 
 class OrderLine(DescriptiveModel):
     description = 'Represents information located on a singular line found on a receipt/invoice produced after a completed transaction that describes the customer’s transaction and product details (quantity, product type, total price for that order line).'
@@ -421,6 +448,12 @@ class OrderLine(DescriptiveModel):
         db_table = "OrderLine"
         verbose_name_plural = "Order Line"
         managed = False
+
+
+    def save(self, *args, **kwargs):
+        self.ind_price = Product.objects.get(pk=self.product.id).product_price
+        self.total_price = self.ind_price * self.quantity
+        super(OrderLine, self).save(*args, **kwargs)
 
 
 class Reward(DescriptiveModel):
@@ -446,6 +479,9 @@ class Reward(DescriptiveModel):
         db_table = "Reward"
         verbose_name_plural = "Reward"
         managed = False
+
+    def __str__(self):
+        return self.reward_name
 
 
 class SocialMediaType(DescriptiveModel):
@@ -516,7 +552,7 @@ class StoreProduct(DescriptiveModel):
 
     class Meta:
         db_table = "StoreProduct"
-        verbose_name_plural = "Store Product"
+        verbose_name_plural = "StoreProduct/Menu"
         managed = False
 
 
@@ -563,6 +599,3 @@ class PointLog(DescriptiveModel):
         db_table = "PointLog"
         verbose_name_plural = "Point Log"
         managed = False
-
-
-

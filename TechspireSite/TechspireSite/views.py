@@ -2,7 +2,7 @@ from . import data_dict_helper as ddh
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.db import connection, ProgrammingError
+from django.db import connection, ProgrammingError, DataError
 
 from django.contrib import admin
 from operator import itemgetter
@@ -216,24 +216,26 @@ def generate_final_report(request):
     reports = get_reports(module_dir)
     context = {"reports": []}
     for report in reports:
-        try:
-            file_path = os.path.join(module_dir, report)
-            report_object = open(file_path, "r")
-            report_text = report_object.readlines()
-            owner = report_text.pop(0).replace("--", "")
-            name = report_text.pop(0).replace("--", "")
-            rule = report_text.pop(0).replace("--", "")
-            desc = report_text.pop(0).replace("--", "")
-            titles = report_text.pop(0).replace("--", "").split(",")
-            report_object = open(file_path, "r")
-            sql = report_object.read()
-            with connection.cursor() as cursor:
+        file_path = os.path.join(module_dir, report)
+        report_object = open(file_path, "r")
+        report_text = report_object.readlines()
+        owner = report_text.pop(0).replace("--", "")
+        name = report_text.pop(0).replace("--", "")
+        rule = report_text.pop(0).replace("--", "")
+        desc = report_text.pop(0).replace("--", "")
+        titles = report_text.pop(0).replace("--", "").split(",")
+        report_object = open(file_path, "r")
+        sql = report_object.read()
+        with connection.cursor() as cursor:
+            try:
                 cursor.execute(sql)
                 output = cursor.fetchall()
-            obj = ReportData(owner, name, rule, output, titles, report_text, desc)
-            context["reports"].append(obj)
-        except Exception as e:
-            print(repr(e))
+            except Exception as e:
+                output = []
+                print(repr(e))
+        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
+        context["reports"].append(obj)
+
     return render(request, 'admin/final_report.html', context)
 
 
@@ -254,10 +256,12 @@ def report_status(request):
         except ProgrammingError as e:
             open("Error.txt", "w").write(repr(e))
             status = "Invalid"
-
+        except DataError:
+            status = "Invalid"
         owner = os.path.basename(os.path.dirname(file_path))
         name = os.path.basename(file_path)
-        context["tables"].append([name, owner, status])
+        if status == "Invalid":
+            context["tables"].append([name, owner, status])
     num_reports = len(context["tables"])
     num_reports = "Num reports: " + str(num_reports)
     num_errors = 0

@@ -1,6 +1,6 @@
 --Brett Meirhofer
 --Cashier Customer Performance Historical
---The client can use this report in order to compare the performance of their cashiers, previous and current.
+--The client can use this report in order to compare the performance of their current cashiers agaisnt historical cashier performance.
 --Displays all the cashiers and the total amount of customer spending with them acting as the cashier.
 --Row Number,First Name,Last Name,Status,Type,Transaction Count,Total Spending,Avg Spending
 

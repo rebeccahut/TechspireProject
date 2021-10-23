@@ -1,6 +1,6 @@
 --Brett Meirhofer
 --Cashier Customer Performance Active
---The client can use this report in order to assess the performance of their active cashiers.
+--The client can use this report to help assess the performance of their active cashiers.
 --Displays all the active cashiers and the total amount of customer spending with them acting as the cashier.
 --Row Number,First Name,Last Name,Type,Transaction Count,Total Spending,Avg Spending
 
