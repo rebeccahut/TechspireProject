@@ -347,6 +347,7 @@ class Store(DescriptiveModel):
     store_status = models.ForeignKey(StoreStatus, on_delete=models.RESTRICT)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
+    employees = models.ManyToManyField(Employee, through="EmployeeJob")
     owner = Owners.Srijana
     load_order = 4
 
@@ -506,6 +507,7 @@ class StoreSocialMedia(DescriptiveModel):
     owner = Owners.Saja
     load_order = 5
 
+
     class Meta:
         db_table = "StoreSocialMedia"
         verbose_name_plural = "Store Social Media"
@@ -574,6 +576,9 @@ class CustomerReward(DescriptiveModel):
     description = 'Rewards available to a SINGLE loyalty customer to be redeemed, based on the amount of points they have accumulated to date. Available rewards that they (a single loyalty customer) has earned, based on their personal points. A points bank.'
     order = models.ForeignKey(Order, on_delete=models.RESTRICT, unique=True)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
+    point_cost = models.IntegerField(default=0)
+    discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    free_product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Julia
     load_order = 7
 

@@ -65,7 +65,8 @@ def extract_all_field_props(model, field_type_dict):
     visible_fields = []
     output_list = []
     visible_fields = [field for field in model_fields if
-                      not isinstance(field, models.fields.reverse_related.ManyToOneRel)]
+                      not isinstance(field, models.fields.reverse_related.ManyToOneRel)
+                      and not isinstance(field, models.fields.reverse_related.ManyToManyRel)]
     for current_field in visible_fields:
         output_row = extract_field_props(current_field, model, field_type_dict)
         output_list.append(output_row)

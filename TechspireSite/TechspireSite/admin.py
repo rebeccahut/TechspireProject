@@ -63,5 +63,8 @@ class TechSpireAdminSite(admin.AdminSite):
             path('datastatus/', self.admin_view(views.data_status), name="datastatus"),
             path('finalreport/', self.admin_view(views.generate_final_report), name="finalreport"),
             path('reportstatus/', self.admin_view(views.report_status), name="reportstatus"),
+            path('loademps', self.admin_view(views.load_employees), name='loademps'),
+            path('loadproducts', self.admin_view(views.load_products), name='loadproducts'),
+            path('loadproductprice', self.admin_view(views.load_product_price), name='loadproductprice'),
         ]
         return my_urls + urls

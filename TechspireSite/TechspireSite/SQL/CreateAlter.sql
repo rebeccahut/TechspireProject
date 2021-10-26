@@ -100,6 +100,8 @@ CREATE TABLE OrderLine(
 
 CREATE TABLE CustomerReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    point_cost int NOT NULL DEFAULT 0,
+    discount_amount numeric(19,4) NOT NULL DEFAULT 0,
 );
 
 --Kyle D
@@ -150,7 +152,7 @@ CREATE TABLE StoreReward(
 
 CREATE TABLE StoreSocialMedia(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	social_media_code nvarchar(60) NOT NULL, 
+	social_media_code nvarchar(60) NOT NULL,
 	date_added date NOT NULL
 );
 
@@ -159,6 +161,7 @@ CREATE TABLE EmployeeSocialMedia(
 	social_media_code nvarchar(60) NOT NULL,
 	date_added date NOT NULL
 );
+
 
 --Srijana S
 CREATE TABLE Product ( 
@@ -278,7 +281,8 @@ ALTER TABLE OrderLine ADD
 
 ALTER TABLE CustomerReward ADD
     order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
-    reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
+    reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id),
+    free_product_id int FOREIGN KEY REFERENCES Product(id);
 
 ALTER TABLE Customer ADD
     create_employee_id int FOREIGN KEY REFERENCES Employee(id),

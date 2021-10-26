@@ -430,7 +430,8 @@ WITH
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '\n',
 	KEEPIDENTITY,
-	CODEPAGE = 65001
+	CODEPAGE = 65001,
+	FIRSTROW = 2
 	)
 GO
 
@@ -455,9 +456,16 @@ FROM "Order"
 
 
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
-SELECT -point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
+SELECT -Reward.point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
 FROM "CustomerReward"
 JOIN Reward ON Reward.id = CustomerReward.id
 JOIN "Order" ON "Order".id = CustomerReward.order_id
 
 
+
+UPDATE CustomerReward
+SET CustomerReward.point_cost = Reward.point_cost, 
+CustomerReward.discount_amount = Reward.discount_amount, 
+CustomerReward.free_product_id = Reward.free_product_id
+FROM CustomerReward
+INNER JOIN Reward ON CustomerReward.reward_id = Reward.id

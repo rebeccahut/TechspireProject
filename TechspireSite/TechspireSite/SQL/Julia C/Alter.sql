@@ -4,7 +4,8 @@ ALTER TABLE OrderLine ADD
 
 ALTER TABLE CustomerReward ADD
     order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
-    reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id);
+    reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id),
+    free_product_id int FOREIGN KEY REFERENCES Product(id);
 
 ALTER TABLE Customer ADD
     create_employee_id int FOREIGN KEY REFERENCES Employee(id),

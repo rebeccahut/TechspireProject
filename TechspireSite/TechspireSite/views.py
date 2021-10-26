@@ -7,6 +7,8 @@ from django.db import connection, ProgrammingError, DataError
 from django.contrib import admin
 from operator import itemgetter
 from django.apps import apps
+from django.db.models import Model
+from Bakery.models import Employee, EmployeeJob, Store, Product
 import glob
 import os
 import pyodbc
@@ -167,6 +169,8 @@ def generate_bulk(request):
     copy_from_file(path, bulk_file)
     path = os.path.join(module_dir, "SQL", "Brett M", "InsertPointLogs.sql")
     copy_from_file(path, bulk_file)
+    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerRewards.sql")
+    copy_from_file(path, bulk_file)
     bulk_file.close()
     return HttpResponse("Success")
 
@@ -273,3 +277,33 @@ def report_status(request):
     return render(request, 'admin/table_report.html', context)
 
 
+
+def open_admin_sql(file):
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(module_dir, "SQL", "Admin", file)
+    return open(path, "r")
+
+
+def load_employees(request):
+    store_id = request.GET.get('store')
+    sql = open_admin_sql("QueryStoreCashiers.sql")
+    emps = Employee.objects.raw(sql.read(), [store_id, ])
+    return render(request, 'admin/update_drop_down.html', {'options': emps})
+
+
+def load_products(request):
+    store_id = request.GET.get('store')
+    sql = open_admin_sql("QueryStoreProducts.sql")
+    products = Product.objects.raw(sql.read(), [store_id, ])
+    return render(request, 'admin/update_drop_down.html', {'options': products})
+
+
+def load_product_price(request):
+    product_id = request.GET.get("product")
+    try:
+        price = Product.objects.get(pk=product_id).product_price
+    except Product.DoesNotExist:
+        price = 0
+    except ValueError:
+        price = 0
+    return HttpResponse(price)
