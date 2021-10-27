@@ -1,6 +1,6 @@
 UPDATE "Order"
 SET original_total = Totals.Total,
-final_total = Totals.Total
+final_total = Totals.Total, eligible_for_points = Totals.Total, points_produced = (Floor(Totals.Total)/10)
 FROM "Order"
 INNER JOIN (
 SELECT 

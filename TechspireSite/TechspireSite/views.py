@@ -1,16 +1,14 @@
 from . import data_dict_helper as ddh
-
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db import connection, ProgrammingError, DataError
-
-from django.contrib import admin
 from operator import itemgetter
 from django.apps import apps
-from django.db.models import Model
-from Bakery.models import Employee, EmployeeJob, Store, Product
+from django.db.models import Q
+from Bakery.models import Employee, EmployeeJob, Store, Product, Reward
 import glob
 import os
+import json
 import pyodbc
 
 
@@ -307,3 +305,26 @@ def load_product_price(request):
     except ValueError:
         price = 0
     return HttpResponse(price)
+
+
+#Update when status is added to StoreProducts
+def load_rewards(request):
+    store_id = request.GET.get('store')
+    sql = open_admin_sql("QueryStoreRewards.sql")
+    rewards = Reward.objects.raw(sql.read(), [store_id, ])
+    return render(request, 'admin/update_drop_down.html', {'options': rewards})
+
+
+def load_reward_details(request):
+    reward_id = request.GET.get("reward")
+    response_data = {"discount": 0, "cost": 0, "product": ""}
+    try:
+        target_reward = Reward.objects.get(pk=reward_id)
+        response_data["discount"] = str(target_reward.discount_amount)
+        response_data["cost"] = str(target_reward.point_cost)
+        response_data["product"] = str(target_reward.free_product)
+    except Reward.DoesNotExist:
+        pass
+    except ValueError:
+        pass
+    return HttpResponse(json.dumps(response_data), content_type="application/json")

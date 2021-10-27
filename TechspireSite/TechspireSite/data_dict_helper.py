@@ -46,8 +46,15 @@ def extract_field_props(current_field, model, field_type_dict):
     except KeyError:
         pass
 
-
     default = "NA" if current_field.default == models.fields.NOT_PROVIDED else current_field.default
+
+    try:
+        if current_field.auto_now_add:
+            default = "CDate"
+
+    except AttributeError:
+        #Not a datefield
+        pass
 
     pk = current_field.primary_key
 

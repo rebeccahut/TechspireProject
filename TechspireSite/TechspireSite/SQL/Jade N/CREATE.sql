@@ -7,11 +7,11 @@ CREATE TABLE PointReasonType(
 CREATE TABLE PointLog(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	points_amount int NOT NULL DEFAULT 0,
-	created_date date NOT NULL
+	created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE CustomerSocialMedia(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	social_media_code nvarchar(60) NOT NULL, 
-	date_added date NOT NULL
+	date_added date NOT NULL DEFAULT GETDATE()
 );

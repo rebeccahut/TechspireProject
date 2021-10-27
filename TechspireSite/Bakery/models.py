@@ -80,6 +80,9 @@ class CustomerLabel(DescriptiveModel):
         verbose_name_plural = "Customer Category"
         managed = False
 
+    def __str__(self):
+        return self.category_name
+
 
 class EmployeeLabel(DescriptiveModel):
     description = 'Categorizes employee based on the opinion of the store owner.'
@@ -92,6 +95,9 @@ class EmployeeLabel(DescriptiveModel):
         db_table = "EmployeeCategory"
         verbose_name_plural = "Employee Category"
         managed = False
+
+    def __str__(self):
+        return self.category_name
 
 
 class EmployeeStatus(StatusCode):
@@ -169,6 +175,9 @@ class PointReason(DescriptiveModel):
         verbose_name_plural = "PointReasonType"
         managed = False
 
+    def __str__(self):
+        return self.reason_name
+
 
 class Country(DescriptiveModel):
     description = 'The nation that a particular entity (a store, a customer) is located in.'
@@ -207,12 +216,14 @@ class Location(DescriptiveModel):
     city = models.CharField(max_length=35, default="Houston")
     address = models.CharField(max_length=100, default="3242 StreetName")
     state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT, default=1407)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, default=233)
     owner = Owners.BrettM
     load_order = 3
 
     class Meta:
         db_table = "Location"
-        verbose_name_plural = "Location/Address"
+        verbose_name_plural = "Address"
+        verbose_name = "Address"
         managed = False
 
 
@@ -229,6 +240,9 @@ class Tier(DescriptiveModel):
         verbose_name_plural = "Tier"
         managed = False
 
+    def __str__(self):
+        return self.tier_name
+
 
 # Used as an abstract parent for people
 class Person(DescriptiveModel):
@@ -237,8 +251,8 @@ class Person(DescriptiveModel):
     email_address = models.EmailField(max_length=254)
     phone_number = PhoneNumberField(max_length=15)
     birthdate = models.DateField()
-    begin_date = models.DateField()
-    location = models.ForeignKey(Location, on_delete=models.RESTRICT)
+    begin_date = models.DateField(auto_now_add=True)
+    location = models.ForeignKey(Location, on_delete=models.RESTRICT, verbose_name="Address")
     comments = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -300,6 +314,9 @@ class Job(DescriptiveModel):
         verbose_name_plural = "Job"
         managed = False
 
+    def __str__(self):
+        return self.job_name
+
 
 class AssocEmployeeLabel(DescriptiveModel):
     description = 'Allows an employee to have multiple categories'
@@ -310,20 +327,20 @@ class AssocEmployeeLabel(DescriptiveModel):
 
     class Meta:
         db_table = "EmployeeEmployeeCategory"
-        verbose_name_plural = "Employee Employee Category"
+        verbose_name_plural = "Employee Category"
         managed = False
 
 
 class AssocCustomerLabel(DescriptiveModel):
     description = 'Allows a customer to have multiple categories'
-    customer = models.ForeignKey(Employee, on_delete=models.RESTRICT)
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     customer_category = models.ForeignKey(CustomerLabel, on_delete=models.RESTRICT)
     owner = Owners.Rebecca
     load_order = 6
 
     class Meta:
         db_table = "CustomerCustomerCategory"
-        verbose_name_plural = "Customer Customer Category"
+        verbose_name_plural = "Customer Category"
         managed = False
 
 
@@ -362,7 +379,7 @@ class Store(DescriptiveModel):
 
 class EmployeeJob(DescriptiveModel):
     description = 'Allows an employee to have multiple jobs at the same or different stores.'
-    assign_date = models.DateField()
+    assign_date = models.DateField(auto_now_add=True)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     job = models.ForeignKey(Job, on_delete=models.RESTRICT)
@@ -377,10 +394,14 @@ class EmployeeJob(DescriptiveModel):
 
 class Order(DescriptiveModel):
     description = 'The customer’s finalized transaction of products purchased. This order generates customer loyalty points based on the monetary total of the transaction.'
-    order_date = models.DateField()
+    order_date = models.DateField(auto_now_add=True)
     original_total = MoneyField()
     final_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    eligible_for_points = models.DecimalField(max_digits=19, decimal_places=4, default=0)
+    points_consumed = models.IntegerField(default=0)
+    points_produced = models.IntegerField(default=0)
+    points_total = models.IntegerField(default=0)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
@@ -471,7 +492,7 @@ class Reward(DescriptiveModel):
     discount_amount = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     free_product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
-    date_added = models.DateField()
+    date_added = models.DateField(auto_now_add=True)
     date_disabled = models.DateField(blank=True, null=True)
     owner = Owners.Umair
     load_order = 3
@@ -497,13 +518,16 @@ class SocialMediaType(DescriptiveModel):
         verbose_name_plural = "Social Media Type"
         managed = False
 
+    def __str__(self):
+        return self.social_media_name
+
 
 class StoreSocialMedia(DescriptiveModel):
     description = 'Social media of the store.'
     social_media_code = models.CharField(max_length=60)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
-    date_added = models.DateField()
+    date_added = models.DateField(auto_now_add=True)
     owner = Owners.Saja
     load_order = 5
 
@@ -519,7 +543,7 @@ class EmployeeSocialMedia(DescriptiveModel):
     social_media_code = models.CharField(max_length=60)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
-    date_added = models.DateField()
+    date_added = models.DateField(auto_now_add=True)
     owner = Owners.Saja
     load_order = 5
 
@@ -534,7 +558,7 @@ class CustomerSocialMedia(DescriptiveModel):
     social_media_code = models.CharField(max_length=60)
     social_media_type = models.ForeignKey(SocialMediaType, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
-    date_added = models.DateField()
+    date_added = models.DateField(auto_now_add=True)
     owner = Owners.Jade
     load_order = 6
 
@@ -548,7 +572,7 @@ class StoreProduct(DescriptiveModel):
     description = 'Products that are either associated with or are offered at a specific store location.'
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
-    product_assigned = models.DateField()
+    product_assigned = models.DateField(auto_now_add=True)
     owner = Owners.Torrey
     load_order = 5
 
@@ -562,7 +586,7 @@ class StoreReward(DescriptiveModel):
     description = 'Rewards available to loyalty customers based on which specific store points are redeemed at.'
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
-    reward_assigned = models.DateField()
+    reward_assigned = models.DateField(auto_now_add=True)
     owner = Owners.Saja
     load_order = 5
 
@@ -587,11 +611,18 @@ class CustomerReward(DescriptiveModel):
         verbose_name_plural = "Customer Reward"
         managed = False
 
+    def save(self, *args, **kwargs):
+        target_reward = Reward.objects.get(pk=self.reward.id)
+        self.free_product = target_reward.free_product
+        self.discount_amount = target_reward.discount_amount
+        self.point_cost = target_reward.point_cost
+        super(CustomerReward, self).save(*args, **kwargs)
+
 
 class PointLog(DescriptiveModel):
     description = ' Keeping track of a customers existing loyalty points and used points?'
     points_amount = models.IntegerField(default=0)
-    created_date = models.DateField()
+    created_date = models.DateField(auto_now_add=True)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
     reason = models.ForeignKey(PointReason, on_delete=models.RESTRICT)
@@ -604,3 +635,4 @@ class PointLog(DescriptiveModel):
         db_table = "PointLog"
         verbose_name_plural = "Point Log"
         managed = False
+

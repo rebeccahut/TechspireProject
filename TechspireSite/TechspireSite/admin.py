@@ -66,5 +66,7 @@ class TechSpireAdminSite(admin.AdminSite):
             path('loademps', self.admin_view(views.load_employees), name='loademps'),
             path('loadproducts', self.admin_view(views.load_products), name='loadproducts'),
             path('loadproductprice', self.admin_view(views.load_product_price), name='loadproductprice'),
+            path('loadrewards', self.admin_view(views.load_rewards), name='loadrewards'),
+            path('load_reward_details', self.admin_view(views.load_reward_details), name='load_reward_details'),
         ]
         return my_urls + urls

@@ -36,13 +36,13 @@ CREATE TABLE Employee(
     phone_number nvarchar(14) NOT NULL,
     comments nvarchar(max),
     birthdate date NOT NULL,
-    begin_date date NOT NULL,
+    begin_date date NOT NULL DEFAULT GETDATE(),
     end_date date,
 );
 
 CREATE TABLE EmployeeJob(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-    assign_date date NOT NULL,
+    assign_date date NOT NULL DEFAULT GETDATE(),
 );
 
 CREATE TABLE Job(
@@ -69,13 +69,13 @@ CREATE TABLE PointReasonType(
 CREATE TABLE PointLog(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	points_amount int NOT NULL DEFAULT 0,
-	created_date date NOT NULL
+	created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE CustomerSocialMedia(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	social_media_code nvarchar(60) NOT NULL, 
-	date_added date NOT NULL
+	date_added date NOT NULL DEFAULT GETDATE()
 );
 
 
@@ -88,7 +88,7 @@ CREATE TABLE Customer(
     phone_number nvarchar(15) NOT NULL,
     comments nvarchar(max),
     birthdate date NOT NULL,
-    begin_date date NOT NULL,
+    begin_date date NOT NULL DEFAULT GETDATE(),
 );
 
 CREATE TABLE OrderLine(
@@ -147,19 +147,19 @@ CREATE TABLE Country(
 --Saja A
 CREATE TABLE StoreReward(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	reward_assigned date NOT NULL
+	reward_assigned date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE StoreSocialMedia(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	social_media_code nvarchar(60) NOT NULL,
-	date_added date NOT NULL
+	date_added date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE EmployeeSocialMedia(
 	id int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	social_media_code nvarchar(60) NOT NULL,
-	date_added date NOT NULL
+	date_added date NOT NULL DEFAULT GETDATE()
 );
 
 
@@ -198,15 +198,19 @@ CREATE TABLE Store(
 --Torrey B
 CREATE TABLE "Order" (
     id int NOT NULL PRIMARY KEY IDENTITY (1,1),
-    order_date date NOT NULL,
-    original_total numeric(19,4) NOT NULL DEFAULT 0,
-    final_total numeric(19,4) NOT NULL DEFAULT 0,
-    discount_amount numeric(19,4) NOT NULL DEFAULT 0,
+    order_date date NOT NULL DEFAULT GETDATE(),
+    original_total numeric(19,4) NOT NULL DEFAULT 0 CHECK (original_total>=0),
+    final_total numeric(19,4) NOT NULL DEFAULT 0 CHECK (final_total>=0),
+    discount_amount numeric(19,4) NOT NULL DEFAULT 0 CHECK (discount_amount>=0),
+    eligible_for_points numeric(19,4) NOT NULL DEFAULT 0 CHECK (eligible_for_points>=0),
+    points_consumed int NOT NULL DEFAULT 0 CHECK (points_consumed>=0),
+    points_produced int NOT NULL DEFAULT 0 CHECK (points_produced>=0),
+    points_total int NOT NULL DEFAULT 0,
 );
 
 CREATE TABLE StoreProduct(
     id int NOT NULL PRIMARY KEY IDENTITY (1,1),
-    product_assigned date NOT NULL,
+    product_assigned date NOT NULL DEFAULT GETDATE(),
 );
 
 CREATE TABLE SocialMediaType(
@@ -227,24 +231,24 @@ CREATE TABLE CustomerStatus(
 CREATE TABLE PaymentType(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     type_name varchar(40) NOT NULL,
-    type_desc varchar(200) NOT NULL,
+    type_desc varchar(200) NULL,
 );
 
 CREATE TABLE Reward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     reward_name varchar(80) NOT NULL,
-    reward_desc varchar(200) NOT NULL,
+    reward_desc varchar(200) NULL,
     point_cost int NOT NULL DEFAULT 0,
     reset_period int DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,
-    date_added date NOT NULL,
+    date_added date NOT NULL DEFAULT GETDATE(),
     date_disabled date,
 );
 
 CREATE TABLE Tier(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     tier_name varchar(40) NOT NULL,
-    tier_desc varchar(200) NOT NULL,
+    tier_desc varchar(200) NULL,
     min_points int NOT NULL DEFAULT 0,
 );
 
@@ -260,7 +264,8 @@ ALTER TABLE Employee ADD
     employee_type_id int NOT NULL FOREIGN KEY REFERENCES EmployeeType(id);
 
 ALTER TABLE Location ADD
-     state_id int NOT NULL FOREIGN KEY REFERENCES StateProvince(id) DEFAULT 1407;
+     state_id int NOT NULL FOREIGN KEY REFERENCES StateProvince(id) DEFAULT 1407,
+     country_id int NOT NULL FOREIGN KEY REFERENCES Country(id) DEFAULT 233;
 
 
 --Jade N
