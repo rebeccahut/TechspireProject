@@ -44,7 +44,7 @@ class EmployeeAdmin(ReverseTwentyAdmin):
     list_display = ["first_name", "last_name", "email_address", "phone_number", "employee_status"]
     inlines = [forms.EmployeeCategoryForm, forms.EmployeeJobForm, forms.EmployeeSocialForm]
 
-        
+
 
 
 

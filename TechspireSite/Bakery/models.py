@@ -162,6 +162,9 @@ class BanType(DescriptiveModel):
         verbose_name_plural = "Ban Type"
         managed = False
 
+    def __str__(self):
+        return self.ban_name
+
 
 class PointReason(DescriptiveModel):
     description = "Describes why points were added or removed"
