@@ -15,5 +15,5 @@ Store.id AS "Store"
 FROM Product
 INNER JOIN ProductType ON ProductType.id = Product.id
 INNER JOIN ProductStatus ON ProductStatus.id = Product.id
-INNER JOIN Reward ON Reward.id = Store.id
+INNER JOIN Reward ON Reward.id = Product.id
 INNER JOIN Store ON Store.id = Product.id
