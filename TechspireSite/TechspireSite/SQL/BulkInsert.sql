@@ -470,3 +470,43 @@ CustomerReward.discount_amount = Reward.discount_amount,
 CustomerReward.free_product_id = Reward.free_product_id
 FROM CustomerReward
 INNER JOIN Reward ON CustomerReward.reward_id = Reward.id
+INSERT INTO PointLog(points_amount, created_date, customer_id, employee_id, order_id, reason_id)
+SELECT TOP 10 PERCENT
+abs(checksum(NewId()) % 100) as points, order_date, customer_id, employee_id, id, 1 as reason
+  FROM "Order"
+  ORDER BY NEWID()
+
+INSERT INTO PointLog(points_amount, created_date, customer_id, employee_id, order_id, reason_id)
+SELECT TOP 10 PERCENT
+abs(checksum(NewId()) % 100) as points, order_date, customer_id, employee_id, id, 2 as reason
+  FROM "Order"
+  ORDER BY NEWID()
+
+UPDATE Customer
+SET Customer.points_earned = Points.points_produced
+FROM Customer
+INNER JOIN
+(SELECT SUM(PointLog.points_amount) as points_produced,PointLog.customer_id FROM PointLog
+WHERE PointLog.points_amount >= 0
+GROUP BY PointLog.customer_id) AS Points ON Points.customer_id = Customer.id
+
+
+UPDATE Customer
+SET Customer.points_spent = -Points.points_produced
+FROM Customer
+INNER JOIN
+(SELECT SUM(PointLog.points_amount) as points_produced,PointLog.customer_id FROM PointLog
+WHERE PointLog.points_amount < 0
+GROUP BY PointLog.customer_id) AS Points ON Points.customer_id = Customer.id
+
+UPDATE Customer
+SET Customer.point_total = Customer.points_earned - Customer.points_spent
+
+UPDATE Customer
+SET Customer.tier_id = T.tier
+FROM Customer
+INNER JOIN
+(SELECT Customer.id AS cust_id, Max(Tier.id) AS tier, MIN(points_earned - min_points) AS calc FROM Tier
+CROSS JOIN Customer
+WHERE (points_earned - min_points) >= 0
+GROUP BY Customer.id) AS T ON Customer.id = T.cust_id

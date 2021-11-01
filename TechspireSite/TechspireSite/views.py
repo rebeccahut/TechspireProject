@@ -5,7 +5,7 @@ from django.db import connection, ProgrammingError, DataError
 from operator import itemgetter
 from django.apps import apps
 from django.db.models import Q
-from Bakery.models import Employee, EmployeeJob, Store, Product, Reward
+from Bakery.models import Employee, EmployeeJob, Store, Product, Reward, StateProvince, Location
 import glob
 import os
 import json
@@ -141,7 +141,6 @@ def copy_from_file(path, bulk_file):
     file.close()
 
 
-
 def generate_bulk(request):
     solid_tables = ddh.get_solid_models("Bakery")
     solid_tables.sort(key=lambda x: x.load_order)
@@ -165,9 +164,15 @@ def generate_bulk(request):
 
     path = os.path.join(module_dir, "SQL", "Brett M", "UpdateOrderTotals.sql")
     copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "InsertPointLogs.sql")
+    path = os.path.join(module_dir, "SQL", "Brett M", "InsertCalculatedPointLogs.sql")
     copy_from_file(path, bulk_file)
     path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerRewards.sql")
+    copy_from_file(path, bulk_file)
+    path = os.path.join(module_dir, "SQL", "Brett M", "InsertManualPointLogs.sql")
+    copy_from_file(path, bulk_file)
+    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerPoints.sql")
+    copy_from_file(path, bulk_file)
+    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerTier.sql")
     copy_from_file(path, bulk_file)
     bulk_file.close()
     return HttpResponse("Success")
@@ -309,9 +314,10 @@ def load_product_price(request):
 
 #Update when status is added to StoreProducts
 def load_rewards(request):
+    customer_id = request.GET.get('customer')
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreRewards.sql")
-    rewards = Reward.objects.raw(sql.read(), [store_id, ])
+    rewards = Reward.objects.raw(sql.read(), [store_id, customer_id])
     return render(request, 'admin/update_drop_down.html', {'options': rewards})
 
 
@@ -328,3 +334,18 @@ def load_reward_details(request):
     except ValueError:
         pass
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def load_states(request):
+    context = {}
+    country_id = request.GET.get("country")
+    try:
+        location = request.GET.get("location")
+        selected_id = Location.objects.get(pk=location).state_id
+        context["selected"] = selected_id
+    except ValueError:
+        #If there is no selection then don't add selected to the context
+        pass
+    states = StateProvince.objects.filter(country_id=country_id).order_by("state_name")
+    context["options"] = states
+    return render(request, 'admin/update_drop_down.html', context)

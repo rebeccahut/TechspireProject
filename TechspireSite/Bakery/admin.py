@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
-from django_reverse_admin import ReverseModelAdmin
-
+from .reverse_inline import ReverseModelAdmin
+from django.db.models import CharField
 from . import forms
 from . import models
+from . import widgets
 
 
 class TwentyPageAdmin(admin.ModelAdmin):
@@ -26,7 +27,8 @@ class MenuAdmin(TwentyPageAdmin):
 @admin.register(models.Reward)
 class RewardAdmin(TwentyPageAdmin):
     model = models.Reward
-    list_display = ["reward_name", "point_cost", "display_discount", "reward_status", "date_added"]
+    list_display = ["reward_name", "point_cost", "display_discount", "reward_status", "date_added", "tier"]
+    list_filter = ["reward_status", "tier"]
 
     @admin.display(description='Discount', ordering="discount_amount")
     def display_discount(self, obj):
@@ -44,9 +46,15 @@ class EmployeeAdmin(ReverseTwentyAdmin):
     list_display = ["first_name", "last_name", "email_address", "phone_number", "employee_status"]
     inlines = [forms.EmployeeCategoryForm, forms.EmployeeJobForm, forms.EmployeeSocialForm]
 
+    change_form_template = 'admin/location_form.html'
 
 
-
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
+            '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
+            'Bakery/js/Location.js',
+        )
 
 
 @admin.register(models.Customer)
@@ -54,22 +62,34 @@ class CustomerAdmin(ReverseTwentyAdmin):
     widgets = {
         'phone_number': forms.PhoneForm
     }
-    list_filter = ["customer_status"]
+    list_filter = ["customer_status", "tier"]
     search_fields = ["email_address", "phone_number"]
-    list_display = ["first_name", "last_name", "email_address", "phone_number"]
+    list_display = ["first_name", "last_name", "email_address", "phone_number", "customer_status", "tier"]
     inlines = [forms.CustomerCategoryForm, forms.CustomerSocialForm]
     inline_type = "stacked"
     inline_reverse = ["location", ]
+    raw_id_fields = ("create_employee",)
+    readonly_fields = ["points_earned", "points_spent", "point_total", "tier"]
+
+    change_form_template = 'admin/location_form.html'
+
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
+            '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
+            'Bakery/js/Location.js',
+        )
 
 
 @admin.register(models.Order)
 class OrderAdmin(TwentyPageAdmin):
     list_display = ["customer", "store", "employee", "order_date", "display_original_total"]
-    readonly_fields = ["original_total", "discount_amount", "final_total",
-                       "points_consumed", "points_produced", "points_total", "eligible_for_points"]
+    readonly_fields = ["original_total", "discount_amount", "eligible_for_points",
+                       "points_consumed", "points_produced", "points_total", "final_total"]
     inlines = [forms.OrderLineForm, forms.RewardLineForm]
     change_form_template = 'admin/order_change_form.html'
     raw_id_fields = ("customer",)
+    list_filter = ["store"]
 
     @admin.display(description='Total', ordering="original_total")
     def display_original_total(self, obj):
@@ -84,7 +104,7 @@ class OrderAdmin(TwentyPageAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
-            return self.readonly_fields + ["order_date", "customer", "store", "payment_type", "employee"]
+            return ["order_date", "customer", "store", "payment_type", "employee"] + self.readonly_fields
         return self.readonly_fields
 
     def get_inlines(self, request, obj):
@@ -96,6 +116,15 @@ class OrderAdmin(TwentyPageAdmin):
         if obj:
             return False
         return True
+
+    def save_model(self, request, obj, form, change):
+        points_added = models.PointLog(employee=obj.employee, customer=obj.customer,
+                                       reason_id=4, order=obj, points_amount=obj.points_produced)
+        points_removed = models.PointLog(employee=obj.employee, customer=obj.customer,
+                                         reason_id=5, order=obj, points_amount=obj.points_consumed)
+        obj.save()
+        points_added.save()
+        points_removed.save()
 
 
 @admin.register(models.Product)
@@ -119,15 +148,30 @@ class StoreAdmin(ReverseTwentyAdmin):
     inline_type = "stacked"
     inline_reverse = ["location", ]
     inlines = [forms.StoreSocialForm]
+    change_form_template = 'admin/location_form.html'
+
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
+            '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
+            'Bakery/js/Location.js',
+        )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(StoreAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['website_address'].widget.attrs['style'] = 'width: 40em;'
+        form.base_fields['email_address'].widget.attrs['style'] = 'width: 40em;'
+        return form
 
 
 @admin.register(models.PointLog)
 class PointLogAdmin(TwentyPageAdmin):
     list_display = ["customer", "reason", "points_amount", "created_date"]
     list_filter = ["reason"]
+    raw_id_fields = ["order", "employee", "customer"]
 
 
-#Register all the models for bakery that don't have a custom admin model
+# Register all the models for bakery that don't have a custom admin model
 def register_models():
     basic_admin_models = [models.ProductType, models.ProductStatus, models.CustomerStatus,
                           models.EmployeeStatus, models.RewardStatus, models.StoreStatus,
@@ -140,7 +184,3 @@ def register_models():
 register_models()
 admin.site.unregister(User)
 admin.site.unregister(Group)
-
-
-
-

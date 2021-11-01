@@ -1,17 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django import forms
-from django.db.models import CheckConstraint
-from django.db.models import Q
 from phonenumber_field.modelfields import PhoneNumberField
-from datetime import datetime
-from decimal import Decimal
 from .Owners import Owners
 
 
@@ -21,7 +10,6 @@ class MoneyField(models.DecimalField):
 
     def __str__(self):
         return "$" + super.__str__(self)
-
     widget = forms.Textarea
 
 
@@ -111,7 +99,9 @@ class EmployeeStatus(StatusCode):
 
 
 class CustomerStatus(StatusCode):
-    description = 'Describes the current relationship between the customer and the business (are they an Active customer? are they an inactive customer?)'
+    description = 'Describes the current relationship between the ' \
+                  'customer and the business (are they an ' \
+                  'Active customer? are they an inactive customer?)'
     owner = Owners.Umair
 
     class Meta:
@@ -121,7 +111,8 @@ class CustomerStatus(StatusCode):
 
 
 class ProductStatus(StatusCode):
-    description = 'Refers to whether a product is available or not. Not that it is unavailable but also if it is not offered anymore'
+    description = 'Refers to whether a product is available or not. ' \
+                  'Not that it is unavailable but also if it is not offered anymore'
     owner = Owners.Srijana
 
     class Meta:
@@ -229,9 +220,13 @@ class Location(DescriptiveModel):
         verbose_name = "Address"
         managed = False
 
+    def __str__(self):
+        return "{} {} {} {}".format(self.address, self.zip_code, self.state, self.country)
+
 
 class Tier(DescriptiveModel):
-    description = 'Categories that loyalty customers are a part of based on number of points accummulated over time. Tiers such as bronze, silver, and gold tier for example.'
+    description = 'Categories that loyalty customers are a part of based on ' \
+                  'number of points accumulated over time. Tiers such as bronze, silver, and gold tier for example.'
     owner = Owners.Umair
     tier_name = models.CharField(max_length=40)
     tier_desc = models.CharField(max_length=200, blank=True, null=True)
@@ -277,7 +272,8 @@ class EmployeeType(LabelCode):
 
 
 class Employee(Person):
-    description = 'Person that works at the store and deals with either the store products or maintenance of said store.'
+    description = 'Person that works at the store and ' \
+                  'deals with either the store products or maintenance of said store.'
     end_date = models.DateField(blank=True, null=True)
     employee_status = models.ForeignKey(EmployeeStatus, on_delete=models.RESTRICT)
     employee_type = models.ForeignKey(EmployeeType, on_delete=models.RESTRICT)
@@ -291,9 +287,13 @@ class Employee(Person):
 
 
 class Customer(Person):
-    description = 'Someone who potentially purchases an item/service from our client and whose general information has been collected by our loyalty system database.'
+    description = 'Someone who potentially purchases an item/service ' \
+                  'from our client and whose general information has been collected by our loyalty system database.'
     create_employee = models.ForeignKey(Employee, on_delete=models.RESTRICT, blank=True, null=True)
     customer_status = models.ForeignKey(CustomerStatus, on_delete=models.RESTRICT)
+    points_earned = models.IntegerField(default=0)
+    points_spent = models.IntegerField(default=0)
+    point_total = models.IntegerField(default=0)
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Julia
@@ -330,8 +330,13 @@ class AssocEmployeeLabel(DescriptiveModel):
 
     class Meta:
         db_table = "EmployeeEmployeeCategory"
-        verbose_name_plural = "Employee Category"
+        verbose_name = "Employee Category"
+        verbose_name_plural = verbose_name
         managed = False
+        constraints = [models.UniqueConstraint(fields=['employee', 'employee_category'], name='unique_emp_cat')]
+
+    def __str__(self):
+        return str(self.employee) + " " + str(self.employee_category)
 
 
 class AssocCustomerLabel(DescriptiveModel):
@@ -343,8 +348,13 @@ class AssocCustomerLabel(DescriptiveModel):
 
     class Meta:
         db_table = "CustomerCustomerCategory"
-        verbose_name_plural = "Customer Category"
+        verbose_name = "Customer Category"
+        verbose_name_plural = verbose_name
         managed = False
+        constraints = [models.UniqueConstraint(fields=['customer', 'customer_category'], name='unique_cust_cat')]
+
+    def __str__(self):
+        return str(self.customer) + " " + str(self.customer_category)
 
 
 class PaymentType(LabelCode):
@@ -391,12 +401,18 @@ class EmployeeJob(DescriptiveModel):
 
     class Meta:
         db_table = "EmployeeJob"
-        verbose_name_plural = "Employee Job"
+        verbose_name = "Employee Job"
+        verbose_name_plural = verbose_name
         managed = False
+        constraints = [models.UniqueConstraint(fields=['store', 'job', 'employee'], name='unique_store_job')]
+
+    def __str__(self):
+        return str(self.employee) + " " + str(self.store) + " " + str(self.job)
 
 
 class Order(DescriptiveModel):
-    description = 'The customer’s finalized transaction of products purchased. This order generates customer loyalty points based on the monetary total of the transaction.'
+    description = 'The customer’s finalized transaction of products purchased. ' \
+                  'This order generates customer loyalty points based on the monetary total of the transaction.'
     order_date = models.DateField(auto_now_add=True)
     original_total = MoneyField()
     final_total = models.DecimalField(max_digits=19, decimal_places=4, default=0)
@@ -421,10 +437,10 @@ class Order(DescriptiveModel):
         return str(self.store) + "-" + str(self.customer) + "-" + str(self.order_date)
 
 
-
-
 class ProductType(DescriptiveModel):
-    description = ' Identifying certain product types that are eligible to be purchased with points, versus products that are not eligible to earn points on; used to distinguish exclusions. '
+    description = 'Identifying certain product types that are eligible ' \
+                  'to be purchased with points, versus products ' \
+                  'that are not eligible to earn points on; used to distinguish exclusions. '
     product_type_name = models.CharField(max_length=40)
     product_type_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.Srijana
@@ -460,7 +476,12 @@ class Product(DescriptiveModel):
 
 
 class OrderLine(DescriptiveModel):
-    description = 'Represents information located on a singular line found on a receipt/invoice produced after a completed transaction that describes the customer’s transaction and product details (quantity, product type, total price for that order line).'
+    description = 'Represents information located on a ' \
+                  'singular line found on a receipt/invoice ' \
+                  'produced after a completed transaction ' \
+                  'that describes the customer’s transaction ' \
+                  'and product details (quantity, product type, ' \
+                  'total price for that order line).'
     quantity = models.IntegerField(default=0)
     ind_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
@@ -471,14 +492,18 @@ class OrderLine(DescriptiveModel):
 
     class Meta:
         db_table = "OrderLine"
-        verbose_name_plural = "Order Line"
+        verbose_name = "Order Line"
+        verbose_name_plural = verbose_name
         managed = False
-
+        constraints = [models.UniqueConstraint(fields=['order', 'product'], name='unique_order_product')]
 
     def save(self, *args, **kwargs):
         self.ind_price = Product.objects.get(pk=self.product.id).product_price
         self.total_price = self.ind_price * self.quantity
         super(OrderLine, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.order) + " " + str(self.product)
 
 
 class Reward(DescriptiveModel):
@@ -534,11 +559,13 @@ class StoreSocialMedia(DescriptiveModel):
     owner = Owners.Saja
     load_order = 5
 
-
     class Meta:
         db_table = "StoreSocialMedia"
         verbose_name_plural = "Store Social Media"
         managed = False
+
+    def __str__(self):
+        return str(self.social_media_type) + " " + str(self.store)
 
 
 class EmployeeSocialMedia(DescriptiveModel):
@@ -555,6 +582,9 @@ class EmployeeSocialMedia(DescriptiveModel):
         verbose_name_plural = "Employee Social Media"
         managed = False
 
+    def __str__(self):
+        return str(self.social_media_type) + " " + str(self.employee)
+
 
 class CustomerSocialMedia(DescriptiveModel):
     description = 'Customer social media.'
@@ -570,6 +600,9 @@ class CustomerSocialMedia(DescriptiveModel):
         verbose_name_plural = "Customer Social Media"
         managed = False
 
+    def __str__(self):
+        return str(self.social_media_type) + " " + str(self.customer)
+
 
 class StoreProduct(DescriptiveModel):
     description = 'Products that are either associated with or are offered at a specific store location.'
@@ -581,8 +614,13 @@ class StoreProduct(DescriptiveModel):
 
     class Meta:
         db_table = "StoreProduct"
-        verbose_name_plural = "StoreProduct/Menu"
+        verbose_name = "StoreProduct/Menu"
+        verbose_name_plural = verbose_name
         managed = False
+        constraints = [models.UniqueConstraint(fields=['product', 'store'], name='unique_store_product')]
+
+    def __str__(self):
+        return str(self.store) + " " + str(self.product)
 
 
 class StoreReward(DescriptiveModel):
@@ -595,12 +633,17 @@ class StoreReward(DescriptiveModel):
 
     class Meta:
         db_table = "StoreReward"
-        verbose_name_plural = "Store Reward"
+        verbose_name = "Store Reward"
+        verbose_name_plural = verbose_name
         managed = False
+        constraints = [models.UniqueConstraint(fields=['reward', 'store'], name='unique_store_reward')]
+
+    def __str__(self):
+        return str(self.store) + " " + str(self.reward)
 
 
 class CustomerReward(DescriptiveModel):
-    description = 'Rewards available to a SINGLE loyalty customer to be redeemed, based on the amount of points they have accumulated to date. Available rewards that they (a single loyalty customer) has earned, based on their personal points. A points bank.'
+    description = "Effectively the reward equivalent to OrderLine for transactions."
     order = models.ForeignKey(Order, on_delete=models.RESTRICT, unique=True)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
     point_cost = models.IntegerField(default=0)
@@ -611,7 +654,8 @@ class CustomerReward(DescriptiveModel):
 
     class Meta:
         db_table = "CustomerReward"
-        verbose_name_plural = "Customer Reward"
+        verbose_name = "Customer Reward"
+        verbose_name_plural = verbose_name
         managed = False
 
     def save(self, *args, **kwargs):
@@ -621,9 +665,12 @@ class CustomerReward(DescriptiveModel):
         self.point_cost = target_reward.point_cost
         super(CustomerReward, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return str(self.order) + " " + str(self.reward)
+
 
 class PointLog(DescriptiveModel):
-    description = ' Keeping track of a customers existing loyalty points and used points?'
+    description = "Describes all point transactions for a customer in a single table."
     points_amount = models.IntegerField(default=0)
     created_date = models.DateField(auto_now_add=True)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
@@ -636,6 +683,9 @@ class PointLog(DescriptiveModel):
 
     class Meta:
         db_table = "PointLog"
-        verbose_name_plural = "Point Log"
+        verbose_name = "Point Log"
+        verbose_name_plural = verbose_name
         managed = False
 
+    def __str__(self):
+        return str(self.customer) + " " + str(self.reason) + " " + str(self.created_date)

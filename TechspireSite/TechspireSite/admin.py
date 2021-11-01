@@ -33,6 +33,7 @@ class TechSpireAdminSite(admin.AdminSite):
                     ["erd1", "Abstract ERD"], ["drop", "Generate Drop"], ["bulk", "Generate Bulk Insert"],
                     ["delete", "Generate Bulk Delete"], ["datastatus", "View Data Status"],
                     ["finalreport", "Final Report"], ["reportstatus", "Report Status"]]
+        db_links = []
         db_info = [AdminTableRow(x[0], x[1]) for x in db_links]
 
         context = {
@@ -68,5 +69,6 @@ class TechSpireAdminSite(admin.AdminSite):
             path('loadproductprice', self.admin_view(views.load_product_price), name='loadproductprice'),
             path('loadrewards', self.admin_view(views.load_rewards), name='loadrewards'),
             path('load_reward_details', self.admin_view(views.load_reward_details), name='load_reward_details'),
+            path('load_states', self.admin_view(views.load_states), name='load_states'),
         ]
         return my_urls + urls

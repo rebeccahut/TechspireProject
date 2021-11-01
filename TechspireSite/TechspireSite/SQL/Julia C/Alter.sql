@@ -10,6 +10,6 @@ ALTER TABLE CustomerReward ADD
 ALTER TABLE Customer ADD
     create_employee_id int FOREIGN KEY REFERENCES Employee(id),
     customer_status_id int NOT NULL FOREIGN KEY REFERENCES CustomerStatus(id),
-    tier_id int FOREIGN KEY REFERENCES Tier(id),
+    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id) DEFAULT 1,
     location_id int FOREIGN KEY REFERENCES Location(id);
 

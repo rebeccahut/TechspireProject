@@ -7,6 +7,9 @@ CREATE TABLE Customer(
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
+    points_earned int NOT NULL DEFAULT 0 CHECK (points_earned>=0),
+    points_spent int NOT NULL DEFAULT 0 CHECK (points_spent>=0),
+    point_total int NOT NULL DEFAULT 0,
 );
 
 CREATE TABLE OrderLine(

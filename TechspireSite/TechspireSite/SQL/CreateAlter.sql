@@ -89,6 +89,9 @@ CREATE TABLE Customer(
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
+    points_earned int NOT NULL DEFAULT 0 CHECK (points_earned>=0),
+    points_spent int NOT NULL DEFAULT 0 CHECK (points_spent>=0),
+    point_total int NOT NULL DEFAULT 0,
 );
 
 CREATE TABLE OrderLine(
@@ -292,7 +295,7 @@ ALTER TABLE CustomerReward ADD
 ALTER TABLE Customer ADD
     create_employee_id int FOREIGN KEY REFERENCES Employee(id),
     customer_status_id int NOT NULL FOREIGN KEY REFERENCES CustomerStatus(id),
-    tier_id int FOREIGN KEY REFERENCES Tier(id),
+    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id) DEFAULT 1,
     location_id int FOREIGN KEY REFERENCES Location(id);
 
 
@@ -353,5 +356,5 @@ ALTER TABLE StoreProduct ADD
 ALTER TABLE Reward ADD
     reward_status_id int NOT NULL FOREIGN KEY REFERENCES RewardStatus(id),
     free_product_id int FOREIGN KEY REFERENCES Product(id),
-    tier_id int FOREIGN KEY REFERENCES Tier(id);
+    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id) DEFAULT 1;
 
