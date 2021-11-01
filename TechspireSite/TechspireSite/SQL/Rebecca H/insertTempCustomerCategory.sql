@@ -1,2 +1,0 @@
-INSERT into CustomerCategory ( category_name, category_desc ) VALUES ('temp suspended', 'suspended temporarily')
-INSERT into CustomerCategory ( category_name, category_desc ) VALUES ('softban', 'someone who abuses the program')
