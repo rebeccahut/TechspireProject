@@ -166,7 +166,7 @@ class PointReason(DescriptiveModel):
 
     class Meta:
         db_table = "PointReasonType"
-        verbose_name_plural = "PointReasonType"
+        verbose_name_plural = "Point Log Type"
         managed = False
 
     def __str__(self):
@@ -247,7 +247,7 @@ class Person(DescriptiveModel):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
-    phone_number = PhoneNumberField(max_length=15)
+    phone_number = PhoneNumberField(max_length=15, help_text="xxx-xxx-xxxx")
     birthdate = models.DateField()
     begin_date = models.DateField(auto_now_add=True)
     location = models.ForeignKey(Location, on_delete=models.RESTRICT, verbose_name="Address")
@@ -370,7 +370,7 @@ class PaymentType(LabelCode):
 class Store(DescriptiveModel):
     description = 'A physical location where customers go to complete transactions.'
     store_name = models.CharField(max_length=40)
-    phone_number = PhoneNumberField(max_length=15, blank=True, null=True)
+    phone_number = PhoneNumberField(max_length=15, blank=True, null=True, help_text="xxx-xxx-xxxx")
     email_address = models.EmailField(max_length=254, blank=True, null=True)
     website_address = models.CharField(max_length=300, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)

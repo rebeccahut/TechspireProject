@@ -7,6 +7,17 @@ from . import models
 from . import widgets
 
 
+def format_phone(target_string):
+    last4 = target_string[-4:]
+    target_string = target_string[:-4]
+    last3 = target_string[-3:]
+    target_string = target_string[:-3]
+    area = target_string[-3:]
+    target_string = target_string[:-3]
+    country = target_string
+    return country + "-" + area + "-" + last3 + "-" + last4
+
+
 class TwentyPageAdmin(admin.ModelAdmin):
     list_per_page = 20
     save_on_top = True
@@ -43,11 +54,10 @@ class EmployeeAdmin(ReverseTwentyAdmin):
         'phone_number': forms.PhoneForm
     }
     list_filter = ["employee_status"]
-    list_display = ["first_name", "last_name", "email_address", "phone_number", "employee_status"]
+    list_display = ["first_name", "last_name", "email_address", "display_phone", "employee_status"]
     inlines = [forms.EmployeeCategoryForm, forms.EmployeeJobForm, forms.EmployeeSocialForm]
 
     change_form_template = 'admin/location_form.html'
-
 
     class Media:
         js = (
@@ -55,6 +65,10 @@ class EmployeeAdmin(ReverseTwentyAdmin):
             '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
             'Bakery/js/Location.js',
         )
+
+    @admin.display(description='Phone Number', ordering="phone_number")
+    def display_phone(self, obj):
+        return format_phone(str(obj.phone_number))
 
 
 @admin.register(models.Customer)
@@ -64,7 +78,7 @@ class CustomerAdmin(ReverseTwentyAdmin):
     }
     list_filter = ["customer_status", "tier"]
     search_fields = ["email_address", "phone_number"]
-    list_display = ["first_name", "last_name", "email_address", "phone_number", "customer_status", "tier"]
+    list_display = ["first_name", "last_name", "email_address", "display_phone", "customer_status", "tier"]
     inlines = [forms.CustomerCategoryForm, forms.CustomerSocialForm]
     inline_type = "stacked"
     inline_reverse = ["location", ]
@@ -79,6 +93,10 @@ class CustomerAdmin(ReverseTwentyAdmin):
             '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
             'Bakery/js/Location.js',
         )
+
+    @admin.display(description='Phone Number', ordering="phone_number")
+    def display_phone(self, obj):
+        return format_phone(str(obj.phone_number))
 
 
 @admin.register(models.Order)
@@ -148,6 +166,7 @@ class StoreAdmin(ReverseTwentyAdmin):
     inline_type = "stacked"
     inline_reverse = ["location", ]
     inlines = [forms.StoreSocialForm]
+    list_display = ["store_name", "display_phone", "email_address", "website_address"]
     change_form_template = 'admin/location_form.html'
 
     class Media:
@@ -162,6 +181,10 @@ class StoreAdmin(ReverseTwentyAdmin):
         form.base_fields['website_address'].widget.attrs['style'] = 'width: 40em;'
         form.base_fields['email_address'].widget.attrs['style'] = 'width: 40em;'
         return form
+
+    @admin.display(description='Phone Number', ordering="phone_number")
+    def display_phone(self, obj):
+        return format_phone(str(obj.phone_number))
 
 
 @admin.register(models.PointLog)
