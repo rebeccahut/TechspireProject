@@ -5,6 +5,8 @@ SET product_desc = @product_desc
 where id = @id;
 
 
+
+
 Declare @product_price int = 40
 Declare @id int = 124
 UPDATE Product 
