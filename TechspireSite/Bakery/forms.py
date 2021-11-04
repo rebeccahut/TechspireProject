@@ -14,6 +14,11 @@ class GenericForm(forms.ModelForm):
     your_name = forms.CharField(label='Your name', max_length=100, disabled=True)
 
 
+class ProductForm(forms.ModelForm):
+    model = Product
+    pass
+
+
 class CustomerCategoryForm(admin.TabularInline):
     model = AssocCustomerLabel
     extra = 1
@@ -110,13 +115,14 @@ class RewardFormSet(BaseInlineFormSet):
             pass
 
 
-class OrderLineForm(admin.TabularInline):
+class OrderLineInline(admin.TabularInline):
     formset = OrderFormSet
     model = OrderLine
     min_num = 0
     extra = 1
-    fields = ["product", "ind_price", "quantity", "total_price"]
-    readonly_fields = ["ind_price", "total_price"]
+
+    fields = ["product", "ind_price", "quantity", "total_price", "points_eligible"]
+    readonly_fields = ["ind_price", "total_price", "points_eligible"]
 
 
 class RewardLineForm(admin.TabularInline):
@@ -149,7 +155,7 @@ class RewardLineFormRead(RewardLineForm):
     min_num = 0
 
 
-class OrderLineFormRead(OrderLineForm):
+class OrderLineFormRead(OrderLineInline):
     def get_readonly_fields(self, request, obj=None):
         return self.fields + self.readonly_fields
 

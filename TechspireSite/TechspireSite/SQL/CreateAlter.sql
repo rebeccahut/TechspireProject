@@ -33,7 +33,7 @@ CREATE TABLE Employee(
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,
     email_address nvarchar(254) NOT NULL,
-    phone_number nvarchar(14) NOT NULL,
+    phone_number nvarchar(15) NOT NULL DEFAULT '+19043335252',
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
@@ -85,7 +85,7 @@ CREATE TABLE Customer(
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,
     email_address nvarchar(254) NOT NULL,
-    phone_number nvarchar(15) NOT NULL,
+    phone_number nvarchar(15) NOT NULL DEFAULT '+19043335252',
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
@@ -99,6 +99,7 @@ CREATE TABLE OrderLine(
     quantity int NOT NULL DEFAULT 0,
     ind_price numeric(19,4) NOT NULL DEFAULT 0,
     total_price numeric(19,4) NOT NULL DEFAULT 0,
+    points_eligible bit NOT NULL DEFAULT 1
 );
 
 CREATE TABLE CustomerReward(
@@ -190,7 +191,7 @@ CREATE TABLE ProductStatus (
 CREATE TABLE Store(
     id INT PRIMARY KEY IDENTITY(1,1),
     store_name nvarchar(40),
-    phone_number nvarchar(15),
+    phone_number nvarchar(15) DEFAULT '+19043335252',
     email_address nvarchar(254),
     website_address nvarchar(300),
     start_date date NOT NULL,

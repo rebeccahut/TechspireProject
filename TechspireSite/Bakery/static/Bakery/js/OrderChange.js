@@ -131,16 +131,18 @@ function update_rewards() {
     console.log("Updated rewards")
     var url = $("#Reward_URL").attr("data-url");
     var storeID = $("#id_store").val();
-    var customerID = $("#id_customer").val();
-    var selected = []
-    $('[id^="id_customerreward_set-"]').filter('[id$="-reward"]').each(function () {
+    //var customerID = $("#id_customer").val();
+    if (storeID){
+        var selected = []
+        $('[id^="id_customerreward_set-"]').filter('[id$="-reward"]').each(function () {
         selected.push($(this).val());
-    });
-    $.ajax({                       
+        });
+
+
+        $.ajax({                       
         url: url,                    
         data: {
-            'store': storeID,
-            'customer': customerID
+            'store': storeID
         },
         success: function (data) {
             $('[id^="id_customerreward_set-"]').filter('[id$="-reward"]').each(function (index) {
@@ -154,6 +156,9 @@ function update_rewards() {
             });
         }
     })
+
+    }
+    
 }
 
 //Updates the employee dropdown
@@ -264,11 +269,21 @@ function update_product_row(target_element, update_total) {
             'product': productID
         },
         success: function (data) {
-            //Update ind_price
-            var text = parseFloat(data).toFixed(2)
+            //Update ind_price    
+            var text = parseFloat(data.price).toFixed(2)
             var line_num = target_element.id.substring(17, 18)
             var id_name = "orderline_set-" + line_num
             var query = "#" + id_name + " " + ".field-ind_price" + " p"
+            var eligible_element = $("#" + id_name + " .field-points_eligible p img")
+            first = "yes"
+            last = "no"
+            if (data.eligible == "None"){
+                first = "no"
+                last = "yes"
+            }
+            var current = eligible_element.attr("src")
+            current = current.replace(first, last)
+            eligible_element.attr("src", current)
             $(query).text("$" + text)
             update_line_total(line_num)
         }

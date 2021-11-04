@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from django.template.response import TemplateResponse
 from . import views
+from django.urls import NoReverseMatch, Resolver404, resolve, reverse
+from django.apps import apps
+from django.utils.text import capfirst
 import os
 
 
@@ -14,10 +17,88 @@ class AdminTableRow:
         self.name = in_name
 
 
+class SubApp:
+    app_url = ""
+    app_label = "Test"
+    models = []
+
+    def __init__(self, app_url, app_label):
+        self.app_url = app_url
+        self.app_label = app_label
+
+
 class TechSpireAdminSite(admin.AdminSite):
     site_header = "Hot Breads Admin"
     site_title = "Hot Breads Admin"
     index_title = "Welcome to Hot Breads Admin"
+
+
+    def _build_app_dict(self, request, label=None):
+        print("Build")
+        """
+        Build the app dictionary. The optional `label` parameter filters models
+        of a specific app.
+        """
+        app_dict = {}
+
+        if label:
+            models = {
+                m: m_a for m, m_a in self._registry.items()
+                if m._meta.app_label == label
+            }
+        else:
+            models = self._registry
+        for model, model_admin in models.items():
+            app_label = model._meta.app_label
+            try:
+                table_label = model.category
+            except AttributeError:
+                table_label = app_label
+            has_module_perms = model_admin.has_module_permission(request)
+            if not has_module_perms:
+                continue
+
+            perms = model_admin.get_model_perms(request)
+
+            # Check whether user has any perm for this module.
+            # If so, add the module to the model_list.
+            if True not in perms.values():
+                continue
+
+            info = (app_label, model._meta.model_name)
+            model_dict = {
+                'name': capfirst(model._meta.verbose_name_plural),
+                'object_name': model._meta.object_name,
+                'perms': perms,
+                'admin_url': None,
+                'add_url': None,
+            }
+            if perms.get('change') or perms.get('view'):
+                model_dict['view_only'] = not perms.get('change')
+                try:
+                    model_dict['admin_url'] = reverse('admin:%s_%s_changelist' % info, current_app=self.name)
+                except NoReverseMatch:
+                    pass
+            if perms.get('add'):
+                try:
+                    model_dict['add_url'] = reverse('admin:%s_%s_add' % info, current_app=self.name)
+                except NoReverseMatch:
+                    pass
+
+            if table_label in app_dict:
+                app_dict[table_label]['models'].append(model_dict)
+            else:
+                app_dict[table_label] = {
+                    'name': table_label,
+                    'app_label': app_label,
+
+                    'has_module_perms': has_module_perms,
+                    'models': [model_dict],
+                }
+
+        if label:
+            return app_dict.get(label)
+        return app_dict
 
     #Could be improved by creating a library of reports on server start instead of everytime a link is clicked
     def index(self, request, extra_context=None):
@@ -26,6 +107,8 @@ class TechSpireAdminSite(admin.AdminSite):
         apps that have been registered in this site.
         """
         app_list = self.get_app_list(request)
+
+
         module_dir = os.path.dirname(__file__)  # get current directory
         reports = views.get_report_names(module_dir)
         AdminTableRow("dict1", "Row Dictionary")

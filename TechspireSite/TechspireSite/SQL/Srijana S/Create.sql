@@ -21,7 +21,7 @@ CREATE TABLE ProductStatus (
 CREATE TABLE Store(
     id INT PRIMARY KEY IDENTITY(1,1),
     store_name nvarchar(40),
-    phone_number nvarchar(15),
+    phone_number nvarchar(15) DEFAULT '+19043335252',
     email_address nvarchar(254),
     website_address nvarchar(300),
     start_date date NOT NULL,

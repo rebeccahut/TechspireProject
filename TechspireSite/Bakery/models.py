@@ -30,8 +30,9 @@ class StatusCode(DescriptiveModel):
     description = "Used to soft delete rows with a reason name and desc"
     status_name = models.CharField(max_length=40)
     status_desc = models.CharField(max_length=200, blank=True, null=True)
-    is_active = models.BooleanField(help_text="Soft Delete Bool", default=True)
+    is_active = models.BooleanField(default=True)
     load_order = 1
+    category = "Lookup"
 
     def __str__(self):
         return self.status_name
@@ -47,6 +48,7 @@ class LabelCode(DescriptiveModel):
     type_name = models.CharField(max_length=40)
     type_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
+    category = "Lookup"
 
     def __str__(self):
         return self.type_name
@@ -62,6 +64,7 @@ class CustomerLabel(DescriptiveModel):
     category_name = models.CharField(max_length=40)
     category_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "CustomerCategory"
@@ -78,6 +81,7 @@ class EmployeeLabel(DescriptiveModel):
     category_name = models.CharField(max_length=40)
     category_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "EmployeeCategory"
@@ -132,7 +136,7 @@ class StoreStatus(StatusCode):
 
 
 class RewardStatus(StatusCode):
-    description = 'Defines whether a particular reward is active/inactive. Primary attributes: active, inactive'
+    description = 'Defines whether a particular reward is active/inactive. Core attributes: active, inactive'
     owner = Owners.Alanna
 
     class Meta:
@@ -147,6 +151,7 @@ class BanType(DescriptiveModel):
     load_order = 1
     ban_name = models.CharField(max_length=40)
     ban_desc = models.CharField(max_length=200, blank=True, null=True)
+    category = "Lookup"
 
     class Meta:
         db_table = "BanType"
@@ -163,6 +168,7 @@ class PointReason(DescriptiveModel):
     reason_name = models.CharField(max_length=40)
     reason_desc = models.CharField(max_length=200, blank=True, null=True)
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "PointReasonType"
@@ -178,6 +184,7 @@ class Country(DescriptiveModel):
     country_name = models.CharField(max_length=60)
     owner = Owners.Rebecca
     load_order = 1
+    category = "Lookup"
 
     def __str__(self):
         return self.country_name
@@ -194,6 +201,7 @@ class StateProvince(DescriptiveModel):
     country = models.ForeignKey(Country, on_delete=models.RESTRICT, default=233)
     owner = Owners.Rebecca
     load_order = 2
+    category = "Lookup"
 
     def __str__(self):
         return self.state_name
@@ -247,9 +255,9 @@ class Person(DescriptiveModel):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
-    phone_number = PhoneNumberField(max_length=15, help_text="xxx-xxx-xxxx")
+    phone_number = PhoneNumberField(max_length=15, help_text="xxx-xxx-xxxx", default="+19043335252")
     birthdate = models.DateField()
-    begin_date = models.DateField(auto_now_add=True)
+    begin_date = models.DateField(auto_now_add=True, help_text="YYYY-MM-DD")
     location = models.ForeignKey(Location, on_delete=models.RESTRICT, verbose_name="Address")
     comments = models.TextField(blank=True, null=True)
 
@@ -279,6 +287,7 @@ class Employee(Person):
     employee_type = models.ForeignKey(EmployeeType, on_delete=models.RESTRICT)
     owner = Owners.BrettM
     load_order = 4
+    category = "Interrelated"
 
     class Meta:
         db_table = "Employee"
@@ -298,6 +307,7 @@ class Customer(Person):
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Julia
     load_order = 5
+    category = "Core"
 
     class Meta:
         db_table = "Customer"
@@ -311,6 +321,7 @@ class Job(DescriptiveModel):
     job_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.BrettM
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "Job"
@@ -370,7 +381,7 @@ class PaymentType(LabelCode):
 class Store(DescriptiveModel):
     description = 'A physical location where customers go to complete transactions.'
     store_name = models.CharField(max_length=40)
-    phone_number = PhoneNumberField(max_length=15, blank=True, null=True, help_text="xxx-xxx-xxxx")
+    phone_number = PhoneNumberField(max_length=15, blank=True, null=True, help_text="xxx-xxx-xxxx", default="+19043335252")
     email_address = models.EmailField(max_length=254, blank=True, null=True)
     website_address = models.CharField(max_length=300, blank=True, null=True)
     location = models.ForeignKey(Location, on_delete=models.RESTRICT)
@@ -380,6 +391,7 @@ class Store(DescriptiveModel):
     employees = models.ManyToManyField(Employee, through="EmployeeJob")
     owner = Owners.Srijana
     load_order = 4
+    category = "Interrelated"
 
     class Meta:
         db_table = "Store"
@@ -427,6 +439,7 @@ class Order(DescriptiveModel):
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     owner = Owners.Torrey
     load_order = 6
+    category = "Core"
 
     class Meta:
         db_table = "Order"
@@ -437,6 +450,7 @@ class Order(DescriptiveModel):
         return str(self.store) + "-" + str(self.customer) + "-" + str(self.order_date)
 
 
+
 class ProductType(DescriptiveModel):
     description = 'Identifying certain product types that are eligible ' \
                   'to be purchased with points, versus products ' \
@@ -445,6 +459,7 @@ class ProductType(DescriptiveModel):
     product_type_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.Srijana
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "ProductType"
@@ -465,6 +480,7 @@ class Product(DescriptiveModel):
     ban_reason = models.ForeignKey(BanType, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Srijana
     load_order = 2
+    category = "Interrelated"
 
     class Meta:
         db_table = "Product"
@@ -487,6 +503,7 @@ class OrderLine(DescriptiveModel):
     total_price = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     order = models.ForeignKey(Order, on_delete=models.RESTRICT)
+    points_eligible = models.BooleanField(default=True)
     owner = Owners.Julia
     load_order = 7
 
@@ -498,8 +515,10 @@ class OrderLine(DescriptiveModel):
         constraints = [models.UniqueConstraint(fields=['order', 'product'], name='unique_order_product')]
 
     def save(self, *args, **kwargs):
-        self.ind_price = Product.objects.get(pk=self.product.id).product_price
+        target_product = Product.objects.get(pk=self.product.id)
+        self.ind_price = target_product.product_price
         self.total_price = self.ind_price * self.quantity
+        self.points_eligible = target_product.ban_reason is None
         super(OrderLine, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -524,6 +543,7 @@ class Reward(DescriptiveModel):
     date_disabled = models.DateField(blank=True, null=True)
     owner = Owners.Umair
     load_order = 3
+    category = "Interrelated"
 
     class Meta:
         db_table = "Reward"
@@ -540,6 +560,7 @@ class SocialMediaType(DescriptiveModel):
     social_media_desc = models.CharField(max_length=200, blank=True, null=True)
     owner = Owners.Torrey
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "SocialMediaType"
@@ -611,6 +632,7 @@ class StoreProduct(DescriptiveModel):
     product_assigned = models.DateField(auto_now_add=True)
     owner = Owners.Torrey
     load_order = 5
+    category = "Interrelated"
 
     class Meta:
         db_table = "StoreProduct"
@@ -630,6 +652,7 @@ class StoreReward(DescriptiveModel):
     reward_assigned = models.DateField(auto_now_add=True)
     owner = Owners.Saja
     load_order = 5
+    category = "Interrelated"
 
     class Meta:
         db_table = "StoreReward"
@@ -680,6 +703,7 @@ class PointLog(DescriptiveModel):
     owner = Owners.Jade
     load_order = 7
     bulk_insert = False
+    category = "Interrelated"
 
     class Meta:
         db_table = "PointLog"

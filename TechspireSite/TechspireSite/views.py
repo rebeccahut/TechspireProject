@@ -303,21 +303,29 @@ def load_products(request):
 
 def load_product_price(request):
     product_id = request.GET.get("product")
+    response_data = {}
+    eligible = False
     try:
-        price = Product.objects.get(pk=product_id).product_price
+        target_obj = Product.objects.get(pk=product_id)
+        price = target_obj.product_price
+        eligible = target_obj.ban_reason_id
     except Product.DoesNotExist:
         price = 0
+        eligible = False
     except ValueError:
         price = 0
-    return HttpResponse(price)
+        eligible = False
+    response_data["price"] = str(price)
+    response_data["eligible"] = str(eligible)
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 #Update when status is added to StoreProducts
 def load_rewards(request):
-    customer_id = request.GET.get('customer')
+    #customer_id = request.GET.get('customer')
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreRewards.sql")
-    rewards = Reward.objects.raw(sql.read(), [store_id, customer_id])
+    rewards = Reward.objects.raw(sql.read(), [store_id])
     return render(request, 'admin/update_drop_down.html', {'options': rewards})
 
 

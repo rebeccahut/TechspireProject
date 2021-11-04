@@ -1,2 +1,0 @@
-ALTER TABLE CustomerCustomerCategory
-ADD Date_of_Assignment date;
