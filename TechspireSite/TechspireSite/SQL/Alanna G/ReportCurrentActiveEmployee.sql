@@ -10,10 +10,7 @@ Employee.id AS 'Employee ID',
 Employee.first_name AS 'First Name',
 Employee.last_name AS 'Last Name',
 Employee.phone_number AS 'Phone Number',
-Job.job_name AS 'Job Title',
-EmployeeStatus.is_active AS 'Status',
-EmployeeJob.store_id AS 'Store'
-
+Job.job_name AS 'Job Title'
 
 FROM Employee
 
