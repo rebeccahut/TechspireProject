@@ -10,8 +10,8 @@ Customer.last_name AS 'Last Name',
 Reward.point_cost AS 'Total Points',
 RewardStatus.is_active AS 'Available'
 FROM Reward
-INNER JOIN CustomerReward ON  Reward.id = CustomerReward.reward_id
-INNER JOIN Customer ON CustomerReward.order_id = Customer.id
+INNER JOIN OrderReward ON  Reward.id = OrderReward.reward_id
+INNER JOIN Customer ON OrderReward.order_id = Customer.id
 INNER JOIN "Order" ON "Order".customer_id = Customer.id
 INNER JOIN RewardStatus ON RewardStatus.id = Reward.reward_status_id
 INNER JOIN PointLog on Reward.point_cost = PointLog.points_amount

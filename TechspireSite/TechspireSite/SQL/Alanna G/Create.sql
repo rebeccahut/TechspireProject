@@ -1,29 +1,26 @@
-CREATE TABLE EmployeeStatus
-(EmployeeID int,
-Status_Name varchar(40),
-Status_Desc varchar(200),
-Is_Active bit,
-Status_Assigned date
-)
+CREATE TABLE EmployeeStatus(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    status_name varchar(40) NOT NULL,
+    status_desc varchar(200),
+    is_active bit NOT NULL DEFAULT 1
+);
 
-CREATE TABLE RewardStatus
-(Reward_ID int,
-Status_Name varchar(40),
-Status_Desc varchar(200),
-Is_Active bit,
-Status_Assigned date
-)
+CREATE TABLE RewardStatus(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    status_name varchar(40) NOT NULL,
+    status_desc varchar(200),
+    is_active bit NOT NULL DEFAULT 1,
+);
 
-CREATE TABLE StoreStatus
-(Store_ID int,
-Status_Name varchar(40),
-Status_Desc varchar(200),
-Is_Active bit,
-Status_Assigned date
-)
+CREATE TABLE StoreStatus(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    status_name varchar(40) NOT NULL,
+    status_desc varchar(200),
+    is_active bit NOT NULL DEFAULT 1,
+);
 
-CREATE TABLE BanType 
-(Ban_ID int,
-Label_Name varchar(40),
-Label_Desc varchar(200)
-)
+CREATE TABLE BanType(
+    id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    ban_name varchar(40) NOT NULL,
+    ban_desc varchar(200),
+);

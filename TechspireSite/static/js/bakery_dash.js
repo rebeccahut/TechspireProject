@@ -1,0 +1,199 @@
+$(document).ready(function () {
+	var mychart = $('#chart1')
+	var ctx1 = mychart.get(0)
+	
+	var url = $("#Emp_Perf").attr("data-url");
+	console.log(url)
+	$.ajax({                       
+        url: url,                    
+        success: function (data) {
+			const myChart = new Chart(ctx1, {
+				type: 'bar',
+				data: {
+					labels: data.label,
+					datasets: [{
+						label: '# of Votes',
+						data: data.y,
+						backgroundColor: [
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(54, 162, 235, 0.2)',
+							'rgba(255, 206, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(153, 102, 255, 0.2)',
+						],
+						borderColor: [
+							'rgba(255, 99, 132, 1)',
+							'rgba(54, 162, 235, 1)',
+							'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)',
+							'rgba(153, 102, 255, 1)',
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: false,
+					scales: {
+						y: {
+							
+							beginAtZero: true,
+							title: {
+								display: true,
+								text: "Transaction Total"
+							},
+							ticks: {
+								beginAtZero: true,
+								callback: function(value) {return "$" + value;}
+							  }
+							
+							
+						}
+					},
+					plugins: {
+						title: {
+							display: true,
+							text: "Top 5 Cashiers By Transaction Total - last 30 days"
+						},
+						legend: {
+							display: false
+						}
+					}
+				}
+			});
+			
+        }
+    })
+
+	var mychart = $('#chart2')
+	var ctx2 = mychart.get(0)
+	
+	var url = $("#Cust_Perf").attr("data-url");
+	console.log(url)
+	$.ajax({                       
+        url: url,                    
+        success: function (data) {
+			const myChart = new Chart(ctx2, {
+				type: 'bar',
+				data: {
+					labels: data.label,
+					datasets: [{
+						label: '# of Votes',
+						data: data.y,
+						backgroundColor: [
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(54, 162, 235, 0.2)',
+							'rgba(255, 206, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(153, 102, 255, 0.2)',
+						],
+						borderColor: [
+							'rgba(255, 99, 132, 1)',
+							'rgba(54, 162, 235, 1)',
+							'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)',
+							'rgba(153, 102, 255, 1)',
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: false,
+					scales: {
+						y: {
+							
+							beginAtZero: true,
+							title: {
+								display: true,
+								text: "Quantity Sold"
+							},
+							ticks: {
+								beginAtZero: true,
+								callback: function(value) {return "$" + value;}
+							  }
+						}
+					},
+					plugins: {
+						title: {
+							display: true,
+							text: "Top 5 Customers By Transaction Total - last 30 days"
+						},
+						legend: {
+							display: false
+						}
+					}
+				}
+			});
+			
+        }
+	})
+	
+	var mychart = $('#chart3')
+	var ctx3 = mychart.get(0)
+	
+	var url = $("#Product_Perf").attr("data-url");
+	console.log(url)
+	$.ajax({                       
+        url: url,                    
+        success: function (data) {
+			const myChart = new Chart(ctx3, {
+				type: 'bar',
+				data: {
+					labels: data.label,
+					datasets: [{
+						label: '# of Votes',
+						data: data.y,
+						backgroundColor: [
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(54, 162, 235, 0.2)',
+							'rgba(255, 206, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(153, 102, 255, 0.2)',
+						],
+						borderColor: [
+							'rgba(255, 99, 132, 1)',
+							'rgba(54, 162, 235, 1)',
+							'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)',
+							'rgba(153, 102, 255, 1)',
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					responsive: false,
+					scales: {
+						y: {
+							
+							beginAtZero: true,
+							title: {
+								display: true,
+								text: "Quantity Sold"
+							},
+							ticks: {
+								beginAtZero: true,
+								callback: function(value) {if (value % 1 === 0) {return value;}}
+							  }
+						},
+
+					},
+					plugins: {
+						title: {
+							display: true,
+							text: "Top 5 Products Sold - last 30 days"
+						},
+						legend: {
+							display: false
+						}
+					}
+				}
+			});
+			
+        }
+    })
+
+
+
+
+
+	
+})

@@ -12,11 +12,23 @@ from django.http import HttpResponse
 def extract_field_props(current_field, model, field_type_dict):
     field_name = current_field.name
     field_type = type(current_field).__name__
+    max_length = "NA" if current_field.max_length is None else current_field.max_length
     domain = "NA"
     if current_field.primary_key:
         help_text = model.pk_desc
     else:
         help_text = current_field.help_text
+
+    if isinstance(current_field, models.fields.DecimalField):
+        max_length = current_field.max_digits
+        domain = "{} Decimals".format(current_field.decimal_places)
+
+    if current_field.unique:
+        if domain == "NA":
+            domain = "UNIQUE"
+        else:
+            domain += "UNIQUE"
+
     c_delete = False
     c_update = False
     fk = False
@@ -26,12 +38,24 @@ def extract_field_props(current_field, model, field_type_dict):
         field_name += "_id"
         if null:
             c_update = True
+
     try:
+        if field_type == "TextField":
+            max_length = "max"
         field_type = field_type_dict[field_type]
     except KeyError:
         pass
+
     default = "NA" if current_field.default == models.fields.NOT_PROVIDED else current_field.default
-    max_length = "NA" if current_field.max_length is None else current_field.max_length
+
+    try:
+        if current_field.auto_now_add:
+            default = "CDate"
+
+    except AttributeError:
+        #Not a datefield
+        pass
+
     pk = current_field.primary_key
 
     blank = True if current_field.primary_key else not current_field.blank
@@ -48,7 +72,8 @@ def extract_all_field_props(model, field_type_dict):
     visible_fields = []
     output_list = []
     visible_fields = [field for field in model_fields if
-                      not isinstance(field, models.fields.reverse_related.ManyToOneRel)]
+                      not isinstance(field, models.fields.reverse_related.ManyToOneRel)
+                      and not isinstance(field, models.fields.reverse_related.ManyToManyRel)]
     for current_field in visible_fields:
         output_row = extract_field_props(current_field, model, field_type_dict)
         output_list.append(output_row)
@@ -68,18 +93,24 @@ def generate_data_dict_excel(file_path, title_row, field_type_dict):
         max_lengths.append(col_length)
 
     row_count = 1
+
     for row, model in enumerate(model_list):
         model_object = model()
-        model_name = model.__name__
+        model_name = model._meta.db_table
         model_desc = model_object.description
         field_props = extract_all_field_props(model, field_type_dict)
         for count, props in enumerate(field_props):
+            props.append(props.pop(1))
             if count == 0:
-                props.insert(0, model_desc)
                 props.insert(0, model_name)
+                props.insert(0, model.owner.name)
+                props.insert(0, model.load_order)
+                props.append(model_desc)
             else:
                 props.insert(0, " ")
                 props.insert(0, " ")
+                props.insert(0, " ")
+                props.append(" ")
 
         for field_index, field in enumerate(field_props):
             for col_index, col in enumerate(field):
@@ -128,3 +159,22 @@ def generate_erd(folder, file, shape, fields):
     response_file = open(png_path, 'rb')
     response = HttpResponse(response_file, content_type="image/png")
     return response
+
+
+def get_solid_models(app_name):
+    app = apps.get_app_config(app_name)
+    solid_models = app.models.values()
+    solid_models = [item() for item in solid_models]
+    return [item for item in solid_models if not item._meta.abstract]
+
+
+def generate_ordered_sql(app_name, order, statement, file_name):
+    solid_tables = get_solid_models(app_name)
+    solid_tables.sort(key=lambda x: x.load_order, reverse=order)
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(module_dir, "SQL", file_name)
+    drop_file = open(path, "w")
+    for table in solid_tables:
+        drop_file.write(statement + " " + "\"" + table._meta.db_table + "\"" + "\n" + "\n")
+    drop_file.close()
+
