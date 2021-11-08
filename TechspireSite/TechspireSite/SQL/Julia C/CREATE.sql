@@ -20,7 +20,7 @@ CREATE TABLE OrderLine(
     points_eligible bit NOT NULL DEFAULT 1
 );
 
-CREATE TABLE CustomerReward(
+CREATE TABLE OrderReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     point_cost int NOT NULL DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,

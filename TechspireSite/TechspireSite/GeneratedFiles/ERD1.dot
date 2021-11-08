@@ -351,11 +351,11 @@ digraph model_graph {
     </TABLE>
     >]
 
-  Bakery_models_CustomerReward [label=<
+  Bakery_models_OrderReward [label=<
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    CustomerReward<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
+    OrderReward<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -499,13 +499,13 @@ digraph model_graph {
   Bakery_models_StoreReward -> Bakery_models_Store
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_CustomerReward -> Bakery_models_Order
+  Bakery_models_OrderReward -> Bakery_models_Order
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_CustomerReward -> Bakery_models_Reward
+  Bakery_models_OrderReward -> Bakery_models_Reward
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_CustomerReward -> Bakery_models_Product
+  Bakery_models_OrderReward -> Bakery_models_Product
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_PointLog -> Bakery_models_Employee

@@ -1,6 +1,6 @@
 DELETE FROM "OrderLine"
 
-DELETE FROM "CustomerReward"
+DELETE FROM "OrderReward"
 
 DELETE FROM "PointLog"
 

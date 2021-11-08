@@ -423,8 +423,8 @@ WITH
 GO
 
 --Julia Chen
-BULK INSERT CustomerReward
-FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerRewardList.tsv"
+BULK INSERT OrderReward
+FROM "D:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderRewardList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,
@@ -449,24 +449,24 @@ FROM OrderLine
 GROUP BY OrderLine.order_id)
 AS Totals ON Totals.order_id = "Order".id
 
---Using the points fields in each order/CustomerReward generates a point-log for each point transaction
+--Using the points fields in each order/OrderReward generates a point-log for each point transaction
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
 SELECT (Floor(final_total)/10) AS point_cost,order_date, "Order".customer_id, "Order".employee_id, 4 AS reason_id, "Order".id
 FROM "Order"
 
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
 SELECT -Reward.point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
-FROM "CustomerReward"
-JOIN Reward ON Reward.id = CustomerReward.id
-JOIN "Order" ON "Order".id = CustomerReward.order_id
+FROM "OrderReward"
+JOIN Reward ON Reward.id = OrderReward.id
+JOIN "Order" ON "Order".id = OrderReward.order_id
 
 --
-UPDATE CustomerReward
-SET CustomerReward.point_cost = Reward.point_cost, 
-CustomerReward.discount_amount = Reward.discount_amount, 
-CustomerReward.free_product_id = Reward.free_product_id
-FROM CustomerReward
-INNER JOIN Reward ON CustomerReward.reward_id = Reward.id
+UPDATE OrderReward
+SET OrderReward.point_cost = Reward.point_cost,
+OrderReward.discount_amount = Reward.discount_amount,
+OrderReward.free_product_id = Reward.free_product_id
+FROM OrderReward
+INNER JOIN Reward ON OrderReward.reward_id = Reward.id
 --Randomly selects 10% of orders to generate instances of employees manually adding points to the associated customer
 INSERT INTO PointLog(points_amount, created_date, customer_id, employee_id, order_id, reason_id)
 SELECT TOP 10 PERCENT
@@ -508,3 +508,17 @@ INNER JOIN
 CROSS JOIN Customer
 WHERE (points_earned - min_points) >= 0
 GROUP BY Customer.id) AS T ON Customer.id = T.cust_id
+
+-- created a new column that states the date at which the employee is assigned a category
+UPDATE EmployeeEmployeeCategory
+SET EmployeeEmployeeCategory.created_date = Employee.begin_date
+FROM Employee
+INNER JOIN EmployeeEmployeeCategory ON EmployeeEmployeeCategory.employee_id = Employee.id
+INNER JOIN EmployeeCategory ON EmployeeEmployeeCategory.employee_category_id = EmployeeCategory.id
+
+-- created a new column that states the date at which the employee is assigned a category
+UPDATE CustomerCustomerCategory
+SET CustomerCustomerCategory.created_date = Customer.begin_date
+FROM Customer
+INNER JOIN CustomerCustomerCategory ON CustomerCustomerCategory.customer_id = Customer.id
+INNER JOIN CustomerCategory ON CustomerCustomerCategory.customer_category_id = CustomerCategory.id

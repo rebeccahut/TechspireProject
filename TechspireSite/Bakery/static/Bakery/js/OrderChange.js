@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     convert_money_inline(".field-ind_price")
     convert_money_inline(".field-total_price")
-    convert_money_inline(".field-discount_amount", parent_element = "customerreward")
+    convert_money_inline(".field-discount_amount", parent_element = "OrderReward")
     convert_money("field-original_total")
     convert_money("field-discount_amount")
     convert_money("field-final_total")
@@ -32,7 +32,7 @@ $(document).ready(function () {
         update_product_row(this)
     })
 
-    $("tbody [id^=id_customerreward_set-][id$=-reward]").each(function () {
+    $("tbody [id^=id_OrderReward_set-][id$=-reward]").each(function () {
         update_reward_row(this)
     })
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
     })
 
     //When reward changes update point cost, discount, extra product
-    $("tbody").on("change", '[id^="id_customerreward_set-"][id$="-reward"]', function () {
+    $("tbody").on("change", '[id^="id_OrderReward_set-"][id$="-reward"]', function () {
         update_reward_row(this)
     })
 })
@@ -134,7 +134,7 @@ function update_rewards() {
     //var customerID = $("#id_customer").val();
     if (storeID){
         var selected = []
-        $('[id^="id_customerreward_set-"]').filter('[id$="-reward"]').each(function () {
+        $('[id^="id_OrderReward_set-"]').filter('[id$="-reward"]').each(function () {
         selected.push($(this).val());
         });
 
@@ -145,7 +145,7 @@ function update_rewards() {
             'store': storeID
         },
         success: function (data) {
-            $('[id^="id_customerreward_set-"]').filter('[id$="-reward"]').each(function (index) {
+            $('[id^="id_OrderReward_set-"]').filter('[id$="-reward"]').each(function (index) {
                 console.log("sucessfully retrieved data")
                 $(this).html(data)
                 $(this).val(selected[index])
@@ -232,7 +232,7 @@ function format_money(input) {
 
 
 function update_reward_line(cost, discount, product, line) {
-    var id_name = "customerreward_set-" + line
+    var id_name = "OrderReward_set-" + line
     var cost_select = "#" + id_name + " " + ".field-point_cost" + " p"
     var discount_select = "#" + id_name + " " + ".field-discount_amount" + " p"
     var product_select = "#" + id_name + " " + ".field-free_product" + " p"

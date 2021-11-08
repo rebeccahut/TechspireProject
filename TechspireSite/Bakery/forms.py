@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
 from .models import OrderLine, CustomerSocialMedia, EmployeeSocialMedia, StoreSocialMedia, AssocCustomerLabel, \
-    AssocEmployeeLabel, EmployeeJob, Product, Reward, CustomerReward, Customer, Order
+    AssocEmployeeLabel, EmployeeJob, Product, Reward, OrderReward, Customer, Order
 
 
 class GenericForm(forms.ModelForm):
@@ -127,7 +127,7 @@ class OrderLineInline(admin.TabularInline):
 
 class RewardLineForm(admin.TabularInline):
     formset = RewardFormSet
-    model = CustomerReward
+    model = OrderReward
     min_num = 0
     max_num = 1
     extra = 0

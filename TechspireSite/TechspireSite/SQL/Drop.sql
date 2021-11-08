@@ -1,6 +1,6 @@
 DROP TABLE "OrderLine"
 
-DROP TABLE "CustomerReward"
+DROP TABLE "OrderReward"
 
 DROP TABLE "PointLog"
 

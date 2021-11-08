@@ -423,8 +423,8 @@ WITH
 GO
 
 --Julia Chen
-BULK INSERT CustomerReward
-FROM "C:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\CustomerRewardList.tsv"
+BULK INSERT OrderReward
+FROM "C:\Dev\Python\TechspireProject\TechspireSite\TechspireSite\SQL\Data\OrderRewardList.tsv"
 WITH
 	(
 	CHECK_CONSTRAINTS,
@@ -458,18 +458,18 @@ FROM "Order"
 
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
 SELECT -Reward.point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
-FROM "CustomerReward"
-JOIN Reward ON Reward.id = CustomerReward.id
-JOIN "Order" ON "Order".id = CustomerReward.order_id
+FROM "OrderReward"
+JOIN Reward ON Reward.id = OrderReward.id
+JOIN "Order" ON "Order".id = OrderReward.order_id
 
 
 
-UPDATE CustomerReward
-SET CustomerReward.point_cost = Reward.point_cost, 
-CustomerReward.discount_amount = Reward.discount_amount, 
-CustomerReward.free_product_id = Reward.free_product_id
-FROM CustomerReward
-INNER JOIN Reward ON CustomerReward.reward_id = Reward.id
+UPDATE OrderReward
+SET OrderReward.point_cost = Reward.point_cost,
+OrderReward.discount_amount = Reward.discount_amount,
+OrderReward.free_product_id = Reward.free_product_id
+FROM OrderReward
+INNER JOIN Reward ON OrderReward.reward_id = Reward.id
 INSERT INTO PointLog(points_amount, created_date, customer_id, employee_id, order_id, reason_id)
 SELECT TOP 10 PERCENT
 abs(checksum(NewId()) % 100) as points, order_date, customer_id, employee_id, id, 1 as reason

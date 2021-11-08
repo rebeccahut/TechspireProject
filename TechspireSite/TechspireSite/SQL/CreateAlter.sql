@@ -102,7 +102,7 @@ CREATE TABLE OrderLine(
     points_eligible bit NOT NULL DEFAULT 1
 );
 
-CREATE TABLE CustomerReward(
+CREATE TABLE OrderReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     point_cost int NOT NULL DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,
@@ -112,11 +112,12 @@ CREATE TABLE CustomerReward(
 CREATE TABLE EmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1), 
     category_name nvarchar (40) NOT NULL,
-    category_desc nvarchar (200),
+    category_desc nvarchar (200)
 );
 
 CREATE TABLE EmployeeEmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1),
+    created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE EmployeeType(
@@ -130,11 +131,12 @@ CREATE TABLE EmployeeType(
 CREATE TABLE CustomerCategory(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     category_name nvarchar(40) NOT NULL,
-    category_desc nvarchar(200),
+    category_desc nvarchar(200)
 );
 
 CREATE TABLE CustomerCustomerCategory(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE StateProvince(
@@ -288,7 +290,7 @@ ALTER TABLE OrderLine ADD
     product_id int NOT NULL FOREIGN KEY REFERENCES Product(id),
     order_id int NOT NULL FOREIGN KEY REFERENCES "Order"(id);
 
-ALTER TABLE CustomerReward ADD
+ALTER TABLE OrderReward ADD
     order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id),
     free_product_id int FOREIGN KEY REFERENCES Product(id);

@@ -1,4 +1,4 @@
-SELECT product_name AS label, Totals.Sold AS y
+SELECT product_name AS "label", Totals.Sold AS y
 FROM Product
 INNER JOIN
 (SELECT TOP 5

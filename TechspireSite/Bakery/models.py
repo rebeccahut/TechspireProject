@@ -665,7 +665,7 @@ class StoreReward(DescriptiveModel):
         return str(self.store) + " " + str(self.reward)
 
 
-class CustomerReward(DescriptiveModel):
+class OrderReward(DescriptiveModel):
     description = "Effectively the reward equivalent to OrderLine for transactions."
     order = models.ForeignKey(Order, on_delete=models.RESTRICT, unique=True)
     reward = models.ForeignKey(Reward, on_delete=models.RESTRICT)
@@ -676,7 +676,7 @@ class CustomerReward(DescriptiveModel):
     load_order = 7
 
     class Meta:
-        db_table = "CustomerReward"
+        db_table = "OrderReward"
         verbose_name = "Customer Reward"
         verbose_name_plural = verbose_name
         managed = False
@@ -686,7 +686,7 @@ class CustomerReward(DescriptiveModel):
         self.free_product = target_reward.free_product
         self.discount_amount = target_reward.discount_amount
         self.point_cost = target_reward.point_cost
-        super(CustomerReward, self).save(*args, **kwargs)
+        super(OrderReward, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.order) + " " + str(self.reward)
