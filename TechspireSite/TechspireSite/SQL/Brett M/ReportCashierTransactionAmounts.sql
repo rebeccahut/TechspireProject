@@ -3,7 +3,7 @@
 --The client can use this report in order to compare the performance of their current cashiers agaisnt historical cashier performance.
 --Displays all the cashiers and the total amount of customer spending with them acting as the cashier.
 --Row Number,Employee Name,Email,Status,Type,Transaction Count,Total Spending,Avg Spending
-
+--,,,,,,right,right
 
 SELECT ROW_NUMBER() OVER(ORDER BY EmployeeStatus.id, EmployeeType.id, Totals.total) AS "Row",
 CONCAT(Employee.first_name, ' ', Employee.last_name)AS "Employee Name", 

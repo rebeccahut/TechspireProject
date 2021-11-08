@@ -1,6 +1,23 @@
 $(document).ready(function () {
 	var mychart = $('#chart1')
 	var ctx1 = mychart.get(0)
+
+	var back_colors = [
+		'rgba(255, 99, 132, 0.2)',
+		'rgba(54, 162, 235, 0.2)',
+		'rgba(255, 206, 86, 0.2)',
+		'rgba(75, 192, 192, 0.2)',
+		'rgba(153, 102, 255, 0.2)',
+	]
+
+	var border_colors = [
+		'rgba(255, 99, 132, 1)',
+		'rgba(54, 162, 235, 1)',
+		'rgba(255, 206, 86, 1)',
+		'rgba(75, 192, 192, 1)',
+		'rgba(153, 102, 255, 1)',
+	]
+
 	
 	var url = $("#Emp_Perf").attr("data-url");
 	console.log(url)
@@ -12,22 +29,10 @@ $(document).ready(function () {
 				data: {
 					labels: data.label,
 					datasets: [{
-						label: '# of Votes',
+						label: 'Total $',
 						data: data.y,
-						backgroundColor: [
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(54, 162, 235, 0.2)',
-							'rgba(255, 206, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(153, 102, 255, 0.2)',
-						],
-						borderColor: [
-							'rgba(255, 99, 132, 1)',
-							'rgba(54, 162, 235, 1)',
-							'rgba(255, 206, 86, 1)',
-							'rgba(75, 192, 192, 1)',
-							'rgba(153, 102, 255, 1)',
-						],
+						backgroundColor: back_colors,
+						borderColor: border_colors,
 						borderWidth: 1
 					}]
 				},
@@ -77,22 +82,10 @@ $(document).ready(function () {
 				data: {
 					labels: data.label,
 					datasets: [{
-						label: '# of Votes',
+						label: 'Total $',
 						data: data.y,
-						backgroundColor: [
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(54, 162, 235, 0.2)',
-							'rgba(255, 206, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(153, 102, 255, 0.2)',
-						],
-						borderColor: [
-							'rgba(255, 99, 132, 1)',
-							'rgba(54, 162, 235, 1)',
-							'rgba(255, 206, 86, 1)',
-							'rgba(75, 192, 192, 1)',
-							'rgba(153, 102, 255, 1)',
-						],
+						backgroundColor: back_colors,
+						borderColor: border_colors,
 						borderWidth: 1
 					}]
 				},
@@ -104,7 +97,7 @@ $(document).ready(function () {
 							beginAtZero: true,
 							title: {
 								display: true,
-								text: "Quantity Sold"
+								text: "Transaction Total"
 							},
 							ticks: {
 								beginAtZero: true,
@@ -140,22 +133,10 @@ $(document).ready(function () {
 				data: {
 					labels: data.label,
 					datasets: [{
-						label: '# of Votes',
+						label: '# Sold',
 						data: data.y,
-						backgroundColor: [
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(54, 162, 235, 0.2)',
-							'rgba(255, 206, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(153, 102, 255, 0.2)',
-						],
-						borderColor: [
-							'rgba(255, 99, 132, 1)',
-							'rgba(54, 162, 235, 1)',
-							'rgba(255, 206, 86, 1)',
-							'rgba(75, 192, 192, 1)',
-							'rgba(153, 102, 255, 1)',
-						],
+						backgroundColor: back_colors,
+						borderColor: border_colors,
 						borderWidth: 1
 					}]
 				},

@@ -56,6 +56,7 @@ class MenuAdmin(TwentyPageAdmin):
     list_display = ["product", "store"]
 
 
+
 @admin.register(models.Reward)
 class RewardAdmin(TwentyPageAdmin):
     model = models.Reward
@@ -201,6 +202,7 @@ class OrderAdmin(TwentyPageAdmin):
 class ProductAdmin(TwentyPageAdmin):
     list_filter = ["product_type", "product_status"]
     list_display = ["product_name", "product_type", "product_status", "display_product_price"]
+    search_fields = ["product_name"]
     change_form_template = 'admin/product_form.html'
 
     @admin.display(description='Price', ordering="product_price")

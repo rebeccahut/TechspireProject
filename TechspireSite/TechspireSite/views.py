@@ -4,12 +4,10 @@ from django.shortcuts import render
 from django.db import connection, ProgrammingError, DataError
 from operator import itemgetter
 from django.apps import apps
-from django.db.models import Q
 from Bakery.models import Employee, EmployeeJob, Store, Product, Reward, StateProvince, Location
 import glob
 import os
 import json
-import pyodbc
 
 
 class FieldTypeMap:
@@ -18,6 +16,7 @@ class FieldTypeMap:
                        "DecimalField": "numeric", "AutoField": "int", "PhoneNumberField": "nvarchar"}
 
 
+# Builds the names/paths used for the Reports Index page
 def get_report_paths():
     paths = ["SQL\Brett M\ReportActiveCashierTransactionAmounts.sql",
              "SQL\Brett M\ReportCashierTransactionAmounts.sql",
@@ -44,7 +43,7 @@ def erd1(request):
     return ddh.generate_erd("GeneratedFiles", "ERD1", "crow", True)
 
 
-# displays a page with all the props for each field of each model as a table
+# Displays a page with all the props for each field of each model as a table
 def dict1(request):
     context = {"titles": ["Table Name", "Row Name", "Row Desc", "Default", "Max Length", "Type", "PK", "FK",
                           "Required", "Allow NULL", "C Delete", "C Update", "Domain"], "tables": []}
@@ -65,7 +64,7 @@ def dict1(request):
     return render(request, 'admin/display_report.html', context)
 
 
-# displays a page with the name and description of each model
+# Displays a page with the name and description of each model
 def dict2(request):
     context = {"titles": ["Table Name", "Table Desc", "Owner", "Load Order"], "tables": []}
     model_list = apps.get_app_config('Bakery').get_models()
@@ -94,13 +93,15 @@ def dict2(request):
     table_count = "Table count: " + str(len(valid_tables))
 
     context["extra_info"] = [table_count, foreign_count]
-    return render(request, 'admin/table_report.html', context)
+    return render(request, 'admin/display_table.html', context)
 
 
+# Gets a list of reports within the SQL folder
 def get_reports(path):
     return glob.glob(os.path.join(path, "SQL/*/Report*"))
 
 
+# Gets a list of names for the reports in the SQL folder
 def get_report_names(path):
     reports = get_reports(path)
     out_names = []
@@ -124,48 +125,42 @@ def dict3(request):
     return response
 
 
+# Generates an html page for a single report
 # Could be improved by creating a library of reports on server start instead of everytime a link is clicked
 def html_report(request, index):
-    module_dir = os.path.dirname(__file__)  # get current directory
     paths, names = get_report_paths()
     file_path = paths[index]
-
-    report_object = open(file_path, "r")
-    report_lines = report_object.readlines()
-    owner = report_lines.pop(0).replace("--", "")
-    name = report_lines.pop(0).replace("--", "")
-    rule = report_lines.pop(0).replace("--", "")
-    desc = report_lines.pop(0).replace("--", "")
-    titles = report_lines.pop(0).replace("--", "").split(",")
-    report_object.close()
-    report_object = open(file_path, "r")
-    report_text = report_object.read()
-    with connection.cursor() as cursor:
-        cursor.execute(report_text)
-        output = cursor.fetchall()
-        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
-    context = {"report": obj}
+    context = {"report": build_report_obj(file_path)}
     return render(request, 'admin/display_report.html', context)
 
 
+# Generates a correctly ordered drop script
 def generate_drop(request):
     ddh.generate_ordered_sql("Bakery", True, "DROP TABLE", "Drop.sql")
     return HttpResponse("Success")
 
 
+# Generates a correctly ordered delete script
 def generate_delete(request):
     ddh.generate_ordered_sql("Bakery", True, "DELETE FROM", "Delete.sql")
     return HttpResponse("Success")
 
 
+# Copies everything from the path file into the bulk_file
 def copy_from_file(path, bulk_file):
-    module_dir = os.path.dirname(__file__)
     file = open(path, "r")
     bulk_file.writelines(["\n"])
     bulk_file.writelines(file.readlines())
     file.close()
 
 
+# Creates a path to the SQL folder
+def sql_path(owner, file):
+    module_dir = os.path.dirname(__file__)
+    return os.path.join(module_dir, "SQL", owner, file + ".sql")
+
+
+# Combines the bulk insert for every model into a single SQL file
 def generate_bulk(request):
     solid_tables = ddh.get_solid_models("Bakery")
     solid_tables.sort(key=lambda x: x.load_order)
@@ -187,26 +182,17 @@ def generate_bulk(request):
             bulk_file.writelines(current_bulk_file.readlines())
             bulk_file.write("\n\n")
 
-    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateOrderTotals.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "InsertCalculatedPointLogs.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateOrderRewards.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "InsertManualPointLogs.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerPoints.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Brett M", "UpdateCustomerTier.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Kyle D", "UpdateEmployeeEmployeeCategory.sql")
-    copy_from_file(path, bulk_file)
-    path = os.path.join(module_dir, "SQL", "Rebecca H", "UpdateCustomerCustomerCategory.sql")
-    copy_from_file(path, bulk_file)
-    bulk_file.close()
+    brett_scripts = ["UpdateOrderTotals", "InsertCalculatedPointLogs", "UpdateOrderRewards",
+                     "InsertManualPointLogs", "UpdateCustomerPoints", "UpdateCustomerTier"]
+    for script in brett_scripts:
+        copy_from_file(sql_path("Brett M", script), bulk_file)
+
+    copy_from_file(sql_path("Kyle D", "UpdateEmployeeEmployeeCategory"), bulk_file)
+    copy_from_file(sql_path("Rebecca H", "UpdateCustomerCustomerCategory"), bulk_file)
     return HttpResponse("Success")
 
 
+# Displays which models have a data file for importing purposes
 def data_status(request):
     context = {"titles": ["Table", "Data Status"], "tables": []}
 
@@ -229,6 +215,7 @@ def data_status(request):
     return render(request, 'admin/display_report.html', context)
 
 
+# Holds output and meta data for a specific report
 class ReportData:
     owner = ""
     name = ""
@@ -248,56 +235,70 @@ class ReportData:
         self.desc = desc
 
 
+# Extracts report metadata and output to a ReportData object
+def build_report_obj(path):
+    report_object = open(path, "r")
+    report_text = report_object.readlines()
+    owner = report_text.pop(0).replace("--", "")
+    name = report_text.pop(0).replace("--", "")
+    rule = report_text.pop(0).replace("--", "")
+    desc = report_text.pop(0).replace("--", "")
+    titles = report_text.pop(0).replace("--", "").split(",")
+    align = report_text.pop(0).replace("--", "").replace("\n", "").split(",")
+    report_object = open(path, "r")
+    sql = report_object.read()
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute(sql)
+            output = cursor.fetchall()
+        except Exception as e:
+            output = []
+
+        new_output = []
+        for row in output:
+            new_row = []
+            for index, column in enumerate(row):
+                new_row.append([column, align[index]])
+            new_output.append(new_row)
+
+    report_data = ReportData(owner, name, rule, new_output, titles, report_text, desc)
+    return report_data
+
+
+# Merges all reports into a single html file
 def generate_final_report(request):
     module_dir = os.path.dirname(__file__)  # get current directory
     reports = get_reports(module_dir)
     context = {"reports": []}
     for report in reports:
         file_path = os.path.join(module_dir, report)
-        report_object = open(file_path, "r")
-        report_text = report_object.readlines()
-        owner = report_text.pop(0).replace("--", "")
-        name = report_text.pop(0).replace("--", "")
-        rule = report_text.pop(0).replace("--", "")
-        desc = report_text.pop(0).replace("--", "")
-        titles = report_text.pop(0).replace("--", "").split(",")
-        report_object = open(file_path, "r")
-        sql = report_object.read()
-        with connection.cursor() as cursor:
-            try:
-                cursor.execute(sql)
-                output = cursor.fetchall()
-            except Exception as e:
-                output = []
-        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
-        context["reports"].append(obj)
+        build_report_obj(file_path)
+        context["reports"].append(build_report_obj(file_path))
 
     return render(request, 'admin/final_report.html', context)
 
 
+# Lists all reports within the SQL. Displays name, owner, and status of each report.
 def report_status(request):
-    context = {"titles": ["Report Name", "Owner", "Status"], "tables": []}
+    context = {"titles": ["Report Name", "Owner", "Status", "Rows"], "tables": []}
     module_dir = os.path.dirname(__file__)
     reports = get_reports(module_dir)
-
     for report in reports:
         file_path = os.path.join(module_dir, report)
-        report_object = open(file_path, "r")
-        report_text = report_object.read()
+        rows = 0
         try:
-            with connection.cursor() as cursor:
-                cursor.execute(report_text)
-                output = cursor.fetchall()
+            obj = build_report_obj(file_path)
+            rows = len(obj.data)
             status = "Success"
         except ProgrammingError as e:
-            open("Error.txt", "w").write(repr(e))
             status = "Invalid"
         except DataError:
             status = "Invalid"
+        except IndexError:
+            status = "Missing Alignment Row"
         owner = os.path.basename(os.path.dirname(file_path))
         name = os.path.basename(file_path)
-        if status == "Invalid":
-            context["tables"].append([name, owner, status])
+        context["tables"].append([name, owner, status, rows])
     num_reports = len(context["tables"])
     num_reports = "Num reports: " + str(num_reports)
     num_errors = 0
@@ -306,15 +307,17 @@ def report_status(request):
             num_errors += 1
     num_errors = "Num Errors: " + str(num_errors)
     context["extra_info"] = [num_reports, num_errors]
-    return render(request, 'admin/table_report.html', context)
+    return render(request, 'admin/display_table.html', context)
 
 
+# Opens an sql file in the Sql/Admin Folder
 def open_admin_sql(file):
     module_dir = os.path.dirname(__file__)
     path = os.path.join(module_dir, "SQL", "Admin", file)
     return open(path, "r")
 
 
+# Renders employee dropdowns based on store
 def load_employees(request):
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreCashiers.sql")
@@ -322,6 +325,7 @@ def load_employees(request):
     return render(request, 'admin/update_drop_down.html', {'options': emps})
 
 
+# Renders product dropdowns based on store
 def load_products(request):
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreProducts.sql")
@@ -329,6 +333,7 @@ def load_products(request):
     return render(request, 'admin/update_drop_down.html', {'options': products})
 
 
+# Returns the price/loyalty system status of a specific product
 def load_product_price(request):
     product_id = request.GET.get("product")
     response_data = {}
@@ -348,7 +353,7 @@ def load_product_price(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-# Update when status is added to StoreProducts
+# Renders reward dropdowns based on store
 def load_rewards(request):
     # customer_id = request.GET.get('customer')
     store_id = request.GET.get('store')
@@ -357,6 +362,7 @@ def load_rewards(request):
     return render(request, 'admin/update_drop_down.html', {'options': rewards})
 
 
+# Renders json for a specific reward row
 def load_reward_details(request):
     reward_id = request.GET.get("reward")
     response_data = {"discount": 0, "cost": 0, "product": ""}
@@ -372,6 +378,7 @@ def load_reward_details(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
+# Renders state dropdowns based on country
 def load_states(request):
     context = {}
     country_id = request.GET.get("country")
@@ -387,10 +394,11 @@ def load_states(request):
     return render(request, 'admin/update_drop_down.html', context)
 
 
-def top_products_month(request):
+# Takes a query file and generates json data with label/y lists
+def get_graph_data(file):
     module_dir = os.path.dirname(__file__)
     path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
-                        "QueryProductSoldMonthly.sql")
+                        file)
     sql = open(path).read()
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -399,40 +407,17 @@ def top_products_month(request):
     response_data = {"label": [], "y": []}
     for row in sql_output:
         response_data["label"].append(row[0])
-        response_data["y"].append(row[1])
-
+        response_data["y"].append(str(row[1]))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def top_products_month(request):
+    return get_graph_data("QueryProductSoldMonthly.sql")
 
 
 def top_emps_month(request):
-    module_dir = os.path.dirname(__file__)
-    path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
-                        "QueryEmpPerfMonthly.sql")
-    sql = open(path).read()
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
-        sql_output = cursor.fetchall()
-
-    response_data = {"label": [], "y": []}
-    for row in sql_output:
-        response_data["label"].append(row[0])
-        response_data["y"].append(str(row[1]))
-
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return get_graph_data("QueryEmpPerfMonthly.sql")
 
 
 def top_cust_month(request):
-    module_dir = os.path.dirname(__file__)
-    path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
-                        "QueryCustPerfMonthly.sql")
-    sql = open(path).read()
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
-        sql_output = cursor.fetchall()
-
-    response_data = {"label": [], "y": []}
-    for row in sql_output:
-        response_data["label"].append(row[0])
-        response_data["y"].append(str(row[1]))
-
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return get_graph_data("QueryCustPerfMonthly.sql")

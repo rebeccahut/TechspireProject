@@ -7,30 +7,30 @@
     <link rel="stylesheet" href="{% static 'css/report_table_styling.css' %}">
   </head>
   {% block content %}
+
+
   <body>
-    <h3>{{report.name}}</h3>
+    {% for info in extra_info %}
+        <p>{{info}}</p>
+    {% endfor %}
+
     <table>
-
-        {% for align in report.align %}
-            <col class="{{align}}"/>
-        {% endfor %}
-
-
+        {% if titles %}
         <tr>
-            {% for column in report.titles %}
+            {% for column in titles %}
             <th>
                 {{column}}
             </th>
             {% endfor %}
         </tr>
+        {% endif %}
 
-
-        {% if report.data %}
-            {% for row in report.data %}
+        {% if tables %}
+            {% for row in tables %}
             <tr>
                 {% for column in row %}
-                <td class="{{column.1}}">
-                    {{column.0}}
+                <td>
+                    {{column}}
                 </td>
                 {% endfor %}
             </tr>

@@ -6,6 +6,14 @@ from django.urls import NoReverseMatch, Resolver404, resolve, reverse
 from django.apps import apps
 from django.utils.text import capfirst
 import os
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+
 
 
 class AdminTableRow:
@@ -145,8 +153,6 @@ class TechSpireAdminSite(admin.AdminSite):
         request.current_app = self.name
 
         return TemplateResponse(request, self.index_template or 'admin/reports_index.html', context)
-
-
 
     def get_urls(self):
         urls = super().get_urls()
