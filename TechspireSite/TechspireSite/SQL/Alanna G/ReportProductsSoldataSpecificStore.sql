@@ -1,24 +1,24 @@
 --Alanna Gilcrease
 --Products Sold at Specific Store
 --The client could use this report to list and compare what product each store sells,
---Displays all products sold at each store. The quantity of each product sold, and the amount of each product sold.
---Row Number, Product Name, Status, Store Name
+--the quantity of each product sold, and the amount of each product sold. The client
+--can utilize this to discontinue low selling products or have more high selling products
+--in stock. 
 
-SELECT ROW_NUMBER () OVER(ORDER BY ProductType.id) AS 'Row Num',
-Store.store_name AS 'Store',
-Product.id AS 'ID',
+SELECT ROW_NUMBER () OVER(ORDER BY product.id) AS 'Row Num',
+Product.id AS 'Product ID',
 Product.product_name AS 'Product',
-ProductType.product_type_desc AS 'Description',
+Store.store_name AS 'Store',
 OrderLine.quantity AS 'Quantity',
-OrderLine.total_price AS 'Price'
+CONCAT('$', CAST (OrderLine.ind_price as decimal(18,2))) AS 'Price'
 
 FROM Product
-INNER JOIN OrderLine ON OrderLine.order_id = "Order".id
-INNER JOIN BanType ON BanType.id = Product.ban_reason_id
-INNER JOIN ProductType ON ProductType.id = Product.id
-INNER JOIN StoreProduct ON StoreProduct.product_id = Product.id
-INNER JOIN Store ON StoreProduct.store_id = Store.id
-INNER JOIN ProductStatus ON ProductStatus.id = Product.id
-INNER JOIN "Order" ON "Order".store_id = OrderLine.id
 
-WHERE Store.id = 2
+INNER JOIN OrderLine
+ON OrderLine.product_id = Product_id
+
+INNER JOIN "Order"
+ON OrderLine.order_id = "Order".id
+
+INNER JOIN Store 
+ON Store.store_name = store_name
