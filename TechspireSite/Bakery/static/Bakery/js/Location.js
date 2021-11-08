@@ -3,6 +3,7 @@ function update_states() {
   var url = $("#States_URL").attr("data-url");
   var target_element = $("#id_form-0-state")
   var location = $("#id_form-0-id").val()
+  var selection = target_element.val()
   $.ajax({
     url: url,
     data: {
@@ -12,7 +13,9 @@ function update_states() {
     success: function (data) {
       target_element.html(data)
       //If selected option doesn't exist reset it to blank
+      target_element.val(selection)
       if (target_element.val() == null) {
+        console.log("Is NULL")
         target_element.val("")
       }
     }

@@ -27,9 +27,7 @@ class ReverseInlineModelAdmin(InlineModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(ReverseInlineModelAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['zip_code'].widget.attrs['style'] = 'width: 60em;'
-        logger = logging.getLogger("django")
-        logger.debug("Tested Get Form")
+        #form.base_fields['zip_code'].widget.attrs['style'] = 'width: 60em;'
         return form
 
     def __init__(self,

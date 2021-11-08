@@ -1,6 +1,5 @@
+--The same as UpdateCustomerPoints but instead a variable is used to determine which customer is updated
 DECLARE @CustID INT;
-
--- Initialize the variable.
 SET @CustID = %s
 
 UPDATE Customer

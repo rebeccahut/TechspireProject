@@ -1,5 +1,5 @@
 --Brett Meirhofer
---Active Cashiers At StoreOne
+--Active Cashiers At Store One
 --The client can use this report to contact employees that perform a specific job at a specific location.
 --Displays only active employees at a location that preform a specific job along with their contact details.
 --Row Number,Type,First Name,Last Name,Phone Number,Email Address

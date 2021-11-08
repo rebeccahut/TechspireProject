@@ -1,13 +1,17 @@
 --Brett Meirhofer
---Cashier Customer Performance Active
+--Cashier Transaction Performance Active
 --The client can use this report to help assess the performance of their active cashiers.
 --Displays all the active cashiers and the total amount of customer spending with them acting as the cashier.
---Row Number,First Name,Last Name,Type,Transaction Count,Total Spending,Avg Spending
+--Row Number,Employee Name,Email,Type,Transaction Count,Total Spending,Avg Spending
 
 
-SELECT ROW_NUMBER() OVER(ORDER BY EmployeeType.id, Totals.total) AS num_row,
-Employee.first_name, Employee.last_name, EmployeeType.type_name, Actions.total, 
-CONCAT('$', CAST(Totals.total as decimal(18,2))), CONCAT('$', CAST(Totals.total/Actions.total as decimal(18,2)))
+SELECT ROW_NUMBER() OVER(ORDER BY EmployeeType.id, Totals.total) AS "Row",
+CONCAT(Employee.first_name, ' ', Employee.last_name)AS "Employee Name",
+Employee.email_address AS Email,
+EmployeeType.type_name AS "Type", 
+Actions.total AS Orders, 
+CONCAT('$', CAST(Totals.total as decimal(18,2)))AS "Total Sales", 
+CONCAT('$', CAST(Totals.total/Actions.total as decimal(18,2))) AS "Avg Sales Per Order"
 FROM
 (SELECT
 SUM ("ORDER".final_total) AS total, "Order".employee_id

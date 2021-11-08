@@ -18,6 +18,28 @@ class FieldTypeMap:
                        "DecimalField": "numeric", "AutoField": "int", "PhoneNumberField": "nvarchar"}
 
 
+def get_report_paths():
+    paths = ["SQL\Brett M\ReportActiveCashierTransactionAmounts.sql",
+             "SQL\Brett M\ReportCashierTransactionAmounts.sql",
+             "SQL\Brett M\ReportEmployeeLocations.sql",
+             "SQL\Brett M\ReportStoreEmployees.sql", ]
+    out = []
+
+    for path in paths:
+        module_dir = os.path.dirname(__file__)
+        path = os.path.join(module_dir, path)
+        name = open(path).readlines()[1]
+        name = name.replace("--", "")
+        out.append([name, path])
+    out.sort(key=lambda x: x[0])
+    paths = []
+    names = []
+    for element in out:
+        paths.append(element[1])
+        names.append(element[0])
+    return paths, names
+
+
 def erd1(request):
     return ddh.generate_erd("GeneratedFiles", "ERD1", "crow", True)
 
@@ -83,8 +105,7 @@ def get_report_names(path):
     reports = get_reports(path)
     out_names = []
     for report in reports:
-        out_names.append(os.path.basename(report)[:-4])
-
+        out_names.append(open(report).readlines()[1].replace("--", ""))
     return out_names
 
 
@@ -106,19 +127,24 @@ def dict3(request):
 # Could be improved by creating a library of reports on server start instead of everytime a link is clicked
 def html_report(request, index):
     module_dir = os.path.dirname(__file__)  # get current directory
-    reports = get_reports(module_dir)
-    file_path = os.path.join(module_dir, reports[index])
-    context = {"titles": [], "tables": []}
+    paths, names = get_report_paths()
+    file_path = paths[index]
+
+    report_object = open(file_path, "r")
+    report_lines = report_object.readlines()
+    owner = report_lines.pop(0).replace("--", "")
+    name = report_lines.pop(0).replace("--", "")
+    rule = report_lines.pop(0).replace("--", "")
+    desc = report_lines.pop(0).replace("--", "")
+    titles = report_lines.pop(0).replace("--", "").split(",")
+    report_object.close()
     report_object = open(file_path, "r")
     report_text = report_object.read()
-    first_line = report_text.split("\n")[0]
-    first_line = first_line[2:]
-    context["titles"] = first_line.split(",")
-
     with connection.cursor() as cursor:
         cursor.execute(report_text)
-        context["tables"] = cursor.fetchall()
-
+        output = cursor.fetchall()
+        obj = ReportData(owner, name, rule, output, titles, report_text, desc)
+    context = {"report": obj}
     return render(request, 'admin/display_report.html', context)
 
 
@@ -130,7 +156,6 @@ def generate_drop(request):
 def generate_delete(request):
     ddh.generate_ordered_sql("Bakery", True, "DELETE FROM", "Delete.sql")
     return HttpResponse("Success")
-
 
 
 def copy_from_file(path, bulk_file):
@@ -208,6 +233,7 @@ class ReportData:
     data = []
     titles = []
     sql = []
+
     def __init__(self, owner, name, rule, data, titles, sql, desc):
         self.owner = owner
         self.name = name
@@ -239,7 +265,6 @@ def generate_final_report(request):
                 output = cursor.fetchall()
             except Exception as e:
                 output = []
-                print(repr(e))
         obj = ReportData(owner, name, rule, output, titles, report_text, desc)
         context["reports"].append(obj)
 
@@ -278,7 +303,6 @@ def report_status(request):
     num_errors = "Num Errors: " + str(num_errors)
     context["extra_info"] = [num_reports, num_errors]
     return render(request, 'admin/table_report.html', context)
-
 
 
 def open_admin_sql(file):
@@ -320,9 +344,9 @@ def load_product_price(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-#Update when status is added to StoreProducts
+# Update when status is added to StoreProducts
 def load_rewards(request):
-    #customer_id = request.GET.get('customer')
+    # customer_id = request.GET.get('customer')
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreRewards.sql")
     rewards = Reward.objects.raw(sql.read(), [store_id])
@@ -352,8 +376,59 @@ def load_states(request):
         selected_id = Location.objects.get(pk=location).state_id
         context["selected"] = selected_id
     except ValueError:
-        #If there is no selection then don't add selected to the context
+        # If there is no selection then don't add selected to the context
         pass
     states = StateProvince.objects.filter(country_id=country_id).order_by("state_name")
     context["options"] = states
     return render(request, 'admin/update_drop_down.html', context)
+
+
+def top_products_month(request):
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
+                        "QueryProductSoldMonthly.sql")
+    sql = open(path).read()
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        sql_output = cursor.fetchall()
+
+    response_data = {"label": [], "y": []}
+    for row in sql_output:
+        response_data["label"].append(row[0])
+        response_data["y"].append(row[1])
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def top_emps_month(request):
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
+                        "QueryEmpPerfMonthly.sql")
+    sql = open(path).read()
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        sql_output = cursor.fetchall()
+
+    response_data = {"label": [], "y": []}
+    for row in sql_output:
+        response_data["label"].append(row[0])
+        response_data["y"].append(str(row[1]))
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def top_cust_month(request):
+    module_dir = os.path.dirname(__file__)
+    path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Admin",
+                        "QueryCustPerfMonthly.sql")
+    sql = open(path).read()
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        sql_output = cursor.fetchall()
+
+    response_data = {"label": [], "y": []}
+    for row in sql_output:
+        response_data["label"].append(row[0])
+        response_data["y"].append(str(row[1]))
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")

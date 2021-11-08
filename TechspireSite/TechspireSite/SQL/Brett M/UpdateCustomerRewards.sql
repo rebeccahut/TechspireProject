@@ -1,3 +1,4 @@
+--
 UPDATE CustomerReward
 SET CustomerReward.point_cost = Reward.point_cost, 
 CustomerReward.discount_amount = Reward.discount_amount, 

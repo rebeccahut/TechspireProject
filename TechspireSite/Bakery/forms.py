@@ -22,7 +22,7 @@ class ProductForm(forms.ModelForm):
 class CustomerCategoryForm(admin.TabularInline):
     model = AssocCustomerLabel
     extra = 1
-    min_num = 1
+    min_num = 0
     verbose_name = "Category"
 
 
@@ -57,7 +57,7 @@ class EmployeeJobForm(admin.TabularInline):
 class EmployeeCategoryForm(admin.TabularInline):
     model = AssocEmployeeLabel
     extra = 1
-    min_num = 1
+    min_num = 0
     verbose_name = "Category"
 
 

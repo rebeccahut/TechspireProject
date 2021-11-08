@@ -102,30 +102,27 @@ class TechSpireAdminSite(admin.AdminSite):
 
     #Could be improved by creating a library of reports on server start instead of everytime a link is clicked
     def index(self, request, extra_context=None):
-        """
-        Display the main admin index page, which lists all of the installed
-        apps that have been registered in this site.
-        """
-        app_list = self.get_app_list(request)
-
-
-        module_dir = os.path.dirname(__file__)  # get current directory
-        reports = views.get_report_names(module_dir)
-        AdminTableRow("dict1", "Row Dictionary")
-        db_links = [["dict1", "Row Dictionary"], ["dict2", "Table Dictionary"], ["dict3", "Excel Dictionary"],
-                    ["erd1", "Abstract ERD"], ["drop", "Generate Drop"], ["bulk", "Generate Bulk Insert"],
-                    ["delete", "Generate Bulk Delete"], ["datastatus", "View Data Status"],
-                    ["finalreport", "Final Report"], ["reportstatus", "Report Status"]]
-        db_links = []
-        db_info = [AdminTableRow(x[0], x[1]) for x in db_links]
-
         context = {
             **self.each_context(request),
             'title': self.index_title,
             'subtitle': None,
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/bakery_dash.html', context)
+
+    def actual_index(self, request, extra_context=None):
+        app_list = self.get_app_list(request)
+        module_dir = os.path.dirname(__file__)  # get current directory
+        reports = views.get_report_names(module_dir)
+
+        context = {
+            **self.each_context(request),
+            'title': "Bakery",
+            'subtitle': None,
             'app_list': app_list,
             'report_list':  reports,
-            'database_list': db_info,
             **(extra_context or {}),
         }
 
@@ -133,7 +130,24 @@ class TechSpireAdminSite(admin.AdminSite):
 
         return TemplateResponse(request, self.index_template or 'admin/index.html', context)
 
-    #path('report/<int:index>/', self.admin_view(views.html_report), name="report")
+    def reports_index(self, request, extra_context=None):
+        module_dir = os.path.dirname(__file__)  # get current directory
+        paths, names = views.get_report_paths()
+
+        context = {
+            **self.each_context(request),
+            'title': "Reports",
+            'subtitle': None,
+            'report_list':  names,
+            **(extra_context or {}),
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/reports_index.html', context)
+
+
+
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
@@ -153,5 +167,12 @@ class TechSpireAdminSite(admin.AdminSite):
             path('loadrewards', self.admin_view(views.load_rewards), name='loadrewards'),
             path('load_reward_details', self.admin_view(views.load_reward_details), name='load_reward_details'),
             path('load_states', self.admin_view(views.load_states), name='load_states'),
+            path('Bakery/', self.admin_view(self.actual_index), name='Bakery'),
+            path('reports/', self.admin_view(self.reports_index), name='reports'),
+            path('report/<int:index>/', self.admin_view(views.html_report), name="report"),
+            path('top_products_month', self.admin_view(views.top_products_month), name='top_products_month'),
+            path('top_emps_month', self.admin_view(views.top_emps_month), name='top_emps_month'),
+            path('top_cust_month', self.admin_view(views.top_cust_month), name='top_cust_month'),
+
         ]
         return my_urls + urls

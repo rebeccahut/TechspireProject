@@ -303,7 +303,7 @@ class Customer(Person):
     points_earned = models.IntegerField(default=0)
     points_spent = models.IntegerField(default=0)
     point_total = models.IntegerField(default=0)
-    tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, blank=True, null=True)
+    tier = models.ForeignKey(Tier, on_delete=models.RESTRICT, default=1)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
     owner = Owners.Julia
     load_order = 5
