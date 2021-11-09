@@ -1,0 +1,51 @@
+{% extends 'admin/index.html' %}
+{% load i18n %}
+{% block extrahead %}{{ block.super }}
+{% block title %}{% endblock %}
+<style>
+    #content{
+        margin: auto;
+        float: none;
+    }
+
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a> › {{ title }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="app-{{ app.app_label }} module{% if app.app_url in request.path %} current-app{% endif %}">
+      <table>
+        <caption>
+          <a href="{{ app.app_url }}" class="section" title="Reports">Reports</a>
+        </caption>
+        {% for report in report_list %}
+          <tr class="model-{{ model.object_name|lower }}{% if model.admin_url in request.path %} current-model{% endif %}">
+              <th scope="row"><a href="{% url 'admin:report' index=forloop.counter0 %}" aria-current="page">{{ report }}</a></th>
+
+
+            {% if model.add_url %}
+              <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            {% if model.admin_url and show_changelinks %}
+              {% if model.view_only %}
+                <td><a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a></td>
+              {% else %}
+                <td><a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a></td>
+              {% endif %}
+            {% elif show_changelinks %}
+              <td></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+{% endblock %}

@@ -1,17 +1,16 @@
-CREATE TABLE EmployeeCategory (
+CREATE TABLE EmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1), 
-    emp_category_name nvarchar (40) NOT NULL,
-    emp_category_desc nvarchar (200) NOT NULL,
-)
+    category_name nvarchar (40) NOT NULL,
+    category_desc nvarchar (200)
+);
 
-CREATE TABLE EmployeeEmployeeCategory (
+CREATE TABLE EmployeeEmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1),
-    employee_employee_name nvarchar(40) NOT NULL,
-    employee_employee_desc nvarchar(200) NOT NULL,
-)
+    created_date date NOT NULL DEFAULT GETDATE()
+);
 
-CREATE TABLE EmployeeType (
+CREATE TABLE EmployeeType(
     id int PRIMARY KEY IDENTITY(1,1),
-    emp_type_name nvarchar(40) NOT NULL,
-    emp_type_desc nvarchar(200) NOT NULL,
-)
+    type_name nvarchar(40) NOT NULL,
+    type_desc nvarchar(200),
+);

@@ -1,45 +1,36 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
   <head>
     <meta charset="utf-8">
-    <title>My test page</title>
-    <style>
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-        }
-
-        td, th {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-        }
-
-        tr:nth-child(even) {
-          background-color: #dddddd;
-        }
-    </style>
+    <title>{{report.name}}</title>
+    <link rel="stylesheet" href="{% static 'css/report_table_styling.css' %}">
   </head>
+  {% block content %}
   <body>
-
+    <h3>{{report.name}}</h3>
     <table>
-        {% if titles %}
+
+        {% for align in report.align %}
+            <col class="{{align}}"/>
+        {% endfor %}
+
+
         <tr>
-            {% for column in titles %}
+            {% for column in report.titles %}
             <th>
                 {{column}}
             </th>
             {% endfor %}
         </tr>
-        {% endif %}
 
-        {% if tables %}
-            {% for row in tables %}
+
+        {% if report.data %}
+            {% for row in report.data %}
             <tr>
                 {% for column in row %}
-                <td>
-                    {{column}}
+                <td class="{{column.1}}">
+                    {{column.0}}
                 </td>
                 {% endfor %}
             </tr>
@@ -47,4 +38,5 @@
         {% endif %}
     </table>
   </body>
+    {% endblock %}
 </html>

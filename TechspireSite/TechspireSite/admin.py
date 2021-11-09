@@ -1,8 +1,19 @@
 from django.contrib import admin
 from django.urls import path
 from django.template.response import TemplateResponse
-from .views import dict1, dict2, dict3, html_report, get_report_names, erd1
+from . import views
+from django.urls import NoReverseMatch, Resolver404, resolve, reverse
+from django.apps import apps
+from django.utils.text import capfirst
 import os
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+
 
 
 class AdminTableRow:
@@ -14,31 +25,112 @@ class AdminTableRow:
         self.name = in_name
 
 
+class SubApp:
+    app_url = ""
+    app_label = "Test"
+    models = []
+
+    def __init__(self, app_url, app_label):
+        self.app_url = app_url
+        self.app_label = app_label
+
+
 class TechSpireAdminSite(admin.AdminSite):
     site_header = "Hot Breads Admin"
     site_title = "Hot Breads Admin"
     index_title = "Welcome to Hot Breads Admin"
 
+
+    def _build_app_dict(self, request, label=None):
+        print("Build")
+        """
+        Build the app dictionary. The optional `label` parameter filters models
+        of a specific app.
+        """
+        app_dict = {}
+
+        if label:
+            models = {
+                m: m_a for m, m_a in self._registry.items()
+                if m._meta.app_label == label
+            }
+        else:
+            models = self._registry
+        for model, model_admin in models.items():
+            app_label = model._meta.app_label
+            try:
+                table_label = model.category
+            except AttributeError:
+                table_label = app_label
+            has_module_perms = model_admin.has_module_permission(request)
+            if not has_module_perms:
+                continue
+
+            perms = model_admin.get_model_perms(request)
+
+            # Check whether user has any perm for this module.
+            # If so, add the module to the model_list.
+            if True not in perms.values():
+                continue
+
+            info = (app_label, model._meta.model_name)
+            model_dict = {
+                'name': capfirst(model._meta.verbose_name_plural),
+                'object_name': model._meta.object_name,
+                'perms': perms,
+                'admin_url': None,
+                'add_url': None,
+            }
+            if perms.get('change') or perms.get('view'):
+                model_dict['view_only'] = not perms.get('change')
+                try:
+                    model_dict['admin_url'] = reverse('admin:%s_%s_changelist' % info, current_app=self.name)
+                except NoReverseMatch:
+                    pass
+            if perms.get('add'):
+                try:
+                    model_dict['add_url'] = reverse('admin:%s_%s_add' % info, current_app=self.name)
+                except NoReverseMatch:
+                    pass
+
+            if table_label in app_dict:
+                app_dict[table_label]['models'].append(model_dict)
+            else:
+                app_dict[table_label] = {
+                    'name': table_label,
+                    'app_label': app_label,
+
+                    'has_module_perms': has_module_perms,
+                    'models': [model_dict],
+                }
+
+        if label:
+            return app_dict.get(label)
+        return app_dict
+
     #Could be improved by creating a library of reports on server start instead of everytime a link is clicked
     def index(self, request, extra_context=None):
-        """
-        Display the main admin index page, which lists all of the installed
-        apps that have been registered in this site.
-        """
-        app_list = self.get_app_list(request)
-        module_dir = os.path.dirname(__file__)  # get current directory
-        reports = get_report_names(module_dir)
-        AdminTableRow("dict1", "Row Dictionary")
-        db_info = [AdminTableRow("dict1", "Row Dictionary"), AdminTableRow("dict2", "Table Dictionary"),
-                   AdminTableRow("dict3", "Excel Dictionary"), AdminTableRow("erd1", "Abstract ERD")]
-
         context = {
             **self.each_context(request),
             'title': self.index_title,
             'subtitle': None,
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/bakery_dash.html', context)
+
+    def actual_index(self, request, extra_context=None):
+        app_list = self.get_app_list(request)
+        module_dir = os.path.dirname(__file__)  # get current directory
+        reports = views.get_report_names(module_dir)
+
+        context = {
+            **self.each_context(request),
+            'title': "Bakery",
+            'subtitle': None,
             'app_list': app_list,
             'report_list':  reports,
-            'database_list': db_info,
             **(extra_context or {}),
         }
 
@@ -46,14 +138,47 @@ class TechSpireAdminSite(admin.AdminSite):
 
         return TemplateResponse(request, self.index_template or 'admin/index.html', context)
 
+    def reports_index(self, request, extra_context=None):
+        module_dir = os.path.dirname(__file__)  # get current directory
+        paths, names = views.get_report_paths()
+
+        context = {
+            **self.each_context(request),
+            'title': "Reports",
+            'subtitle': None,
+            'report_list':  names,
+            **(extra_context or {}),
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/reports_index.html', context)
+
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
+            path('dict1/', self.admin_view(views.dict1), name="dict1"),
+            path('dict2/', self.admin_view(views.dict2), name="dict2"),
+            path('dict3/', self.admin_view(views.dict3), name="dict3"),
+            path('erd1/', self.admin_view(views.erd1), name="erd1"),
+            path('drop/', self.admin_view(views.generate_drop), name="drop"),
+            path('bulk/', self.admin_view(views.generate_bulk), name="bulk"),
+            path('delete/', self.admin_view(views.generate_delete), name="delete"),
+            path('datastatus/', self.admin_view(views.data_status), name="datastatus"),
+            path('finalreport/', self.admin_view(views.generate_final_report), name="finalreport"),
+            path('reportstatus/', self.admin_view(views.report_status), name="reportstatus"),
+            path('loademps', self.admin_view(views.load_employees), name='loademps'),
+            path('loadproducts', self.admin_view(views.load_products), name='loadproducts'),
+            path('loadproductprice', self.admin_view(views.load_product_price), name='loadproductprice'),
+            path('loadrewards', self.admin_view(views.load_rewards), name='loadrewards'),
+            path('load_reward_details', self.admin_view(views.load_reward_details), name='load_reward_details'),
+            path('load_states', self.admin_view(views.load_states), name='load_states'),
+            path('Bakery/', self.admin_view(self.actual_index), name='Bakery'),
+            path('reports/', self.admin_view(self.reports_index), name='reports'),
+            path('report/<int:index>/', self.admin_view(views.html_report), name="report"),
+            path('top_products_month', self.admin_view(views.top_products_month), name='top_products_month'),
+            path('top_emps_month', self.admin_view(views.top_emps_month), name='top_emps_month'),
+            path('top_cust_month', self.admin_view(views.top_cust_month), name='top_cust_month'),
 
-            path('report/<int:index>/', self.admin_view(html_report), name="report"),
-            path('dict1/', self.admin_view(dict1), name="dict1"),
-            path('dict2/', self.admin_view(dict2), name="dict2"),
-            path('dict3/', self.admin_view(dict3), name="dict3"),
-            path('erd1/', self.admin_view(erd1), name="erd1"),
         ]
         return my_urls + urls
