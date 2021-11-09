@@ -3,6 +3,8 @@
 -- Client can use this report to determine an active customer's accumulation of points in a given month
 -- Displays the points accumulated by an active customer in a given month 
 -- Row Number, First name, Last name, Points Accumulated, Category name
+--,,,,,
+
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Points."Points Accumulated" DESC) AS Row_Num, 
