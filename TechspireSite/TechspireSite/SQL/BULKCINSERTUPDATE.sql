@@ -417,8 +417,8 @@ WITH
 	CHECK_CONSTRAINTS,
 	FIELDTERMINATOR = '\t',
 	ROWTERMINATOR = '0x0a',
-	KEEPIDENTITY,
-	CODEPAGE = 65001
+	CODEPAGE = 65001,
+	FIRSTROW = 2
 	)
 GO
 
@@ -437,6 +437,7 @@ WITH
 GO
 
 
+--Updates the total's on an order based on the total's of it's order-lines
 UPDATE "Order"
 SET original_total = Totals.Total,
 final_total = Totals.Total, eligible_for_points = Totals.Total, points_produced = (Floor(Totals.Total)/10)
@@ -448,13 +449,10 @@ FROM OrderLine
 GROUP BY OrderLine.order_id)
 AS Totals ON Totals.order_id = "Order".id
 
-
-
+--Using the points fields in each order/OrderReward generates a point-log for each point transaction
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
 SELECT (Floor(final_total)/10) AS point_cost,order_date, "Order".customer_id, "Order".employee_id, 4 AS reason_id, "Order".id
 FROM "Order"
-
-
 
 INSERT INTO PointLog(points_amount,created_date,customer_id,employee_id,reason_id,order_id)
 SELECT -Reward.point_cost AS point_cost,date_added, "Order".customer_id, "Order".employee_id, 5 AS reason_id, "Order".id
@@ -462,14 +460,14 @@ FROM "OrderReward"
 JOIN Reward ON Reward.id = OrderReward.id
 JOIN "Order" ON "Order".id = OrderReward.order_id
 
-
-
+--
 UPDATE OrderReward
 SET OrderReward.point_cost = Reward.point_cost,
 OrderReward.discount_amount = Reward.discount_amount,
 OrderReward.free_product_id = Reward.free_product_id
 FROM OrderReward
 INNER JOIN Reward ON OrderReward.reward_id = Reward.id
+--Randomly selects 10% of orders to generate instances of employees manually adding points to the associated customer
 INSERT INTO PointLog(points_amount, created_date, customer_id, employee_id, order_id, reason_id)
 SELECT TOP 10 PERCENT
 abs(checksum(NewId()) % 100) as points, order_date, customer_id, employee_id, id, 1 as reason
@@ -482,6 +480,7 @@ abs(checksum(NewId()) % 100) as points, order_date, customer_id, employee_id, id
   FROM "Order"
   ORDER BY NEWID()
 
+--Updates the calculated points for every customer based off their point-logs
 UPDATE Customer
 SET Customer.points_earned = Points.points_produced
 FROM Customer
@@ -489,7 +488,6 @@ INNER JOIN
 (SELECT SUM(PointLog.points_amount) as points_produced,PointLog.customer_id FROM PointLog
 WHERE PointLog.points_amount >= 0
 GROUP BY PointLog.customer_id) AS Points ON Points.customer_id = Customer.id
-
 
 UPDATE Customer
 SET Customer.points_spent = -Points.points_produced
@@ -510,3 +508,17 @@ INNER JOIN
 CROSS JOIN Customer
 WHERE (points_earned - min_points) >= 0
 GROUP BY Customer.id) AS T ON Customer.id = T.cust_id
+
+-- created a new column that states the date at which the employee is assigned a category
+UPDATE EmployeeEmployeeCategory
+SET EmployeeEmployeeCategory.created_date = Employee.begin_date
+FROM Employee
+INNER JOIN EmployeeEmployeeCategory ON EmployeeEmployeeCategory.employee_id = Employee.id
+INNER JOIN EmployeeCategory ON EmployeeEmployeeCategory.employee_category_id = EmployeeCategory.id
+
+-- created a new column that states the date at which the employee is assigned a category
+UPDATE CustomerCustomerCategory
+SET CustomerCustomerCategory.created_date = Customer.begin_date
+FROM Customer
+INNER JOIN CustomerCustomerCategory ON CustomerCustomerCategory.customer_id = Customer.id
+INNER JOIN CustomerCategory ON CustomerCustomerCategory.customer_category_id = CustomerCategory.id
