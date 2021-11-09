@@ -2,7 +2,8 @@
 --Top 10 product categories by revenue this month
 --This report is for the manager to show the top 10 products categories by revenue.
 --Display the product category name ordered by the total revenue.
---Product Category name, Total Revenue 
+--Product Category name, Total Revenue
+--,right
 
 
 Select Top 10 (concat('$', cast(sum(ol.total_price) AS decimal(18,2)))) as TotalRevenue, p.product_name
