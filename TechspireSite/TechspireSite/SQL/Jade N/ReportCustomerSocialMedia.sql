@@ -10,7 +10,7 @@ OVER(ORDER BY Customer.begin_date) AS num_row,
 Customer.first_name AS "First Name", 
 Customer.last_name AS "Last Name", 
 SocialMediaType.social_media_name AS "Social Media Type", 
-CustomerSocialMedia.social_media_code AS "User Handle", 
+CustomerSocialMedia.social_media_code AS "UserName", 
 CustomerCategory.category_name AS "Category Name"
 
 FROM CustomerSocialMedia
