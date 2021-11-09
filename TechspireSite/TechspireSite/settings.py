@@ -33,8 +33,12 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+PHONENUMBER_DEFAULT_REGION = 'US'
+
 INSTALLED_APPS = [
+    'phonenumber_field',
     'django_extensions',
+    'import_export',
     'TechspireSite.apps.TechSpireAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,3 +127,50 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    '/var/www/static/',
+]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'timestamp': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'Logs/debug.log',
+            'formatter': 'timestamp'
+        },
+        'file_info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'Logs/info.log',
+            'formatter': 'timestamp'
+        },
+
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timestamp'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django-info': {
+            'handlers': ['file_info'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2021-10-11 00:30
+  // Created: 2021-11-05 18:41
   
 
   fontname = "Roboto"
@@ -25,7 +25,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    CustomerLabel<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    CustomerLabel<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -35,7 +35,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    EmployeeLabel<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    EmployeeLabel<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -95,7 +95,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    BanType<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    BanType<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -105,7 +105,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    PointReason<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    PointReason<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -121,11 +121,11 @@ digraph model_graph {
     </TABLE>
     >]
 
-  Bakery_models_State [label=<
+  Bakery_models_StateProvince [label=<
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    State<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
+    StateProvince<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -145,7 +145,17 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    Tier<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    Tier<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
+    </B></FONT></TD></TR>
+  
+    </TABLE>
+    >]
+
+  Bakery_models_EmployeeType [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    EmployeeType<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -185,7 +195,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    AssocEmployeeLabel<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    AssocEmployeeLabel<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -195,7 +205,7 @@ digraph model_graph {
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    AssocCustomerLabel<BR/>&lt;<FONT FACE="Roboto"><I>LabelCode</I></FONT>&gt;
+    AssocCustomerLabel<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
     </B></FONT></TD></TR>
   
     </TABLE>
@@ -341,6 +351,16 @@ digraph model_graph {
     </TABLE>
     >]
 
+  Bakery_models_OrderReward [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    OrderReward<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
+    </B></FONT></TD></TR>
+  
+    </TABLE>
+    >]
+
   Bakery_models_PointLog [label=<
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
@@ -351,25 +371,18 @@ digraph model_graph {
     </TABLE>
     >]
 
-  Bakery_models_CustomerReward [label=<
-    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
-    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    CustomerReward<BR/>&lt;<FONT FACE="Roboto"><I>DescriptiveModel</I></FONT>&gt;
-    </B></FONT></TD></TR>
-  
-    </TABLE>
-    >]
-
 
 
 
   // Relations
 
-  Bakery_models_State -> Bakery_models_Country
+  Bakery_models_StateProvince -> Bakery_models_Country
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_Location -> Bakery_models_State
+  Bakery_models_Location -> Bakery_models_StateProvince
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_Location -> Bakery_models_Country
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Employee -> Bakery_models_Location
@@ -378,7 +391,7 @@ digraph model_graph {
   Bakery_models_Employee -> Bakery_models_EmployeeStatus
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_Customer -> Bakery_models_Location
+  Bakery_models_Employee -> Bakery_models_EmployeeType
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Customer -> Bakery_models_Employee
@@ -390,13 +403,16 @@ digraph model_graph {
   Bakery_models_Customer -> Bakery_models_Tier
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
+  Bakery_models_Customer -> Bakery_models_Location
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
   Bakery_models_AssocEmployeeLabel -> Bakery_models_Employee
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_AssocEmployeeLabel -> Bakery_models_EmployeeLabel
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_AssocCustomerLabel -> Bakery_models_Employee
+  Bakery_models_AssocCustomerLabel -> Bakery_models_Customer
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_AssocCustomerLabel -> Bakery_models_CustomerLabel
@@ -426,13 +442,16 @@ digraph model_graph {
   Bakery_models_Order -> Bakery_models_Store
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_ProductType -> Bakery_models_BanType
+  Bakery_models_Order -> Bakery_models_Employee
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Product -> Bakery_models_ProductType
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Product -> Bakery_models_ProductStatus
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_Product -> Bakery_models_BanType
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_OrderLine -> Bakery_models_Product
@@ -442,6 +461,9 @@ digraph model_graph {
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Reward -> Bakery_models_RewardStatus
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_Reward -> Bakery_models_Product
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
   Bakery_models_Reward -> Bakery_models_Tier
@@ -477,13 +499,25 @@ digraph model_graph {
   Bakery_models_StoreReward -> Bakery_models_Store
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
+  Bakery_models_OrderReward -> Bakery_models_Order
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_OrderReward -> Bakery_models_Reward
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_OrderReward -> Bakery_models_Product
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_PointLog -> Bakery_models_Employee
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
+  Bakery_models_PointLog -> Bakery_models_Customer
+  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
+
   Bakery_models_PointLog -> Bakery_models_PointReason
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
-  Bakery_models_CustomerReward -> Bakery_models_Customer
-  [label=" "] [arrowhead=none, arrowtail=none, dir=both];
-
-  Bakery_models_CustomerReward -> Bakery_models_Reward
+  Bakery_models_PointLog -> Bakery_models_Order
   [label=" "] [arrowhead=none, arrowtail=none, dir=both];
 
 

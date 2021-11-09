@@ -1,60 +1,18 @@
-{% extends "admin/index.html" %}
+{% extends 'admin/index.html' %}
 {% load i18n %}
+{% block extrahead %}{{ block.super }}
+{% block title %}{% endblock %}
+<style>
+    #content{
+        margin: auto;
+        float: none;
+    }
 
-{% block content %}
-{% if database_list %}
-    <div class="app-auth module">
-        <table>
-            <caption>
-                <a class="section">Database Information</a>
-            </caption>
-            <tbody>
-            {% for row in database_list %}
-
-                <tr class="model-group">
-                    <th scope="row">
-                        <a href=/admin/{{ row.path }}>{{row.name}}</a>
-                    </th>
-                    <th>
-                        <a href="/admin/auth/group/" class="changelink" style="display:none;"></a>
-                    </th>
-                </tr>
-
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endif %}
-
-
-
-{% if report_list %}
-    <div class="app-auth module">
-        <table>
-            <caption>
-                <a class="section">Reports</a>
-            </caption>
-            <tbody>
-            {% for report in report_list %}
-
-                <tr class="model-group">
-                    <th scope="row">
-                        <a href=/admin/report/{{ forloop.counter0 }}>{{report}}</a>
-                    </th>
-                    <th>
-                        <a href="/admin/auth/group/" class="changelink" style="display:none;"></a>
-                    </th>
-                </tr>
-
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endif %}
-
-
-{{ block.super }}
-
+</style>
 {% endblock %}
 
-
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a> › {{ title }}
+    </div>
+{% endblock %}
