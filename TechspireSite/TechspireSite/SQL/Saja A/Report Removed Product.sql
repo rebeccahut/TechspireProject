@@ -3,6 +3,7 @@
 -- The client can use this report to determine the what products were removed in order to get a better idea of what product types to make less of.
 -- Displays the removed products by ascending product name
 -- Row Number, Product Name, Product Type, Product Status, Inactivity Reason, Store 
+--,,,,,
 
 SELECT ROW_NUMBER()
 OVER(ORDER BY Product.product_name DESC) AS Row_Num,
