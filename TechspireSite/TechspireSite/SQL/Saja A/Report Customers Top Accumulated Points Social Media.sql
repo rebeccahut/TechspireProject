@@ -3,6 +3,7 @@
 -- The client can use this report determine the association between accumulated customer points and the customer's social media information in order to give an incentive to the customers with the most points via social media or create a sponsership with them to exchange advertisements for points.
 -- Displays a the customers with the most accumulated points and their social media handle. 
 -- Row Number, Customer First Name, Customer Last Name, Points Accumulated, Social Media Type, Customer Social Media Name
+-- ,,,,,
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Points."Points Accumulated" ASC) AS Row_Num, 

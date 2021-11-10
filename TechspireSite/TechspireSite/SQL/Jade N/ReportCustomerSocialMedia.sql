@@ -3,7 +3,7 @@
 --The client can use this report to view specifically customers that have been categorized that have social media. It is very important for businesses to keep track of their customers, especially those that typically use social media. This report is meant for the client to distinguish those who use social media and for what potential reasons, such as offering discounts to "foodies" or paying particular attention tho "unhappy" customers that might react on social media platforms. 
 --Displays only the customers that not only have social media, but have specifically categorized by the client. The list is sorted by which customer has been with the client the longest. 
 --Row Number, First Name, Last Name, Social Media Type, User Handle, Category Name
---,,,,,
+--,,,,,,
 
 SELECT ROW_NUMBER() 
 
