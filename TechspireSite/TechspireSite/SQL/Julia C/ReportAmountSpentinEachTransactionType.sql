@@ -9,8 +9,8 @@ OVER(ORDER BY PaymentType.type_name) AS ROW_NUM,
 Customer.first_name AS 'First Name',
 Customer.last_name AS 'Last Name',
 PaymentType.type_name AS 'Transaction Type',
-COUNT(PaymentType.type_name) AS 'Number of Transactions',
-SUM("Order".final_total) AS 'Lifetime Spent'
+COUNT(PaymentType.type_name) AS '# Transactions',
+CONCAT('$', CAST(SUM("Order".final_total) as decimal(18,2))) AS 'Lifetime Spent'
 
 FROM PaymentType
 INNER JOIN "Order" on PaymentType.id = "Order".payment_type_id
