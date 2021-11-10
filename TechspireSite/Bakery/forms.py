@@ -10,6 +10,10 @@ from .models import OrderLine, CustomerSocialMedia, EmployeeSocialMedia, StoreSo
     AssocEmployeeLabel, EmployeeJob, Product, Reward, OrderReward, Customer, Order
 
 
+class LocationForm(forms.ModelForm):
+    test_field = forms.CharField(label='Your name', max_length=100)
+
+
 class GenericForm(forms.ModelForm):
     your_name = forms.CharField(label='Your name', max_length=100, disabled=True)
 

@@ -2,6 +2,15 @@ from django.db import models
 from django import forms
 from phonenumber_field.modelfields import PhoneNumberField
 from .Owners import Owners
+from django.utils import timezone
+import os
+from django.db import connection, ProgrammingError, DataError
+
+
+def past_validator(value):
+    if value > timezone.now().date():
+        raise forms.ValidationError("The date must be in the past!")
+    return value
 
 
 class MoneyField(models.DecimalField):
@@ -214,7 +223,7 @@ class StateProvince(DescriptiveModel):
 
 class Location(DescriptiveModel):
     description = "Represents a complete address for a location"
-    zip_code = models.CharField(max_length=10, default="77339")
+    zip_code = models.CharField(max_length=10)
     city = models.CharField(max_length=35, default="Houston")
     address = models.CharField(max_length=100, default="3242 StreetName")
     state = models.ForeignKey(StateProvince, on_delete=models.RESTRICT, default=1407)
@@ -240,6 +249,7 @@ class Tier(DescriptiveModel):
     tier_desc = models.CharField(max_length=200, blank=True, null=True)
     min_points = models.IntegerField(default=0)
     load_order = 1
+    category = "Lookup"
 
     class Meta:
         db_table = "Tier"
@@ -249,6 +259,15 @@ class Tier(DescriptiveModel):
     def __str__(self):
         return self.tier_name
 
+    def save(self, *args, **kwargs):
+        super(Tier, self).save(*args, **kwargs)
+        module_dir = os.path.dirname(__file__)
+        path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL",
+                            "Brett M", "UpdateCustomerTier.sql")
+        sql = open(path).read()
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+
 
 # Used as an abstract parent for people
 class Person(DescriptiveModel):
@@ -256,7 +275,7 @@ class Person(DescriptiveModel):
     last_name = models.CharField(max_length=40)
     email_address = models.EmailField(max_length=254)
     phone_number = PhoneNumberField(max_length=15, help_text="xxx-xxx-xxxx", default="+19043335252")
-    birthdate = models.DateField()
+    birthdate = models.DateField(validators=[past_validator])
     begin_date = models.DateField(auto_now_add=True, help_text="YYYY-MM-DD")
     location = models.ForeignKey(Location, on_delete=models.RESTRICT, verbose_name="Address")
     comments = models.TextField(blank=True, null=True)
@@ -713,3 +732,13 @@ class PointLog(DescriptiveModel):
 
     def __str__(self):
         return str(self.customer) + " " + str(self.reason) + " " + str(self.created_date)
+
+    def save(self, *args, **kwargs):
+        customer = self.customer.id
+        super(PointLog, self).save(*args, **kwargs)
+        module_dir = os.path.dirname(__file__)
+        path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL",
+                            "Brett M", "UpdateCustomerPointsSingle.sql")
+        sql = open(path).read()
+        with connection.cursor() as cursor:
+            cursor.execute(sql, [customer])

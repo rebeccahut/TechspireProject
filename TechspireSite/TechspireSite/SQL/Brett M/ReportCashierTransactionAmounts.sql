@@ -1,11 +1,11 @@
 --Brett Meirhofer
---Cashier Transaction Performance Historical
+--Historical Cashier Transaction Performance
 --The client can use this report in order to compare the performance of their current cashiers agaisnt historical cashier performance.
 --Displays all the cashiers and the total amount of customer spending with them acting as the cashier.
---Row Number,Employee Name,Email,Status,Type,Transaction Count,Total Spending,Avg Spending
---,,,,,,right,right
+--Row Number,Employee Name,Email,Status,Type,Orders,Total Spending,Avg Spending
+--,,,,,right,right,right
 
-SELECT ROW_NUMBER() OVER(ORDER BY EmployeeStatus.id, EmployeeType.id, Totals.total) AS "Row",
+SELECT ROW_NUMBER() OVER(ORDER BY EmployeeStatus.id, Totals.total) AS "Row",
 CONCAT(Employee.first_name, ' ', Employee.last_name)AS "Employee Name", 
 Employee.email_address AS Email,
 EmployeeStatus.status_name AS "Status", 

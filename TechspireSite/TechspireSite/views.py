@@ -356,6 +356,7 @@ def load_product_price(request):
 # Renders reward dropdowns based on store
 def load_rewards(request):
     # customer_id = request.GET.get('customer')
+    print("Recieved Rewards Request")
     store_id = request.GET.get('store')
     sql = open_admin_sql("QueryStoreRewards.sql")
     rewards = Reward.objects.raw(sql.read(), [store_id])

@@ -460,14 +460,21 @@ def add_customer_orders(orderline_header):
     order_lines = order_lines[["id", 0, 1, 2, 3, 4, 5]]
     order_lines.to_csv(path_name, header=False, index=False, sep="\t", mode="a")
 
+#233, 142, 39
+def drop_other_states():
+    path_name = data_path("StateProvinceList.tsv")
+    states = pandas.read_csv(path_name, delimiter="\t", header=None)
+    states = states.loc[(states[2] == 233) | (states[2] == 39) | (states[2] == 142)]
+    states.to_csv(path_name, header=None, index=False, sep="\t")
+
 
 if __name__ == '__main__':
-    orderline_header = ["id", "qty", "i_price", "t_price", "eligible", "product", "order_id"]
-    generate_customers()
-    generate_orders(orderline_header)
-    add_customer_orders(orderline_header)
+    #orderline_header = ["id", "qty", "i_price", "t_price", "eligible", "product", "order_id"]
+    #generate_customers()
+    #generate_orders(orderline_header)
+    #add_customer_orders(orderline_header)
 
-
+    drop_other_states()
     # generate_order_lines(200)
     # generate_store_products()
     #generate_orders()

@@ -104,8 +104,6 @@ class EmployeeAdmin(ReverseTwentyAdmin):
         return format_phone(str(obj.phone_number))
 
 
-
-
 @admin.register(models.Customer)
 class CustomerAdmin(ReverseTwentyAdmin):
     fields = (
@@ -189,11 +187,7 @@ class OrderAdmin(TwentyPageAdmin):
         obj.save()
         points_added.save()
         points_removed.save()
-        module_dir = os.path.dirname(__file__)
-        path = os.path.join(os.path.dirname(module_dir), "TechspireSite", "SQL", "Brett M", "UpdateCustomerPointsSingle.sql")
-        sql = open(path).read()
-        with connection.cursor() as cursor:
-            cursor.execute(sql, [customer])
+
 
 
 
@@ -265,7 +259,7 @@ def register_models():
                           models.EmployeeStatus, models.RewardStatus, models.StoreStatus,
                           models.EmployeeLabel, models.EmployeeType,
                           models.Job, models.BanType, models.PointReason, models.SocialMediaType, models.PaymentType,
-                          models.StateProvince, models.Country, models.CustomerLabel]
+                          models.StateProvince, models.Country, models.CustomerLabel, models.Tier]
     for target_model in basic_admin_models:
         admin.site.register(target_model, TwentyPageAdmin)
 

@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     convert_money_inline(".field-ind_price")
     convert_money_inline(".field-total_price")
-    convert_money_inline(".field-discount_amount", parent_element = "OrderReward")
+    convert_money_inline(".field-discount_amount", parent_element = "orderreward")
     convert_money("field-original_total")
     convert_money("field-discount_amount")
     convert_money("field-final_total")
@@ -32,17 +32,20 @@ $(document).ready(function () {
         update_product_row(this)
     })
 
-    $("tbody [id^=id_OrderReward_set-][id$=-reward]").each(function () {
+    $("tbody [id^=id_orderreward_set-][id$=-reward]").each(function () {
         update_reward_row(this)
     })
 
     $("tbody [id^=id_orderline_set-][id$=-product]").each(function () {
+        console.log("Update Order-Line")
         update_product_row(this)
     })
 
     //When reward changes update point cost, discount, extra product
-    $("tbody").on("change", '[id^="id_OrderReward_set-"][id$="-reward"]', function () {
+    $("tbody").on("change", '[id^="id_orderreward_set-"][id$="-reward"]', function () {
+        console.log("Updated Reward")
         update_reward_row(this)
+        update_rewards()
     })
 })
 
@@ -50,18 +53,34 @@ $(document).ready(function () {
 //Updates all the calculated fields related to money/points
 function update_order_total() {
     var order_total = 0
-    var line_totals = []
-    $(".field-total_price p").each(function () {
+    var eligible = 0
+    var order_total = 0
+    $(".field-total_price p").each(function (index) {
+        console.log("Each")
         let line_total = $(this).text()
         line_total = line_total.substring(1)
         line_total = Number(parseFloat(line_total).toFixed(2))
-        line_totals.push(line_total)
+        order_total += line_total
+
+
+        var id_name = "orderline_set-" + index
+        var eligible_element = $("#" + id_name + " .field-points_eligible p img")
+        if (typeof eligible_element.attr("src") !== 'undefined') {
+            console.log(typeof eligible_element.attr("src"))
+            if (eligible_element.attr("src").includes("yes")) {
+                console.log("Valid for reward system")
+                eligible += line_total
+            }
+        }
     })
 
     var discount = 0
     $(".field-discount_amount p").each(function () {
         num = parseInt($(this).text().substring(1))
-        discount += num
+        if (!isNaN(num)) {
+            console.log(num)
+            discount += num
+        }
     })
 
     var points_consumed = 0
@@ -71,22 +90,22 @@ function update_order_total() {
     })
 
 
-    order_total = line_totals.reduce(function (accumulator, current) {
-        return accumulator + current;
-    });
-    points_produced = (Math.floor(parseFloat(order_total) / 5)).toFixed(0)
+
+    points_produced = (Math.floor(parseFloat(eligible) / 5)).toFixed(0)
     points_total = points_produced - points_consumed
+    console.log(discount)
     final_total = order_total - discount
 
     //Format as money
     final_total = format_money(final_total)
     order_total = format_money(order_total)
     discount = format_money(discount)
+    eligible = format_money(eligible)
 
     //Update elements
     $(".field-final_total div div").text(final_total)
     $(".field-original_total div div").text(order_total)
-    $(".field-eligible_for_points div div").text(final_total)
+    $(".field-eligible_for_points div div").text(eligible)
     $(".field-points_produced div div").text(points_produced)
     $(".field-discount_amount div div").text(discount)
     $(".field-points_total div div").text(points_total)
@@ -128,25 +147,25 @@ function update_products() {
 
 //Update every rewards dropdown
 function update_rewards() {
-    console.log("Updated rewards")
+
     var url = $("#Reward_URL").attr("data-url");
     var storeID = $("#id_store").val();
-    //var customerID = $("#id_customer").val();
-    if (storeID){
-        var selected = []
-        $('[id^="id_OrderReward_set-"]').filter('[id$="-reward"]').each(function () {
+    console.log("Sent Rewards Request")
+
+    var selected = []
+    $('[id^="id_orderreward_set-"]').filter('[id$="-reward"]').each(function () {
         selected.push($(this).val());
-        });
+    });
 
 
-        $.ajax({                       
-        url: url,                    
+    $.ajax({
+        url: url,
         data: {
             'store': storeID
         },
         success: function (data) {
-            $('[id^="id_OrderReward_set-"]').filter('[id$="-reward"]').each(function (index) {
-                console.log("sucessfully retrieved data")
+            console.log("Rewards Request Sucess")
+            $('[id^="id_orderreward_set-"]').filter('[id$="-reward"]').each(function (index) {
                 $(this).html(data)
                 $(this).val(selected[index])
                 if ($(this).val() == null) {
@@ -157,8 +176,8 @@ function update_rewards() {
         }
     })
 
-    }
-    
+
+
 }
 
 //Updates the employee dropdown
@@ -232,10 +251,13 @@ function format_money(input) {
 
 
 function update_reward_line(cost, discount, product, line) {
-    var id_name = "OrderReward_set-" + line
+    console.log(discount)
+    var id_name = "orderreward_set-" + line
+
     var cost_select = "#" + id_name + " " + ".field-point_cost" + " p"
     var discount_select = "#" + id_name + " " + ".field-discount_amount" + " p"
     var product_select = "#" + id_name + " " + ".field-free_product" + " p"
+    console.log(cost_select)
     $(cost_select).text(cost)
     $(discount_select).text(format_money(discount))
     $(product_select).text(product)
@@ -252,7 +274,9 @@ function update_reward_row(target_element) {
             'reward': rewardID
         },
         success: function (data) {
-            var line_num = target_element.id.substring(22, 23)
+            var line_num = target_element.id.replace(/\D/g, '');
+            console.log(line_num)
+            console.log(data)
             update_reward_line(data.cost, data.discount, data.product, line_num)
             update_order_total()
         }
@@ -273,19 +297,23 @@ function update_product_row(target_element, update_total) {
             var text = parseFloat(data.price).toFixed(2)
             var line_num = target_element.id.substring(17, 18)
             var id_name = "orderline_set-" + line_num
-            var query = "#" + id_name + " " + ".field-ind_price" + " p"
-            var eligible_element = $("#" + id_name + " .field-points_eligible p img")
-            first = "yes"
-            last = "no"
-            if (data.eligible == "None"){
-                first = "no"
-                last = "yes"
+            if (line_num != "_") {
+                var query = "#" + id_name + " " + ".field-ind_price" + " p"
+                var eligible_element = $("#" + id_name + " .field-points_eligible p img")
+
+                first = "yes"
+                last = "no"
+                if (data.eligible == "None") {
+                    first = "no"
+                    last = "yes"
+                }
+                var current = eligible_element.attr("src")
+                current = current.replace(first, last)
+                eligible_element.attr("src", current)
+                $(query).text("$" + text)
+                update_line_total(line_num)
             }
-            var current = eligible_element.attr("src")
-            current = current.replace(first, last)
-            eligible_element.attr("src", current)
-            $(query).text("$" + text)
-            update_line_total(line_num)
+
         }
     })
 

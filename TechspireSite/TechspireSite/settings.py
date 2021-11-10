@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
@@ -133,44 +133,3 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'timestamp': {
-            'format': '{asctime} {levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'Logs/debug.log',
-            'formatter': 'timestamp'
-        },
-        'file_info': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'Logs/info.log',
-            'formatter': 'timestamp'
-        },
-
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'timestamp'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django-info': {
-            'handlers': ['file_info'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
