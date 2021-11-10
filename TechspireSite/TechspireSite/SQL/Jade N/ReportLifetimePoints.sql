@@ -3,7 +3,7 @@
 --The client can use this report to analyze which customers have accumulated the most points based on their entire order history. This will help the client easily view her most-valuable customers as well as assist in understanding the retention rate she has of her customers. For instance, customers that have accumulated a large amount of life time points usually are recurring customers that have placed several orders to reach that amount. 
 --Displays only the customers that have accumulated points sorted by who has accumulated the most to the least. 
 --Row Number, First Name, Last Name, Points Accumulated, Category Name
---,,,,
+--,,,,,
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Points."Lifetime Points Accumulated" DESC) AS num_row, 
