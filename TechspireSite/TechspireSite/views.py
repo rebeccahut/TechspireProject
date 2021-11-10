@@ -182,7 +182,7 @@ def generate_bulk(request):
             bulk_file.writelines(current_bulk_file.readlines())
             bulk_file.write("\n\n")
 
-    brett_scripts = ["UpdateOrderTotals", "InsertCalculatedPointLogs", "UpdateOrderRewards",
+    brett_scripts = ["UpdateOrderRewards", "UpdateOrderTotals", "InsertCalculatedPointLogs",
                      "InsertManualPointLogs", "UpdateCustomerPoints", "UpdateCustomerTier"]
     for script in brett_scripts:
         copy_from_file(sql_path("Brett M", script), bulk_file)

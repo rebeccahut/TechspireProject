@@ -144,7 +144,7 @@ class OrderAdmin(TwentyPageAdmin):
     fields = (("customer", "payment_type"), ("store", "employee"),
               "points_produced", "points_consumed", "points_total",
               "original_total", "discount_amount", "eligible_for_points", "final_total")
-    list_display = ["customer", "store", "employee", "order_date", "display_original_total"]
+    list_display = ["customer", "store", "employee", "order_date", "display_original_total", "payment_type"]
     readonly_fields = ["original_total", "discount_amount", "eligible_for_points",
                        "points_consumed", "points_produced", "points_total", "final_total"]
     inlines = [forms.OrderLineInline, forms.RewardLineForm]

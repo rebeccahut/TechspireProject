@@ -1,19 +1,14 @@
 --Updates the calculated points for every customer based off their point-logs
 UPDATE Customer
-SET Customer.points_earned = Points.points_produced
+SET Customer.points_earned = IsNull(Prod.points_produced, 0), 
+Customer.points_spent = IsNull(-Cons.points_produced, 0),
+Customer.point_total = IsNull(Prod.points_produced, 0) - IsNull(-Cons.points_produced, 0)
 FROM Customer
-INNER JOIN
+FULL JOIN
 (SELECT SUM(PointLog.points_amount) as points_produced,PointLog.customer_id FROM PointLog
 WHERE PointLog.points_amount >= 0
-GROUP BY PointLog.customer_id) AS Points ON Points.customer_id = Customer.id
-
-UPDATE Customer
-SET Customer.points_spent = -Points.points_produced
-FROM Customer
-INNER JOIN
+GROUP BY PointLog.customer_id) AS Prod ON Prod.customer_id = Customer.id
+FULL JOIN
 (SELECT SUM(PointLog.points_amount) as points_produced,PointLog.customer_id FROM PointLog
 WHERE PointLog.points_amount < 0
-GROUP BY PointLog.customer_id) AS Points ON Points.customer_id = Customer.id
-
-UPDATE Customer
-SET Customer.point_total = Customer.points_earned - Customer.points_spent
+GROUP BY PointLog.customer_id) AS Cons ON Cons.customer_id = Customer.id
