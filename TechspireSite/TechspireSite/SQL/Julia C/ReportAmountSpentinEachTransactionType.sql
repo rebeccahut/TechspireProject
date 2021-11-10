@@ -11,11 +11,8 @@ Customer.first_name AS 'First Name',
 Customer.last_name AS 'Last Name',
 PaymentType.type_name AS 'Transaction Type',
 COUNT(PaymentType.type_name) AS '# Transactions',
-<<<<<<< HEAD
 CONCAT('$', CAST(SUM("Order".final_total)AS DECIMAL(18,2))) AS 'Lifetime Spent'
-=======
-CONCAT('$', CAST(SUM("Order".final_total) as decimal(18,2))) AS 'Lifetime Spent'
->>>>>>> 6e953877527f99c8d619cf58ad5b82773580b47a
+
 
 FROM PaymentType
 INNER JOIN "Order" on PaymentType.id = "Order".payment_type_id
