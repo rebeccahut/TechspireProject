@@ -1,6 +1,6 @@
 --Brett Meirhofer
 --Active Employee Addresses
---The client can use this report to make decisions such as where to open a new store or which store to expand.
+--The client can use this report as a historical record for employee information. This report could be generated regularly and stored physically for proper employee documentation.
 --Displays all employees, historical and current, along with their complete addresses.
 --Row Num,First Name,Last Name,Zip Code,Address,City,State,Phone Number, Email Address
 --,,,,,,,phone,
