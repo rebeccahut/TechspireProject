@@ -1,16 +1,17 @@
 -- Julia Chen
 -- Lifetime Amount Spent In Each Payment Type
--- report displays a customer's used payments and historical info attached to each type
--- client can use this report for business decisions and analyze a customer's preferred method of purchasing
---ROW_NUM,First Name,Last Name,Transaction Type,Number of Transactions,Lifetime Spent
+-- The client may have a business need where she would like to encourage customers to use a specific payment type. The client may also have a need to view which payment methods are popularly used amongst her customer base; this data could be used to inform the client the viability of adding in or removing payment methods. Consider in the future, she added another payment method and wished to see if that payment option is popular with her customer base. If customers do not seem use the payment option, then the vendor fees associated with offering that payment type may be too costly to justify to continue to offer to her customers. 
+-- Displays the Lifetime amount of dollars spent under each customer loyalty account via a specific payment type. 
+--ROW_NUM,First Name,Last Name,Transaction Type,# Transactions,Lifetime Spent
+-- ,,,,,right
 
 SELECT ROW_NUMBER()
 OVER(ORDER BY PaymentType.type_name) AS ROW_NUM,
 Customer.first_name AS 'First Name',
 Customer.last_name AS 'Last Name',
 PaymentType.type_name AS 'Transaction Type',
-COUNT(PaymentType.type_name) AS 'Number of Transactions',
-SUM("Order".final_total) AS 'Lifetime Spent'
+COUNT(PaymentType.type_name) AS '# Transactions',
+CONCAT('$', CAST(SUM("Order".final_total)AS DECIMAL(18,2))) AS 'Lifetime Spent'
 
 FROM PaymentType
 INNER JOIN "Order" on PaymentType.id = "Order".payment_type_id
