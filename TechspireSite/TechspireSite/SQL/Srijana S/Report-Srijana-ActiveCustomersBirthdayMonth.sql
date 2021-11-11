@@ -2,7 +2,7 @@
 --Active Customer with a specific Birth Month
 --The client can use this report to view customers that all have the same birth month from all the stores, depending on the client's selected month. This report is beneficial for the client because the client can view customers born in the current month or next month and anticipate a rise in reward usages. Furthermore, the client will be able to view all the customer emails to send them marketing emails for their birthday.
 --Displays only the customers that were born in the specific month
---Customer full name, Email Address, Date of Birth, Store Name, Customer Status
+--Customer full name,Email Address,Date of Birth,Store Name,Customer Status
 --,,,,,
 DECLARE @customer_birthmonth INT
 SELECT @customer_birthmonth = 8

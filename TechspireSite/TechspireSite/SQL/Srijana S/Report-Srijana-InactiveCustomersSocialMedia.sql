@@ -2,7 +2,7 @@
 --Inactive-Cancel Customer with Social media details
 --The client can use this report to view customers that have declared themselves "inactive" within the loyalty system, specifically customers that have social media. This report is beneficial for the client because the client may want to reach out to her inactive customers to resume business relations. Particularly for those that use social media, it is a priority to reach out to those customers first because they might leave negative reviews.
 --Displays only the customers that have been categorized as "inactive-cancel" with social media
---Customer Full Name, Customer Social Media Id, Social Media Name, City, Customer Status, Customer Status Desc
+--Customer Full Name,Customer Social Media Id,Social Media Name, City,Customer Status,Customer Status Desc
 --,,,,,
 
 SELECT Customer_Full_Name, Customer_Social_Media_Id, Social_Media_Name, City, 

@@ -2,8 +2,8 @@
 --Customer Sign Up Based on Year and Month
 --The client can use this report to generate the customer information based on their signup date (year and month). This report can be helpful for the client to motivate her new customer to revisit by sending promotional coupons or offer.
 --Displays Customer sign-up details based on selected month and year with contact information.
---Customer Id, Customer Full Name, Sign Up Date, Email Address, Phone Number, Store Name
---,,,phone,
+--Customer Id,Customer Full Name,Sign Up Date,Email Address,Phone Number,Store Name
+--,,,,,phone,
 DECLARE @year INT = 2018
 DECLARE @month INT = 8
 
