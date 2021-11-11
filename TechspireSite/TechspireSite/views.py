@@ -258,7 +258,8 @@ def build_report_obj(path):
         for row in output:
             new_row = []
             for index, column in enumerate(row):
-                new_row.append([column, align[index]])
+                col_class = align[index]
+                new_row.append([column, col_class])
             new_output.append(new_row)
 
     report_data = ReportData(owner, name, rule, new_output, titles, report_text, desc)

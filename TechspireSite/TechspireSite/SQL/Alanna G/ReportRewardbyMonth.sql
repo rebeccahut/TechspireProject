@@ -2,7 +2,9 @@
 --Used Reward by Month
 --The client could use this report to view a list of rewards that have been redeemed by week, month, or year.
 --Displays all rewards used by customers for the month
---Row Number, Customer Name, Point Cost, Total Redeemed Month
+--Row Number,First Name,Last Name,Total Points,Avaliable
+--,,,,
+
 SELECT ROW_NUMBER()
 OVER(ORDER BY "Order".order_date) AS 'Row Num',
 Customer.first_name AS 'First Name',

@@ -1,11 +1,11 @@
 --Alanna Gilcrease
 --Banned Products per Quarter
---This report will allow the client to view all products that are banned from the
---loyalty reward program for the quarter.These are either too expensive or for a 
---custom order. The client may choose to use this report to add or remove products
---from the list of banned products on a quarterly basis. For example, the client 
---may allow a product that is normally banned to apply for loyalty points as an 
---incentive for the quarter.
+--This report will allow the client to view all products that are banned from the loyalty reward program for the quarter.These are either too expensive or for a custom order. The client may choose to use this report to add or remove products from the list of banned products on a quarterly basis. For example, the client may allow a product that is normally banned to apply for loyalty points as an incentive for the quarter.
+--No Description
+--Row,Ban Reason,Product,Product,Price,Date
+--,,,,,
+
+
 
 SELECT ROW_NUMBER () OVER(ORDER BY Product.product_name, Product.product_price) AS 'Row Num',
 BanType.ban_name AS 'Ban Reason',

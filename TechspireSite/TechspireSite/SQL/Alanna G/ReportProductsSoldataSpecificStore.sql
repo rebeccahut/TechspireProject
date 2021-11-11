@@ -1,9 +1,9 @@
 --Alanna Gilcrease
 --Products Sold at Specific Store
---The client could use this report to list and compare what product each store sells,
---the quantity of each product sold, and the amount of each product sold. The client
---can utilize this to discontinue low selling products or have more high selling products
---in stock. 
+--The client could use this report to list and compare what product each store sells, the quantity of each product sold, and the amount of each product sold. The client can utilize this to discontinue low selling products or have more high selling products in stock. 
+--NO DESCRIPTION
+--Row,Product ID,Product,Store,Quantity,Price
+--,,,,,
 
 SELECT ROW_NUMBER () OVER(ORDER BY product.id) AS 'Row Num',
 Product.id AS 'Product ID',
