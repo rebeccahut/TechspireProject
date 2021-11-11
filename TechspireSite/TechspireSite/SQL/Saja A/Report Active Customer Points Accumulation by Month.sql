@@ -17,6 +17,7 @@ CustomerCategory.category_name AS "Category"
 FROM Customer
 INNER JOIN CustomerStatus ON CustomerStatus.id = Customer.customer_status_id
 INNER JOIN "Order" ON Customer.id = "Order".customer_id
+INNER JOIN PointLog ON PointLog.order_id = "Order".id
 INNER JOIN (SELECT SUM(PointLog.points_amount) AS "Points Accumulated", PointLog.order_id
 			FROM PointLog
 			WHERE PointLog.points_amount > 0
@@ -24,10 +25,9 @@ INNER JOIN (SELECT SUM(PointLog.points_amount) AS "Points Accumulated", PointLog
 			AS Points ON "Order".id = Points.order_id
 INNER JOIN CustomerCustomerCategory ON CustomerCustomerCategory.customer_id = Customer.id
 INNER JOIN CustomerCategory ON CustomerCustomerCategory.customer_category_id = CustomerCategory.id
-
-WHERE DATEPART(m FROM Customer.begin_date) = '6' 
-AND DATEPART(yyyy FROM Customer.begin_date) = '2010'
+ 
+WHERE DATEPART(yyyy FROM PointLog.created_date) = '2018'
 AND CustomerStatus.id = '1'
 
-GROUP BY Customer.begin_date, Customer.first_name, Customer.last_name, Points.order_id, Points."Points Accumulated", CustomerCategory.category_name
-ORDER BY MIN(Customer.begin_date);
+GROUP BY Customer.first_name, Customer.last_name, Points.order_id, Points."Points Accumulated", CustomerCategory.category_name
+ORDER BY MIN(Customer.created_date);
