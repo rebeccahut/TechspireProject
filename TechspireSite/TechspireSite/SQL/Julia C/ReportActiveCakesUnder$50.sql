@@ -1,5 +1,5 @@
 -- Julia Chen
--- Active Products By Specific Type and Price at the Hot Breads Location
+-- Active Products By Specific Type and Price at Hot Breads Location
 -- The client can use this report to view a specific active product that are under a specific price. This report would be useful for budget-conscious customers that want to buy, for example, a cake but are open to suggestions. With this report, the client can quickly filter out her products, look up cakes that are under the desired price and offered at the Hot Breads location, and direct the customer’s attention to products that they would be interested in purchasing in an efficient manner. 
 -- This report displays products based on a specific product type and a given maximum price.
 -- ROW_NUM,From Store,Product Name,Product Type,Price

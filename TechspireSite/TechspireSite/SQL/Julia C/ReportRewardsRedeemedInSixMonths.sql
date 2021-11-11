@@ -3,6 +3,8 @@
 -- Client can view popular-redeemed rewards in a certain timespan and curate special reward offers to drive business during specific timeframes.
 -- Displays all rewards redeemed by customers over a given six month timeframe
 -- Row Number,Date,Reward Name,Point Value
+--
+
 SELECT ROW_NUMBER()
 OVER(ORDER BY "Order".order_date) AS ROW_NUM,
 Reward.Reward_name AS 'Reward Name',

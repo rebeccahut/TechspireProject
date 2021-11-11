@@ -3,6 +3,7 @@
 --
 --
 --
+--
 
 DECLARE @store_id VARCHAR(12) = 1
 DECLARE @begin_date VARCHAR(2) = '2015-01-01'
