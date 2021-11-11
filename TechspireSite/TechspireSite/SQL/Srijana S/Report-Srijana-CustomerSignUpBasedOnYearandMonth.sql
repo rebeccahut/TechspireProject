@@ -4,8 +4,9 @@
 --Displays Customer sign-up details based on selected month and year with contact information.
 --Customer Id,Customer Full Name,Sign Up Date,Email Address,Phone Number,Store Name
 --,,,,,phone,
-DECLARE @year INT = 2018
+DECLARE @year INT = 2021
 DECLARE @month INT = 8
+DECLARE @Store_id INT = 1
 
 SELECT DISTINCT Customer.id AS Customer_Id,
 Customer.first_name + ' ' + "Customer".last_name AS "Customer_Full_Name",
@@ -17,7 +18,8 @@ FROM "Store" INNER JOIN "Order" ON "Store".id = "Order".store_id
 INNER JOIN "Customer" ON "Order".customer_id = "Customer".id
 INNER JOIN "Location" ON "Customer".location_id = "Location".id
 WHERE year(Customer.begin_date) = @year AND
-month(Customer.begin_date) = @month
+month(Customer.begin_date) = @month AND
+Store.id = @Store_id
 ORDER BY begin_date;
 
 
