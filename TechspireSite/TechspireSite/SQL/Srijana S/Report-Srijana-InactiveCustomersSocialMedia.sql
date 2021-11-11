@@ -9,17 +9,18 @@ SELECT Customer_Full_Name, Customer_Social_Media_Id, Social_Media_Name, City,
 status_name AS "Customer_Status", status_desc AS "Customer_Status_Desc" FROM (
 
 SELECT Customer.customer_status_id AS id,
-"Customer".first_name + ' ' + "Customer".last_name AS "Customer_Full_Name",
+Customer.first_name + ' ' + "Customer".last_name AS "Customer_Full_Name",
 CustomerSocialMedia.social_media_code AS "Customer_Social_Media_Id",
 SocialMediaType.social_media_name AS "Social_Media_Name",
 city AS "City"
 FROM "SocialMediaType" 
-INNER JOIN"CustomerSocialMedia"ON"SocialMediaType".id = "CustomerSocialMedia".social_media_type_id
-INNER JOIN"Customer"ON"CustomerSocialMedia".customer_id = "Customer".id
-INNER JOIN"location"ON"Customer".location_id = "location".id
-INNER JOIN"StateProvince"ON"StateProvince".id = "Location".state_id
+INNER JOIN "CustomerSocialMedia" ON "SocialMediaType".id = "CustomerSocialMedia".social_media_type_id
+INNER JOIN "Customer" ON "CustomerSocialMedia".customer_id = "Customer".id
+INNER JOIN "location" ON "Customer".location_id = "location".id
+INNER JOIN "StateProvince" ON "StateProvince".id = "Location".state_id
 WHERE "StateProvince".state_name = 'Texas'
 and "SocialMediaType".id IN (1,3)) A
 
-INNER JOIN"CustomerStatus" ON A.id = "CustomerStatus".id
-where "CustomerStatus".id = 3
+INNER JOIN "CustomerStatus" ON A.id = "CustomerStatus".id
+WHERE "CustomerStatus".id = 3
+ORDER BY Customer_Full_Name;

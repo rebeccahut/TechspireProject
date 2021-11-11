@@ -4,8 +4,7 @@
 --Displays only the customers that were born in the specific month
 --Customer full name, Email Address, Date of Birth, Store Name, Customer Status
 --,,,,,
-DECLARE
-@customer_birthmonth INT
+DECLARE @customer_birthmonth INT
 SELECT @customer_birthmonth = 8
 
 SELECT DISTINCT "Customer".id AS "Customer_Id",
@@ -14,10 +13,9 @@ SELECT DISTINCT "Customer".id AS "Customer_Id",
 "Customer".birthdate AS "Date_of_Birth",
 "Store".store_name AS "Store_Name" ,
 "CustomerStatus".status_name AS "Customer_status"
-FROM "Store" INNER JOIN "Order"ON"Store".id = "Order".store_id
-INNER JOIN "Customer"ON"Order".customer_id = "Customer".id
-INNER JOIN "CustomerStatus"ON "Customer".customer_status_id = "CustomerStatus".id
-where "CustomerStatus".id =1 and
+FROM "Store" INNER JOIN "Order" ON "Store".id = "Order".store_id
+INNER JOIN "Customer" ON "Order".customer_id = "Customer".id
+INNER JOIN "CustomerStatus" ON "Customer".customer_status_id = "CustomerStatus".id
+WHERE "CustomerStatus".id =1 and
 month("Customer".birthdate) = @customer_birthmonth
-order by "Customer".birthdate
-
+ORDER BY "Customer".birthdate
