@@ -16,6 +16,6 @@ SELECT DISTINCT "Customer".id AS "Customer_Id",
 FROM "Store" INNER JOIN "Order" ON "Store".id = "Order".store_id
 INNER JOIN "Customer" ON "Order".customer_id = "Customer".id
 INNER JOIN "CustomerStatus" ON "Customer".customer_status_id = "CustomerStatus".id
-WHERE "CustomerStatus".id =1 and
+WHERE "CustomerStatus".id = 1 and
 month("Customer".birthdate) = @customer_birthmonth
 ORDER BY "Customer".birthdate
