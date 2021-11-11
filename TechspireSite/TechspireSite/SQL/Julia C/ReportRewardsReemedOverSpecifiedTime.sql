@@ -6,8 +6,8 @@
 --
 
 DECLARE @store_id VARCHAR(12) = 1
-DECLARE @begin_date VARCHAR(2) = '2015-01-01'
-DECLARE @end_date VARCHAR(4) = '2015-06-30'
+DECLARE @begin_date VARCHAR(12) = '2015-01-01'
+DECLARE @end_date VARCHAR(12) = '2015-06-30'
 SELECT ROW_NUMBER()
 OVER (ORDER BY "Order".order_date) AS ROW_NUM,
 
