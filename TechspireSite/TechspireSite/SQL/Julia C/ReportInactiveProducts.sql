@@ -9,11 +9,12 @@ Product.product_name AS 'Product Name',
 Product.product_type_id AS 'Product Type',
 ProductStatus.status_name AS 'Product Status',
 ProductStatus.status_desc AS 'Inactivity Reason',
+
 Store.store_name AS 'From Store'
 
 FROM Product
 INNER JOIN ProductStatus ON Product.product_status_id = ProductStatus.id
-INNER JOIN BanType ON Product.ban_reason_id = BanType.id
+--INNER JOIN BanType ON Product.ban_reason_id = BanType.id
 INNER JOIN StoreProduct ON Product.id = StoreProduct.product_id
 INNER JOIN Store ON StoreProduct.store_id = Store.id
 
