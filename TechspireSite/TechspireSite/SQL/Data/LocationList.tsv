@@ -2,12 +2,12 @@
 2	77098	Houston	305 Anthony Plain Suite 611	1407	233
 3	77021	Houston	525 Walter Mount	1407	233
 4	77201	Houston	831 Brandon Dale	1407	233
-5	77081	Houston	"PSC 5313, Box 8845"	1407	233
+5	77081	Houston	PSC 5313, Box 8845	1407	233
 6	77080	Houston	405 Mark Brooks Suite 804	1407	233
 7	77017	Houston	USS Robinson	1407	233
 8	77058	Houston	236 Smith Route	1407	233
 9	77060	Houston	72233 Jeremy Trail	1407	233
-10	77005	Houston	"PSC 1065, Box 6861"	1407	233
+10	77005	Houston	PSC 1065, Box 6861	1407	233
 11	77021	Houston	0603 Chavez Square	1407	233
 12	77018	Houston	3500 Karen Cove	1407	233
 13	77040	Houston	91631 Rojas Forges	1407	233
@@ -22,7 +22,7 @@
 22	77077	Houston	78600 Charlotte Heights Suite 341	1407	233
 23	77044	Houston	414 Hayes Common Apt. 141	1407	233
 24	77031	Houston	USNV Bryant	1407	233
-25	77007	Houston	"PSC 9520, Box 6150"	1407	233
+25	77007	Houston	PSC 9520, Box 6150	1407	233
 26	77087	Houston	80079 Joshua Keys Apt. 596	1407	233
 27	77047	Houston	5444 Schultz Fields Suite 441	1407	233
 28	77058	Houston	55300 Lewis Neck	1407	233
@@ -32,7 +32,7 @@
 32	77045	Houston	847 Kenneth Field	1407	233
 33	77045	Houston	409 Gregory Springs	1407	233
 34	77077	Houston	083 Cody Lake	1407	233
-35	77038	Houston	"PSC 8727, Box 7845"	1407	233
+35	77038	Houston	PSC 8727, Box 7845	1407	233
 36	77018	Houston	40277 Rodriguez Points	1407	233
 37	77007	Houston	17476 Wallace Rapids Suite 405	1407	233
 38	77062	Houston	0284 Vanessa Fork	1407	233
@@ -61,12 +61,12 @@
 61	77070	Houston	2485 Scott Mission	1407	233
 62	77095	Houston	89983 Jennifer Square Suite 451	1407	233
 63	77099	Houston	527 Johnston Extensions	1407	233
-64	77046	Houston	"PSC 1863, Box 5901"	1407	233
+64	77046	Houston	PSC 1863, Box 5901	1407	233
 65	77013	Houston	09751 Garcia Harbor Suite 464	1407	233
 66	77005	Houston	01087 Moore Way	1407	233
 67	77024	Houston	6480 Jason Brooks	1407	233
-68	77049	Houston	"PSC 2679, Box 5378"	1407	233
-69	77061	Houston	"PSC 5689, Box 7059"	1407	233
+68	77049	Houston	PSC 2679, Box 5378	1407	233
+69	77061	Houston	PSC 5689, Box 7059	1407	233
 70	77022	Houston	392 Daniel Tunnel Apt. 405	1407	233
 71	77070	Houston	4360 Ryan Ford Suite 128	1407	233
 72	77019	Houston	7931 Robert Estates Apt. 227	1407	233
@@ -78,16 +78,16 @@
 78	77044	Houston	725 Wilson Glen Apt. 476	1407	233
 79	77081	Houston	15819 Wilcox Spring	1407	233
 80	77002	Houston	7777 Johnston Loaf	1407	233
-81	77050	Houston	"PSC 1670, Box 2488"	1407	233
+81	77050	Houston	PSC 1670, Box 2488	1407	233
 82	77048	Houston	76650 Amy Causeway	1407	233
 83	77010	Houston	0794 Alexander Extension	1407	233
 84	77083	Houston	26937 Karen Villages Suite 392	1407	233
 85	77028	Houston	446 Elizabeth View	1407	233
-86	77089	Houston	"PSC 1540, Box 5363"	1407	233
+86	77089	Houston	PSC 1540, Box 5363	1407	233
 87	77081	Houston	77999 Samuel Cliffs	1407	233
 88	77012	Houston	164 Jessica Spur Apt. 803	1407	233
 89	77029	Houston	39504 Williams Village Suite 912	1407	233
-90	77083	Houston	"PSC 1251, Box 9772"	1407	233
+90	77083	Houston	PSC 1251, Box 9772	1407	233
 91	77035	Houston	81043 Lindsay Lakes	1407	233
 92	77095	Houston	92203 Ashley Creek Suite 994	1407	233
 93	77053	Houston	980 Stephanie Estates Apt. 327	1407	233
@@ -107,7 +107,7 @@
 107	78256	San Antonio	576 Parker Street Suite 200	1407	233
 108	78209	San Antonio	84782 Megan Ferry	1407	233
 109	78254	San Antonio	3090 Obrien Heights	1407	233
-110	78238	San Antonio	"PSC 0383, Box 2000"	1407	233
+110	78238	San Antonio	PSC 0383, Box 2000	1407	233
 111	78255	San Antonio	7527 Beck Forks Suite 782	1407	233
 112	78204	San Antonio	5450 Foster Ramp	1407	233
 113	78222	San Antonio	030 Ryan Dale Apt. 434	1407	233
@@ -138,7 +138,7 @@
 138	79103	Amarillo	0960 Murray Prairie	1407	233
 139	79101	Amarillo	4630 Karen Divide	1407	233
 140	79105	Amarillo	71394 Steven Trail	1407	233
-141	79104	Amarillo	"PSC 4107, Box 6521"	1407	233
+141	79104	Amarillo	PSC 4107, Box 6521	1407	233
 142	79108	Amarillo	81903 Randall Lock Suite 002	1407	233
 143	76010	Arlington	USS Kane	1407	233
 144	76006	Arlington	693 Owen Road Apt. 538	1407	233
@@ -146,13 +146,13 @@
 146	76001	Arlington	65706 Meza Ways Apt. 111	1407	233
 147	76014	Arlington	5819 Ronald Well	1407	233
 148	76017	Arlington	131 Maria Loop Suite 306	1407	233
-149	77551	Galveston	"PSC 4013, Box 7919"	1407	233
+149	77551	Galveston	PSC 4013, Box 7919	1407	233
 150	77554	Galveston	92926 Howell Land Suite 944	1407	233
 151	79605	Abilene	8491 Brenda Keys	1407	233
 152	79699	Abilene	591 Johnny Islands	1407	233
 153	78521	Brownsville	21965 Jackson Station Apt. 493	1407	233
 154	78401	Corpus Christi	21665 Graves Manors Apt. 193	1407	233
-155	78409	Corpus Christi	"PSC 1995, Box 7619"	1407	233
+155	78409	Corpus Christi	PSC 1995, Box 7619	1407	233
 156	78413	Corpus Christi	5860 Aguirre Common	1407	233
 157	78419	Corpus Christi	USNS Perry	1407	233
 158	78408	Corpus Christi	6499 Miller Summit Apt. 651	1407	233

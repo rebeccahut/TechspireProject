@@ -5,10 +5,12 @@ from django.db import connection, ProgrammingError, DataError
 from operator import itemgetter
 from django.apps import apps
 from Bakery.models import Employee, EmployeeJob, Store, Product, Reward, StateProvince, Location
+from django.db import models
 import glob
 import os
 import json
-
+import functools
+import operator
 
 class FieldTypeMap:
     field_type_dict = {"CharField": "nvarchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "bigint",
@@ -61,7 +63,7 @@ def dict1(request):
                 row.insert(0, " ")
         context["tables"] = context["tables"] + field_props
         context["tables"].append(blank_row)
-    return render(request, 'admin/display_report.html', context)
+    return render(request, 'admin/reports/display_report.html', context)
 
 
 # Displays a page with the name and description of each model
@@ -130,8 +132,8 @@ def dict3(request):
 def html_report(request, index):
     paths, names = get_report_paths()
     file_path = paths[index]
-    context = {"report": build_report_obj(file_path)}
-    return render(request, 'admin/display_report.html', context)
+    context = {"reports": [build_report_obj(file_path)]}
+    return render(request, 'admin/reports/display_report.html', context)
 
 
 # Generates a correctly ordered drop script
@@ -212,7 +214,7 @@ def data_status(request):
             status = "Not Available"
         context["tables"].append([table._meta.db_table, status])
     context["tables"].sort(key=itemgetter(1))
-    return render(request, 'admin/display_report.html', context)
+    return render(request, 'admin/reports/display_report.html', context)
 
 
 # Holds output and meta data for a specific report
@@ -254,13 +256,16 @@ def build_report_obj(path):
         except Exception as e:
             output = []
 
-        new_output = []
-        for row in output:
-            new_row = []
-            for index, column in enumerate(row):
-                col_class = align[index]
-                new_row.append([column, col_class])
-            new_output.append(new_row)
+        try:
+            new_output = []
+            for row in output:
+                new_row = []
+                for index, column in enumerate(row):
+                    col_class = align[index]
+                    new_row.append([column, col_class])
+                new_output.append(new_row)
+        except IndexError:
+            pass
 
     report_data = ReportData(owner, name, rule, new_output, titles, report_text, desc)
     return report_data
@@ -276,7 +281,7 @@ def generate_final_report(request):
         build_report_obj(file_path)
         context["reports"].append(build_report_obj(file_path))
 
-    return render(request, 'admin/final_report.html', context)
+    return render(request, 'admin/reports/final_report.html', context)
 
 
 # Lists all reports within the SQL. Displays name, owner, and status of each report.
@@ -423,3 +428,39 @@ def top_emps_month(request):
 
 def top_cust_month(request):
     return get_graph_data("QueryCustPerfMonthly.sql")
+
+
+#Generates a webpage listing all the data in the database.
+#Do not connect any format parameters to any sort of user input
+def generate_data_document(request):
+    context = {"reports": []}
+    solid_tables = ddh.get_solid_models("Bakery")
+
+    for table in solid_tables:
+        model_row = {"titles": [], "name": table._meta.db_table}
+        model_fields = table._meta.get_fields(include_parents=False)
+
+        with connection.cursor() as cursor:
+            sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'".format(
+                model_row["name"])
+            cursor.execute(sql)
+            model_row["titles"] = cursor.fetchall()
+            model_row["titles"] = functools.reduce(operator.iconcat, model_row["titles"])
+            print(model_row["titles"])
+            sql = 'SELECT * FROM "{}"'.format(model_row["name"])
+            cursor.execute(sql)
+            sql_output = cursor.fetchall()
+            new_output = []
+            for row in sql_output:
+                new_row = []
+                for index, column in enumerate(row):
+                    col_class = ""
+                    if column is None:
+                        column = "Null"
+                    new_row.append([column, col_class])
+                new_output.append(new_row)
+            model_row["data"] = new_output
+
+        context["reports"].append(model_row)
+
+    return render(request, 'admin/reports/display_report.html', context)

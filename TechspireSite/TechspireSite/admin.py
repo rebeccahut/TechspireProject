@@ -179,6 +179,7 @@ class TechSpireAdminSite(admin.AdminSite):
             path('top_products_month', self.admin_view(views.top_products_month), name='top_products_month'),
             path('top_emps_month', self.admin_view(views.top_emps_month), name='top_emps_month'),
             path('top_cust_month', self.admin_view(views.top_cust_month), name='top_cust_month'),
+            path('data_doc', self.admin_view(views.generate_data_document), name='data_doc'),
 
         ]
         return my_urls + urls
