@@ -1,11 +1,11 @@
 --Alanna Gilcrease
 --Mailing List
+--The report will display the clients customers email and mailing address.
 --The client can utilize this report to mail seasonal promotions, coupons, or vouchers.
---The client can 
 --Customer_ID, Full_Name, Email, Address, City, Zip_Code, Store_Name
 --,,,,,,,
 
-Declare @store_name int = 1
+DECLARE @store_name INT = 1
 
 SELECT Distinct Customer.id AS 'Customer_ID',
 first_name + ' ' + last_name AS 'Full_Name', 

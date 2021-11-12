@@ -12,10 +12,18 @@ Product.product_name AS 'Product Name',
 BanType.ban_name AS 'Ban Reason',
 ProductStatus.status_name AS 'Product Status',
 CONCAT('$', CAST (Product.product_price as decimal(18,2))) AS 'Product Price'
+
 FROM Product
-INNER JOIN BanType ON BanType.id = Product.ban_reason_id
-INNER JOIN ProductStatus ON ProductStatus.id = Product.product_status_id
-INNER JOIN ProductType ON ProductType.id = Product.product_type_id
+
+INNER JOIN BanType 
+ON BanType.id = Product.ban_reason_id
+
+INNER JOIN ProductStatus 
+ON ProductStatus.id = Product.product_status_id
+
+INNER JOIN ProductType 
+ON ProductType.id = Product.product_type_id
+
 WHERE BanType.id = 1
 
 
