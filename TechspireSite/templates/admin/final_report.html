@@ -1,31 +1,10 @@
 <!DOCTYPE html>
+<{% load static %}
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
-    <style>
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        td, th {
-          border: 1px solid #dddddd;
-          text-align: right;
-          padding: 8px;
-        }
-
-        tr:nth-child(even) {
-          background-color: #dddddd;
-        }
-        h1 {text-align: center;}
-        div {
-            background-color:LightGray;
-            padding:5px;
-        }
-    </style>
+    <title>{{report.name}}</title>
+    <link rel="stylesheet" href="{% static 'css/report_table_styling.css' %}">
   </head>
   {% block content %}
   <body>

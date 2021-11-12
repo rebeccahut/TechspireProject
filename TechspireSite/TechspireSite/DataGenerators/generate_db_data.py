@@ -1,13 +1,14 @@
-from faker import Faker
 import csv
 import names
 import random
 import datetime
 import pandas
 import os
-import math
+import time
 from decimal import Decimal
-import pyodbc
+
+
+date_format = "%m/%d/%Y"
 
 
 def generate_phones(count):
@@ -34,6 +35,11 @@ def date_in_range(start_date, end_date):
 
 
 def generate_customers():
+    #Defaults
+    num_customers = 180
+    num_ss = 20
+
+    #Get employee jobs
     module_dir = os.path.dirname(__file__)
     target_dir = os.path.join(os.path.dirname(module_dir), "SQL", "Data")
     path_name = os.path.join(target_dir, "EmployeeJobList.tsv")
@@ -48,7 +54,7 @@ def generate_customers():
     employees = employees.iloc[emp_indices]
 
     # Sample 100 valid employees to use as customer creators
-    employees = employees.sample(100, replace=True)
+    employees = employees.sample(num_customers, replace=True)
     start_dates = employees[7].values.tolist()
     end_dates = employees[8].values.tolist()
     employees.reset_index(inplace=True)
@@ -58,43 +64,44 @@ def generate_customers():
 
     # Builds customer create dates from employee start/end dates
     for index, start_date in enumerate(start_dates):
-        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+        start_date = datetime.datetime.strptime(start_date, date_format).date()
         end_date = end_dates[index]
 
         if isinstance(end_date, float):
-            end_date = datetime.date(2020, 1, 1)
+            end_date = datetime.date(2021, 11, 18)
         else:
-            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(end_date, date_format).date()
         date = date_in_range(start_date, end_date)
         dates.append(date)
 
     # Builds profile data for each customer
     cust_info = []
-    for index in range(0, 100):
+    for index in range(num_customers):
         first_name = names.get_first_name()
         last_name = names.get_last_name()
         email = first_name + last_name + "@gmail.com"
-        status = random.choice([1, 3, 4])
-        birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(2000, 1, 1))
+        status = random.choice([1, 1, 1, 1, 1, 3, 3, 4])
+        birth_date = date_in_range(datetime.date(1960, 1, 1), datetime.date(1990, 1, 1))
         cust_info.append([first_name, last_name, email, birth_date, status])
 
+    #Assemble all customer data and save to file
     customers[1] = dates
-    phone_numbers = generate_phones(100)
+    phone_numbers = generate_phones(num_customers)
     customers[2] = phone_numbers
     customers[3] = ""
     customers[[4, 5, 6, 7, 8]] = cust_info
-    customers = customers[[4, 5, 6, 2, 3, 7, 1, 0, 8]]
+    customers = customers[[4, 5, 6, 2, 3, 7, 1, 3, 3, 3, 0, 8]]
     customers[9] = ""
-    locations = [x for x in range(101, 201)]
+    locations = [x for x in range(21, 201)]
     customers[10] = locations
     path_name = os.path.join(target_dir, "CustomerList.tsv")
     customers.to_csv(path_name, header=False, index=True, sep="\t")
 
     # Build Customer Social Media
-    cust_ss = customers.sample(20)
+    cust_ss = customers.sample(num_ss)
     cust_ss["ss_code"] = cust_ss[4] + cust_ss[5]
     ss_types = []
-    for index in range(0, 20):
+    for index in range(num_ss):
         ss_types.append(random.randrange(1, 4))
     cust_ss["type"] = ss_types
     cust_ss["cust_id"] = cust_ss.index
@@ -110,7 +117,6 @@ def job_start_date(start_date, add_days):
 
 
 def generate_employees():
-    fake = Faker()
     module_dir = os.path.dirname(__file__)
     base_path = os.path.join(os.path.dirname(module_dir), "SQL", "Data")
     emp_job_path = os.path.join(base_path, "EmployeeJobList.tsv")
@@ -151,7 +157,8 @@ def generate_employees():
 
 def get_product_list():
     path_name = os.path.join(build_path(), "ProductList.tsv")
-    ava_products = pandas.read_csv(path_name, delimiter="\t", converters={'Price': lambda a: Decimal(a)}, index_col="ID")
+    ava_products = pandas.read_csv(path_name, delimiter="\t",
+                                   converters={'Price': lambda a: Decimal(a)}, index_col="ID")
     ava_products["ID"] = ava_products.index
     path_name = os.path.join(build_path(), "StoreProductList.tsv")
     store_products = pandas.read_csv(path_name, delimiter="\t", header=None, index_col=0)
@@ -179,12 +186,14 @@ def generate_order_lines(order_index, product_list, store_index):
         amount = Decimal(random.randrange(1, 6))
         ind_price = Decimal(selected_products.at[index, 'Price'])
         total_price = Decimal(amount * ind_price)
-        row = [amount, ind_price, total_price, line_id, order_index]
+        #Eligible is assumed to be always true
+        row = [amount, ind_price, total_price, 1,  line_id, order_index]
         final_price += total_price
         order_list.append(row)
     return order_list, total_price
 
 
+#Given a cashier employee determines which store they work at
 def get_employee_store(emp_num):
     path_name = os.path.join(build_path(), "EmployeeJobList.tsv")
     employee_jobs = pandas.read_csv(path_name, delimiter="\t", header=None)
@@ -194,6 +203,7 @@ def get_employee_store(emp_num):
     employee_jobs = employee_jobs[4].values.tolist()
     store = employee_jobs[0]
     return store
+
 
 def add_order_lines(emp_ids, product_list, stores):
     order_lines = []
@@ -207,47 +217,59 @@ def add_order_lines(emp_ids, product_list, stores):
     return order_lines, totals
 
 
-
-# ID, Quantity, ind_price, total_price, product, order
-def generate_orders():
+#Generates the initial orders for customers
+def generate_orders(ol_header):
+    num_cust = 180
     product_list = get_product_list()
-    path_name = os.path.join(build_path(), "CustomerList.tsv")
-    customers = pandas.read_csv(path_name, delimiter="\t", header=None)
-    orders = customers[[0, 7, 8]].copy()
-    payments = []
-    for index in range(100):
-        payments.append(random.randrange(1, 3))
-    orders["payment"] = payments
-    orders["discount"] = 0
-    emp_ids = orders[8].values.tolist()
+    path_name = data_path("CustomerList.tsv")
+    customers = pandas.read_csv(path_name, header=None, delimiter="\t")
+    orders = customers[[0, 7, 11]].copy()
+
+    #Generate order-lines
+    emp_ids = orders[11].values.tolist()
     stores = []
     order_lines, totals = add_order_lines(emp_ids, product_list, stores)
+    order_lines = pandas.DataFrame(order_lines)
+    order_lines.index += 1
+    order_lines["id"] = order_lines.index
+    order_lines = order_lines[["id", 0, 1, 2, 3, 4, 5]]
+    path_name = data_path("OrderLineList.tsv")
+    order_lines.to_csv(path_name, header=ol_header, index=False, sep="\t")
+
+    #Set blank values to 0
+    blank_cols = ["discount", "p_loss", "p_gain", "p_total", "eligible"]
+    for col in blank_cols:
+        orders[col] = 0
+
+    #Generate payment ID's
+    payments = []
+    for index in range(num_cust):
+        payments.append(random.randrange(1, 3))
+    orders["payment"] = payments
+
     orders["store"] = stores
     orders["o_total"] = totals
     orders["f_total"] = totals
     orders["emp_ids"] = emp_ids
-    order_lines = pandas.DataFrame(order_lines)
-    order_lines.index += 1
-    path_name = os.path.join(build_path(), "OrderLineList.tsv")
-    order_lines.to_csv(path_name, header=None, index=True, sep="\t")
     orders["cust_id"] = orders[0]
-    orders = orders[[0, 7, "o_total", "f_total", "discount", "cust_id", "payment", "store", "emp_ids"]]
-    path_name = os.path.join(build_path(), "OrderList.tsv")
-    orders.to_csv(path_name, header=None, index=False, sep="\t")
-
-    #id,
-
-
-    # Get employee list
-    # Get customer list
-    # Extract create employee ID's from customer list
-    # Extract create employees from employee list using emp_ID
+    orders["id"] = orders[0]
+    orders["date"] = orders[7]
+    header_row = ["id", "date", "o_total", "f_total"] + blank_cols + ["cust_id", "payment", "store", "emp_ids"]
+    orders = orders[header_row]
+    path_name = data_path("OrderList.tsv")
+    orders.to_csv(path_name, index=False, sep="\t")
 
 
+#Builds the sql data directory string
 def build_path():
     module_dir = os.path.dirname(__file__)
     base_path = os.path.join(os.path.dirname(module_dir), "SQL", "Data")
     return base_path
+
+
+#Gets the path for a specific file in the sql data directory
+def data_path(file):
+    return os.path.join(build_path(), file)
 
 
 def generate_store_products():
@@ -256,15 +278,17 @@ def generate_store_products():
     product_ids = products["ID"].values.tolist()
     options = [[1], [2], [1, 2]]
     store_products = []
-    for id in product_ids:
+    for target_product in product_ids:
         stores = random.choice(options)
         for store in stores:
-            store_products.append([datetime.date(2010, 1, 1), id, store])
+            store_products.append([datetime.date(2010, 1, 1), target_product, store])
     store_products = pandas.DataFrame(store_products)
     store_products.index += 1
     path_name = os.path.join(build_path(), "StoreProductList.tsv")
     store_products.to_csv(path_name, header=False, index=True, sep="\t")
 
+
+#Generates rewards based off a store's available products
 def generate_rewards():
     num_rewards = 50
     path_name = os.path.join(build_path(), "ProductList.tsv")
@@ -305,6 +329,8 @@ def generate_rewards():
     path_name = os.path.join(build_path(), "StoreRewardList.tsv")
     store_rewards.to_csv(path_name, header=False, index=True, sep="\t")
 
+
+#Generates social media emtries for employees
 def generate_employee_ss():
     path_name = os.path.join(build_path(), "EmployeeList.tsv")
     employees = pandas.read_csv(path_name, delimiter="\t", header=None)
@@ -334,76 +360,121 @@ def update_employee_locations():
     locations.to_csv(path_name, header=False, index=False, sep="\t")
 
 
-def add_customer_orders():
-    path_name = os.path.join(build_path(), "OrderList.tsv")
-    orders = pandas.read_csv(path_name, delimiter="\t", header=None)
-    orders = orders.loc[orders[1] > "2011-1-1"]
-    orders = orders.sample(10)
-    orders = orders.sample(30, replace=True)
-    freq = orders[1].value_counts()
-    freq_dates = freq.reset_index().values.tolist()
+def get_emp_at_store_time(employees, jobs, store, order_time, role):
+    jobs = jobs.loc[jobs[4] == store]
+    jobs = jobs.loc[jobs[3] == role]
+    employees = employees[[0, 7, 8]]
+    emp_jobs = pandas.merge(jobs, employees, left_on=2, right_on=0, how="inner")
+    emp_jobs[1] = emp_jobs[1].astype('datetime64[ns]')
+    emp_jobs[8] = emp_jobs[8].astype('datetime64[ns]')
+    emp_jobs = emp_jobs.loc[(emp_jobs[1].dt.date < order_time)]
+    emp_jobs = emp_jobs.loc[(emp_jobs[8].dt.date > order_time) | (emp_jobs[8].isnull() == True)]
+    if len(emp_jobs.index) > 0:
+        employee_id = emp_jobs[2].sample(1).values.tolist()[0]
+    else:
+        employee_id = -1
+    return employee_id
+
+
+def test_get_store_emp():
+    path_name = data_path("EmployeeList.tsv")
+    org_emps = pandas.read_csv(path_name, delimiter="\t", header=None)
+    path_name = data_path("EmployeeJobList.tsv")
+    jobs = pandas.read_csv(path_name, delimiter="\t", header=None)
+    start_date = datetime.date(2002, 1, 1)
+    end_date = datetime.date(2021, 11, 18)
+    date_delta = end_date - start_date
+    for index, role in enumerate(["Baker", "Cash"]):
+        for store in range(2):
+            t0 = time.time()
+            file_name = role + "_Staff_" + str(store+1) + ".txt"
+            staff_file = open(file_name, "w")
+            lines = []
+            for i in range(date_delta.days + 1):
+                day = start_date + datetime.timedelta(days=i)
+                emp = get_emp_at_store_time(org_emps, jobs, store+1, day, index+1)
+                if emp == -1:
+                    lines.append(str(day) + " " + str(emp) + "\n")
+            staff_file.writelines(lines)
+            staff_file.close()
+            d = time.time() - t0
+            print("duration: {:.2f}".format(d))
+
+
+#A subset of the original customers are selected as prolific customers
+#and have a large number of orders generated for each of them based on their initial orders
+def add_customer_orders(orderline_header):
+    #Declare variables
+    num_cust = 180
+    additional_orders = 200
+    freq_cust = 50
+    max_date = datetime.date(2021, 11, 18)
+
+    #Generate orders from existing order data
+    path_name = data_path("OrderList.tsv")
+    orders = pandas.read_csv(path_name, delimiter="\t")
+    orders = orders.sample(freq_cust)
+    orders = orders.sample(additional_orders, replace=True)
+
+    #Generate valid dates for the added orders
+    original_dates = orders["date"].values.tolist()
+    stores = orders["store"].values.tolist()
+    path_name = data_path("EmployeeList.tsv")
+    org_emps = pandas.read_csv(path_name, delimiter="\t", header=None)
+    path_name = data_path("EmployeeJobList.tsv")
+    jobs = pandas.read_csv(path_name, delimiter="\t", header=None)
+
     dates = []
-    for x in freq_dates:
-        org_date = x[0]
-        count = x[1]
-        for index in range(count):
-            days = datetime.timedelta(days=index+1)
-            new_date = datetime.datetime.strptime(org_date, "%m/%d/%Y") + days
-            new_date = new_date.date()
-            dates.append(new_date)
-    orders[1] = dates
-    emp_ids = orders[8].values.tolist()
+    emp_ids = []
+    for index, org_date in enumerate(original_dates):
+        new_date = date_in_range(datetime.datetime.strptime(org_date, "%Y-%m-%d").date(), max_date)
+        target_emp = get_emp_at_store_time(org_emps, jobs, stores[index], new_date, 2)
+        if target_emp == -1:
+            raise ValueError("Could not find valid emp for target order's store/role/date")
+        emp_ids.append(target_emp)
+        dates.append(new_date)
+
+    #Generate valid order-lines for the added orders
+    orders["emp_ids"] = emp_ids
     product_list = get_product_list()
     order_lines, totals = add_order_lines(emp_ids, product_list, [])
     order_lines = pandas.DataFrame(order_lines)
-    orders[2] = totals
-    orders[3] = totals
-
-    path_name = os.path.join(build_path(), "StoreRewardList.tsv")
-    ava_rewards = pandas.read_csv(path_name, delimiter="\t", header=None)
-    path_name = os.path.join(build_path(), "RewardList.tsv")
-    rewards = pandas.read_csv(path_name, delimiter="\t", header=None)
-    rewards.index = rewards[0]
-    joined_rewards = ava_rewards.join(rewards, on=3, lsuffix="ls")
-    store_list = orders[7].head(10).values.tolist()
-    points_prices = []
-    reward_list = []
-    for index, store in enumerate(store_list):
-        reward = joined_rewards.loc[joined_rewards["2ls"] == store].sample(1)
-        price = reward["3"].values.tolist()[0]
-        points_prices.append(price)
-        reward_id = reward["0"].values.tolist()[0]
-        order_id = index + 101
-        reward_list.append([order_id, reward_id])
-    reward_list = pandas.DataFrame(reward_list)
-    order_lines[4] += 100
-    path_name = os.path.join(build_path(), "OrderList.tsv")
-    original_orders = pandas.read_csv(path_name, delimiter="\t", header=None, index_col=0)
-    orders.drop(columns=[0,], inplace=True)
-    orders = original_orders.append(orders)
-    orders.reset_index(inplace=True)
-    orders.drop(columns=["index", ], inplace=True)
-    orders.index += 1
-    orders.to_csv(path_name, header=False, index=True, sep="\t")
+    order_lines[5] += num_cust
     order_lines.index += 292
-    reward_list.index += 1
-    path_name = os.path.join(build_path(), "CustomerRewardList.tsv")
-    reward_list.to_csv(path_name, header=False, index=True, sep="\t")
 
-    path_name = os.path.join(build_path(), "OrderLineList.tsv")
-    order_lines.to_csv(path_name, header=False, index=True, sep="\t", mode="a")
+    #Finish assembling the order data
+    orders["date"] = dates
+    orders["o_total"] = totals
+    orders["f_total"] = totals
+    orders.reset_index(inplace=True)
+    orders["id"] = orders.index + num_cust + 1
+    orders.drop(columns=["index"], inplace=True)
+    print(orders)
+    #Write orders to file
+    path_name = data_path("OrderList.tsv")
+    orders.to_csv(path_name, header=False, index=False, sep="\t", mode="a")
 
+    #Write order-lines to file
+    path_name = data_path("OrderLineList.tsv")
+    order_lines["id"] = order_lines.index + 1
+    order_lines = order_lines[["id", 0, 1, 2, 3, 4, 5]]
+    order_lines.to_csv(path_name, header=False, index=False, sep="\t", mode="a")
 
-
-
-
-
+#233, 142, 39
+def drop_other_states():
+    path_name = data_path("StateProvinceList.tsv")
+    states = pandas.read_csv(path_name, delimiter="\t", header=None)
+    states = states.loc[(states[2] == 233) | (states[2] == 39) | (states[2] == 142)]
+    states.to_csv(path_name, header=None, index=False, sep="\t")
 
 
 if __name__ == '__main__':
-    #generate_employees()
-    # generate_customers()
-    #generate_orders()
+    #orderline_header = ["id", "qty", "i_price", "t_price", "eligible", "product", "order_id"]
+    #generate_customers()
+    #generate_orders(orderline_header)
+    #add_customer_orders(orderline_header)
+
+    drop_other_states()
     # generate_order_lines(200)
     # generate_store_products()
     #generate_orders()
@@ -414,6 +485,6 @@ if __name__ == '__main__':
     #generate_rewards()
     #generate_employee_ss()
     #update_employee_locations()
-    #add_customer_orders()
+    #test_get_store_emp()
     pass
 

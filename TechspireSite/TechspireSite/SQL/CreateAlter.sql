@@ -33,7 +33,7 @@ CREATE TABLE Employee(
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,
     email_address nvarchar(254) NOT NULL,
-    phone_number nvarchar(14) NOT NULL,
+    phone_number nvarchar(15) NOT NULL DEFAULT '+19043335252',
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
@@ -85,10 +85,13 @@ CREATE TABLE Customer(
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,
     email_address nvarchar(254) NOT NULL,
-    phone_number nvarchar(15) NOT NULL,
+    phone_number nvarchar(15) NOT NULL DEFAULT '+19043335252',
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),
+    points_earned int NOT NULL DEFAULT 0 CHECK (points_earned>=0),
+    points_spent int NOT NULL DEFAULT 0 CHECK (points_spent>=0),
+    point_total int NOT NULL DEFAULT 0,
 );
 
 CREATE TABLE OrderLine(
@@ -96,9 +99,10 @@ CREATE TABLE OrderLine(
     quantity int NOT NULL DEFAULT 0,
     ind_price numeric(19,4) NOT NULL DEFAULT 0,
     total_price numeric(19,4) NOT NULL DEFAULT 0,
+    points_eligible bit NOT NULL DEFAULT 1
 );
 
-CREATE TABLE CustomerReward(
+CREATE TABLE OrderReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     point_cost int NOT NULL DEFAULT 0,
     discount_amount numeric(19,4) NOT NULL DEFAULT 0,
@@ -108,11 +112,12 @@ CREATE TABLE CustomerReward(
 CREATE TABLE EmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1), 
     category_name nvarchar (40) NOT NULL,
-    category_desc nvarchar (200),
+    category_desc nvarchar (200)
 );
 
 CREATE TABLE EmployeeEmployeeCategory(
     id int PRIMARY KEY IDENTITY(1,1),
+    created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE EmployeeType(
@@ -126,11 +131,12 @@ CREATE TABLE EmployeeType(
 CREATE TABLE CustomerCategory(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     category_name nvarchar(40) NOT NULL,
-    category_desc nvarchar(200),
+    category_desc nvarchar(200)
 );
 
 CREATE TABLE CustomerCustomerCategory(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    created_date date NOT NULL DEFAULT GETDATE()
 );
 
 CREATE TABLE StateProvince(
@@ -187,7 +193,7 @@ CREATE TABLE ProductStatus (
 CREATE TABLE Store(
     id INT PRIMARY KEY IDENTITY(1,1),
     store_name nvarchar(40),
-    phone_number nvarchar(15),
+    phone_number nvarchar(15) DEFAULT '+19043335252',
     email_address nvarchar(254),
     website_address nvarchar(300),
     start_date date NOT NULL,
@@ -284,7 +290,7 @@ ALTER TABLE OrderLine ADD
     product_id int NOT NULL FOREIGN KEY REFERENCES Product(id),
     order_id int NOT NULL FOREIGN KEY REFERENCES "Order"(id);
 
-ALTER TABLE CustomerReward ADD
+ALTER TABLE OrderReward ADD
     order_id int NOT NULL UNIQUE FOREIGN KEY REFERENCES "Order"(id),
     reward_id int NOT NULL FOREIGN KEY REFERENCES Reward(id),
     free_product_id int FOREIGN KEY REFERENCES Product(id);
@@ -292,7 +298,7 @@ ALTER TABLE CustomerReward ADD
 ALTER TABLE Customer ADD
     create_employee_id int FOREIGN KEY REFERENCES Employee(id),
     customer_status_id int NOT NULL FOREIGN KEY REFERENCES CustomerStatus(id),
-    tier_id int FOREIGN KEY REFERENCES Tier(id),
+    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id) DEFAULT 1,
     location_id int FOREIGN KEY REFERENCES Location(id);
 
 
@@ -353,5 +359,5 @@ ALTER TABLE StoreProduct ADD
 ALTER TABLE Reward ADD
     reward_status_id int NOT NULL FOREIGN KEY REFERENCES RewardStatus(id),
     free_product_id int FOREIGN KEY REFERENCES Product(id),
-    tier_id int FOREIGN KEY REFERENCES Tier(id);
+    tier_id int NOT NULL FOREIGN KEY REFERENCES Tier(id) DEFAULT 1;
 

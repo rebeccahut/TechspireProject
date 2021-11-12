@@ -3,7 +3,7 @@ CREATE TABLE Employee(
     first_name nvarchar(40) NOT NULL,
     last_name nvarchar(40) NOT NULL,
     email_address nvarchar(254) NOT NULL,
-    phone_number nvarchar(14) NOT NULL,
+    phone_number nvarchar(15) NOT NULL DEFAULT '+19043335252',
     comments nvarchar(max),
     birthdate date NOT NULL,
     begin_date date NOT NULL DEFAULT GETDATE(),

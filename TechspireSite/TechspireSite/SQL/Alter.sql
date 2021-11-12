@@ -23,14 +23,14 @@ ALTER TABLE PointLog ADD
     employee_id int FOREIGN KEY REFERENCES SocialMediaType(id),
     reason_id int FOREIGN KEY REFERENCES PointReasonType(id),
     order_id int FOREIGN KEY REFERENCES "Order"(id),
-    customer_reward_id int FOREIGN KEY REFERENCES CustomerReward(id);
+    customer_reward_id int FOREIGN KEY REFERENCES OrderReward(id);
 
 --Julia C
 ALTER TABLE OrderLine ADD
     product_id int FOREIGN KEY REFERENCES Product(id),
     order_id int FOREIGN KEY REFERENCES "Order"(id);
 
-ALTER TABLE CustomerReward ADD
+ALTER TABLE OrderReward ADD
     customer_id int FOREIGN KEY REFERENCES Customer(id),
     reward_id int FOREIGN KEY REFERENCES Reward(id);
 

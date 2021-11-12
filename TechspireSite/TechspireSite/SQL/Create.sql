@@ -99,7 +99,7 @@ CREATE TABLE OrderLine(
     total_price numeric(19,4) NOT NULL DEFAULT 0,
 );
 
-CREATE TABLE CustomerReward(
+CREATE TABLE OrderReward(
     id int NOT NULL PRIMARY KEY IDENTITY(1,1),
     date_applied date NOT NULL,
 );
