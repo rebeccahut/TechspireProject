@@ -6,9 +6,9 @@
 --,,,,,
 
 
-SELECT ROW_NUMBER() 
-OVER(ORDER BY Points."Points Accumulated" DESC) AS Row_Num, 
-Customer.first_name AS "Customer First Name", 
+SELECT ROW_NUMBER()
+OVER(ORDER BY Points."Points Accumulated" DESC) AS Row_Num,
+Customer.first_name AS "Customer First Name",
 Customer.last_name AS "Customer Last Name",
 Points."Points Accumulated",
 CustomerCategory.category_name AS "Category"
@@ -29,5 +29,5 @@ INNER JOIN CustomerCategory ON CustomerCustomerCategory.customer_category_id = C
 WHERE DATEPART(yyyy FROM PointLog.created_date) = '2018'
 AND CustomerStatus.id = '1'
 
-GROUP BY Customer.first_name, Customer.last_name, Points.order_id, Points."Points Accumulated", CustomerCategory.category_name
-ORDER BY MIN(Customer.created_date);
+GROUP BY Customer.begin_date, Customer.first_name, Customer.last_name, Points.order_id, Points."Points Accumulated", CustomerCategory.category_name
+ORDER BY MIN(PointLog.created_date);
