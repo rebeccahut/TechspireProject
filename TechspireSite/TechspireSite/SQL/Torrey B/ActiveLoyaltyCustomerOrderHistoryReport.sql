@@ -1,8 +1,8 @@
 --Torrey Brett
---Active Loyalty Customer Order History Report
+--Active  Loyalty Customer Order History Report
 --The client will utilize this report to show active loyalty customers information and the orders they placed beginning with the most recent order. This information is useful for the client to ensure there is a record of active loyalty customer orders in case there is a dispute, issue, or need for proof in the future. This report can also be utilized to gather active loyalty customer’s order and point information to track points and potentially contact the customer and thank them for their business or inform them of their point total and the points produced from their recent orders. 
 --The Active Customer Order History report displays the Active Loyalty Customer's personal and social media information, the active customer's total points they have, their order information, and the points earned from their order. Along with the store information, the report contains the product description of items within an order, with the order date and individual product price that was purchased in an order.
---Row Number, First Name, Last Name, Customer Phone Number, Customer Email, Social Media Handle, Social Media Platform, Current Point Total, Customer Status, Order Date, Product Name, Product Description, Quantity, Product Price, Order Line Total, Order Total, Points Produced, Store Name, Store Phone 
+--Row Number, First Name, Last Name, Customer Phone Number, Customer Email, Social Media Handle, Social Media Platform, Current Point Total, Customer Status, Order ID, Order Date, Product Name, Product Description, Quantity, Product Price, Order Line Total, Order Total, Points Produced, Store Name, Store Phone 
 --,,,,phone,,,,right,,,,,right,right,right,right,right,,phone
 
 SELECT ROW_NUMBER() OVER(ORDER BY ("Order".order_date) desc) AS Num_Row,
