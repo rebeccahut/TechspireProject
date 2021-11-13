@@ -78,7 +78,7 @@ class RewardAdmin(TwentyPageAdmin):
 
 @admin.register(models.Employee)
 class EmployeeAdmin(ReverseTwentyAdmin):
-    fields = (("first_name", "last_name"), "email_address", "phone_number", "birthdate", "end_date", ("employee_status", "employee_type"), "comments")
+    fields = (("first_name", "last_name"), "email_address", "phone_number", ("birthdate", "end_date"), ("employee_status", "employee_type"), "comments")
     inline_type = "tabular"
     inline_reverse = ["location", ]
     search_fields = ["email_address", "phone_number"]

@@ -1,6 +1,6 @@
 --Brett Meirhofer
 --Cashier Transaction Performance Active
---The client can use this report to help assess the performance of their active cashiers.
+--The client can use this report as one metric to access cashier performance. Cashiers with high customer spending may have skills that could be transferred to lower performing Cashiers increasing the overall revenue of the business.
 --Displays all the active cashiers and the total amount of customer spending with them acting as the cashier.
 --Row Number,Employee Name,Email,Type,Orders,Total Spending,Avg Spending
 --,,,,right,right,right

@@ -1,6 +1,6 @@
 --Brett Meirhofer
 --Active Employee Addresses
---The client can use this report as a historical record for employee information. This report could be generated regularly and stored physically for proper employee documentation.
+--The client can use this report as a historical record for employee information in addition to other documents such as payroll. This report should be regularly printed out and stored securely in compliance with the jurisdiction's employment laws.
 --Displays all employees, historical and current, along with their complete addresses.
 --Row Num,Employee Name,Zip,Address,City,State,Phone Number, Email Address
 --,,,,,,phone,

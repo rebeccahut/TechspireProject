@@ -1,13 +1,14 @@
 --Brett Meirhofer
 --Active Cashiers At Store One
---The client can use this report to contact employees that perform a specific job at a specific location.
---Displays only active employees at a location that preform a specific job along with their contact details.
---Row Number,Type,First Name,Last Name,Phone Number,Email Address
+--The client can use this report to contact Cashiers that currently work at the Hotbreads Location. Understaffing or overstaffing of Cashiers could be identified and corrected using this document in conjunction with other documents such as the store schedule.
+--Displays all Cashiers that currently work at the Hotbreads location.
+--Row Number,Type,Employee Name,Phone Number,Email Address
 --,,,,phone,
 
 SELECT ROW_NUMBER() 
-OVER(ORDER BY EmployeeType.id,Employee.first_name) AS num_row, EmployeeType.type_name, 
-Employee.first_name, Employee.last_name, 
+OVER(ORDER BY EmployeeType.id,Employee.first_name) AS num_row, 
+EmployeeType.type_name, 
+CONCAT(Employee.first_name,' ', Employee.last_name) AS 'Name', 
 Employee.phone_number,
 Employee.email_address
 FROM EmployeeJob
