@@ -3,7 +3,7 @@
 --The client can use this report to contact Cashiers that currently work at the Hotbreads Location. Understaffing or overstaffing of Cashiers could be identified and corrected using this document in conjunction with other documents such as the store schedule.
 --Displays all Cashiers that currently work at the Hotbreads location.
 --Row Number,Type,Employee Name,Phone Number,Email Address
---,,,,phone,
+--,,,phone,
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY EmployeeType.id,Employee.first_name) AS num_row, 

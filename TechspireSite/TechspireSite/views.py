@@ -12,6 +12,7 @@ import json
 import functools
 import operator
 
+
 class FieldTypeMap:
     field_type_dict = {"CharField": "nvarchar", "DateField": "date", "BooleanField": "bit", "BigAutoField": "bigint",
                        "EmailField": "nvarchar", "TextField": "nvarchar", "ForeignKey": "int", "IntegerField": "int",
@@ -21,7 +22,7 @@ class FieldTypeMap:
 # Builds the names/paths used for the Reports Index page
 def get_report_paths():
     paths = ["SQL\Brett M\ReportActiveCashierTransactionAmounts.sql",
-             "SQL\Brett M\ReportCashierTransactionAmounts.sql",
+             "SQL\Brett M\ReportCashiersPointsGivenStoreOne.sql",
              "SQL\Brett M\ReportEmployeeLocations.sql",
              "SQL\Brett M\ReportStoreEmployees.sql", ]
     out = []
@@ -239,16 +240,20 @@ class ReportData:
 
 # Extracts report metadata and output to a ReportData object
 def build_report_obj(path):
-    report_object = open(path, "r")
-    report_text = report_object.readlines()
+
+    with open(path, "r") as report_object:
+        report_text = report_object.readlines()
+
     owner = report_text.pop(0).replace("--", "")
     name = report_text.pop(0).replace("--", "")
     rule = report_text.pop(0).replace("--", "")
     desc = report_text.pop(0).replace("--", "")
     titles = report_text.pop(0).replace("--", "").split(",")
     align = report_text.pop(0).replace("--", "").replace("\n", "").split(",")
-    report_object = open(path, "r")
-    sql = report_object.read()
+
+    with open(path, "r") as report_object:
+        sql = report_object.read()
+
     with connection.cursor() as cursor:
         try:
             cursor.execute(sql)
@@ -430,8 +435,8 @@ def top_cust_month(request):
     return get_graph_data("QueryCustPerfMonthly.sql")
 
 
-#Generates a webpage listing all the data in the database.
-#Do not connect any format parameters to any sort of user input
+# Generates a webpage listing all the data in the database.
+# Do not connect any format parameters to any sort of user input
 def generate_data_document(request):
     context = {"reports": []}
     solid_tables = ddh.get_solid_models("Bakery")

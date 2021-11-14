@@ -14,5 +14,4 @@ INNER JOIN Store
 ON "Order".store_id = Store.id
 INNER JOIN StoreStatus
 ON Store.store_status_id = StoreStatus.id
-ORDER BY Customer.first_name
-;
+ORDER BY Customer.first_name;
