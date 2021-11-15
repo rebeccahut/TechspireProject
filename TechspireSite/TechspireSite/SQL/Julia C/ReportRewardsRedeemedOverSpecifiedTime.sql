@@ -1,7 +1,8 @@
--- Julia Chen
--- Rewards Redeemed over a Given Time Period and Store
+--Julia Chen
+--Rewards Redeemed over a Given Time Period and Store
 --The client can input a certain timespan and view which rewards have been redeemed in that timeframe, how many times it was redeemed in that timeframe, and the latest date that the reward was redeemed by a customer. The client can use this to determine which rewards were most popular with her customers and choose to release new reward types that are like the existing rewards that have already been proven to be popular. This data can also be used to help the client make business decisions in figuring out which product reward types could be successful with her customer base in the future. The client could also utilize this report to aid her in curating limited-time reward offers to drive business sale during specific seasons of the year.
 --This report displays all rewards redeemed by customers over a given timeframe (month and year).
+--Row,Location,Latest Date,Reward,Times Redeemed
 --,,,,
 
 DECLARE @store_id VARCHAR(12) = 1
