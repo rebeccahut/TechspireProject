@@ -2,11 +2,10 @@
 --Current Active Employees
 --The client could use this report to view a list of current active employees. For example, the client could use this report to call employees in the event of an emergency or to call someone in to work if shorthanded.
 --This report displays all active employees, phone number, their job title, and store location.  
---Row Number, Employee ID, First Name, Last Name, Phone Number, Job Title, Status, and Store
---,,,,,,,
+--Row Number,First Name,Last Name,Phone Number,Job Title
+--,,,,phone
 
 SELECT ROW_NUMBER () OVER(ORDER BY Job.job_name, Employee.last_name) AS 'Row Number',
-Employee.id AS 'Employee ID',
 Employee.first_name AS 'First Name',
 Employee.last_name AS 'Last Name',
 Employee.phone_number AS 'Phone Number',
