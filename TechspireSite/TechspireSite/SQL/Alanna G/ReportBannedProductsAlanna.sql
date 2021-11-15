@@ -25,5 +25,3 @@ INNER JOIN ProductType
 ON ProductType.id = Product.product_type_id
 
 WHERE BanType.id = 1
-
-
