@@ -6,6 +6,7 @@
 --,,,,,right
 
 SELECT ROW_NUMBER () OVER(ORDER BY Product.product_name, Product.product_price) AS 'Row Num',
+
 ProductType.product_type_name AS 'Product Type',
 Product.product_name AS 'Product Name',
 BanType.ban_name AS 'Ban Reason',
