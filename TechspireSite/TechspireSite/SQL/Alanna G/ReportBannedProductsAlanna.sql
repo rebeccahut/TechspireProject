@@ -2,7 +2,7 @@
 --Banned Products
 --This report allows the client to view all banned products. These products are either too expensive or for a custom order.
 --The client may choose to use this report to add or remove products from the list of banned products. The client can verify if the item is active or inactive.
---Row Num, Product ID, Product Type, Product Name, Ban Reason, Product Status, Product Price
+--Row Num, Product Type, Product Name, Ban Reason, Product Status, Product Price
 --,,,,,right
 
 SELECT ROW_NUMBER () OVER(ORDER BY Product.product_name, Product.product_price) AS 'Row Num',
