@@ -3,7 +3,7 @@
 -- The client can utilize this report to determine the customers with the most points and the social media handle associated with them to potentially give incentives, such as loyalty points, to those customers. One of the most popular marketing tools used today, with the help of social media, is influencer sponsorships where customers with a good following amount can post advertisements, reviews, and commentary on the social media about the product for an exchange of points since they are already active customers with a loyalty point earning.
 -- This report displays the customers with the most accumulated points and the social media handle associated with that customer.
 -- Row Number, Customer First Name, Customer Last Name, Points Accumulated, Social Media Type, Customer Social Media Name
--- ,,,,,
+-- ,,,right,,
 
 SELECT ROW_NUMBER() 
 OVER(ORDER BY Points."Points Accumulated" ASC) AS Row_Num, 

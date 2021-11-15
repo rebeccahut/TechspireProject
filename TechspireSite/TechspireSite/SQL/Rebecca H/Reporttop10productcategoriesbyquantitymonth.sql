@@ -3,7 +3,7 @@
 --This report is to show the top ten types of items are sold over all history.
 --Display top 10 product categories by quantity, order most to least.
 --Product Type, Quantity Sold
---,,
+--,right
 
 
 Select TOP 10 pt.product_type_name, sum(ol.quantity) as QuantitySold

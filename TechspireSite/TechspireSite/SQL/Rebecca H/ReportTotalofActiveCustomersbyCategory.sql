@@ -3,7 +3,7 @@
 --This report will allow for the manager to access their current loyalty members and what categories they belong too.
 --Display active customers by the customer category they have been assigned ordered by amount in each category
 --Customer Category, Total Customers
---,,
+--,right
 
 
 SELECT cc.category_name, count(distinct c.id) AS totalcustomers

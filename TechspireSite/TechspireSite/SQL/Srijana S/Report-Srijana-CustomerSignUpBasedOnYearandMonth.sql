@@ -3,7 +3,7 @@
 --The client can use this report to generate the customer information based on their signup date (year and month). From this report, the client can view her oldest customers list the newest customers list as well. The client can also view which customer has joined their loyalty system in which store. This report can be helpful for the client to motivate her new customer to revisit by sending promotional coupons or offer through the email address or phone number. The client can also determine the number of new customers enrolled in a specific year and a month.
 --Displays Customer sign up details based on selected month and year with contact information. This report is ordered by begin date (Sign Up date).
 --Full Name,SignUp Date,Email,Phone Number,Store Name
---,,,,phone
+--,,,phone,
 DECLARE @year INT = 2021
 DECLARE @month INT = 8
 DECLARE @Store_id INT = 1
