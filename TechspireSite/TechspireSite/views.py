@@ -240,7 +240,6 @@ class ReportData:
 
 # Extracts report metadata and output to a ReportData object
 def build_report_obj(path):
-
     with open(path, "r") as report_object:
         report_text = report_object.readlines()
 
@@ -255,22 +254,17 @@ def build_report_obj(path):
         sql = report_object.read()
 
     with connection.cursor() as cursor:
-        try:
-            cursor.execute(sql)
-            output = cursor.fetchall()
-        except Exception as e:
-            output = []
+        cursor.execute(sql)
+        output = cursor.fetchall()
 
-        try:
-            new_output = []
-            for row in output:
-                new_row = []
-                for index, column in enumerate(row):
-                    col_class = align[index]
-                    new_row.append([column, col_class])
-                new_output.append(new_row)
-        except IndexError:
-            pass
+        new_output = []
+        for row in output:
+            new_row = []
+            for index, column in enumerate(row):
+                col_class = align[index]
+                new_row.append([column, col_class])
+            new_output.append(new_row)
+
 
     report_data = ReportData(owner, name, rule, new_output, titles, report_text, desc)
     return report_data
